@@ -6,21 +6,26 @@ def plot_wave_gif(wave, sample_rate=44100, filename='wave.gif', save=False):
     fig, ax = plt.subplots()
     xdata, ydata = [], []
     ln, = plt.plot([], [], 'b')
+    # Add timer text in the corner
+    timer_text = ax.text(0.70, 1.05, 'Time: {:.2f} s'.format(0), transform=ax.transAxes, fontsize=18)
 
     def init():
         ax.set_xlim(0, len(wave) / sample_rate)
         ax.set_ylim(np.min(wave), np.max(wave))
+        ax.set_xlabel('Time [s]')
+        ax.set_ylabel('Amplitude')
         return ln,
 
     def update(frame):
         xdata.append(frame / sample_rate)
         ydata.append(wave[frame])
         ln.set_data(xdata, ydata)
+        # Add timer text in the corner
+        timer_text.set_text('Time: {:.2f} s'.format(frame*(1/sample_rate)))
         return ln,
 
     frames = len(wave)
     fps = round(frames/(len(wave)/sample_rate))
-    print(fps)
     speed = 1
     true_fps = speed*fps
 

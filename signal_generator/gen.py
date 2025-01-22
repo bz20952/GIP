@@ -30,9 +30,9 @@ if __name__ == "__main__":
     # duration = float(input("Enter the duration of the sine wave (seconds): "))
     sample_rate = 1000
 
-    wave = generate_sine_wave(2, 50, 2*np.pi, 5, sample_rate)
-    # wave = generate_sine_sweep(1, 2, 50, 5, sample_rate)
-    # wave = generate_random_signal(50, 5, sample_rate)
+    # wave = generate_sine_wave(2, 50, 0, 5, sample_rate)
+    # wave = generate_sine_sweep(0.5, 1.5, 50, 5, sample_rate)
+    wave = generate_random_signal(50, 5, sample_rate)
 
     # # Play the wave in a separate thread
     # sound_thread = threading.Thread(target=play_wave, args=(wave, sample_rate))
