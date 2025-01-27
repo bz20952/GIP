@@ -2,6 +2,8 @@
 	import Counter from './Counter.svelte';
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcomeFallback from '$lib/images/svelte-welcome.png';
+	import Inbox from '../components/Inbox.svelte';
+	import Splash from '../components/Splash.svelte';
 </script>
 
 <svelte:head>
@@ -10,10 +12,12 @@
 </svelte:head>
 
 <section>
-	<h1>
-		Welcome to the world of Gamified Engineering! 🚀
-	</h1>
+	<!-- <Splash /> -->
 </section>
+
+<div class="inbox">
+	<Inbox />
+</div>
 
 <style>
 	section {
