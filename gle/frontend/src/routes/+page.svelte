@@ -19,6 +19,8 @@
 	<Inbox />
 </div>
 
+<img src={'http://localhost:8000/images/desk.jpg'} alt="Welcome to Svelte" />
+
 <style>
 	section {
 		display: flex;
