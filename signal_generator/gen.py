@@ -34,20 +34,21 @@ if __name__ == "__main__":
     # amplitude = float(input("Enter the amplitude of the sine wave: "))
     # phase = float(input("Enter the phase of the sine wave (radians): "))
     # duration = float(input("Enter the duration of the sine wave (seconds): "))
-    sample_rate = 1000
+    sample_rate = 41000
 
-    # wave = generate_sine_wave(2, 50, 0, 5, sample_rate)
-    # wave = generate_sine_sweep(0.5, 1.5, 50, 5, sample_rate)
-    wave = generate_stepped_sweep(0.5, 2, 50, 10, sample_rate)
+    wave = generate_sine_wave(50, 1, 0, 60, sample_rate)
+    # wave = generate_sine_sweep(0.5, 300, 1, 60, sample_rate)
+    # wave = generate_random_signal(1, 60, sample_rate)
+    # wave = generate_stepped_sweep(0.5, 300, 1, 60, sample_rate)
 
     # # Play the wave in a separate thread
     # sound_thread = threading.Thread(target=play_wave, args=(wave, sample_rate))
     # sound_thread.start()
 
-    n = 25  # Sample the wave at every nth data point for plotting
-    ani = plot_wave_gif(wave[::n], sample_rate//n, filename='sine_sweep.gif', save=True)
+    # n = 25  # Sample the wave at every nth data point for plotting
+    # ani = plot_wave_gif(wave[::n], sample_rate//n, filename='sine_sweep.gif', save=True)
 
     # # Keep the script running while the sound plays
     # sound_thread.join()
 
-    # play_wave(wave, sample_rate)
+    play_wave(wave, sample_rate)
