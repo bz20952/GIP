@@ -33,15 +33,14 @@ class MyTabView(CTkTabview):
         self.toolkit = self.add("Toolkit")
         self.help = self.add("Help")
 
+        # self.tab('Dashboard').grid(row=0, column=0, padx=0, pady=0, sticky="ew")
+        # self.tab('Toolkit').grid(row=0, column=0, padx=0, pady=0, sticky="ew")
+        # self.tab('Help').grid(row=0, column=0, padx=0, pady=0, sticky="ew")
+
 
 class Dashboard(CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=45)
-        self.grid_columnconfigure(1, weight=10)
-        self.grid_columnconfigure(2, weight=1)
 
         # add widgets onto the frame, for example:
         self.radio = CTkRadioButton(self, text="Radio Button")
@@ -59,15 +58,6 @@ class Dashboard(CTkFrame):
 class Toolkit(CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-
-        self.grid_rowconfigure(0, weight=0)
-        self.grid_columnconfigure(0, weight=0)
-        self.grid_rowconfigure(1, weight=0)
-        self.grid_columnconfigure(1, weight=0)
-        self.grid_rowconfigure(2, weight=0)
-        self.grid_columnconfigure(2, weight=0)
-        self.grid_rowconfigure(3, weight=0)
-        self.grid_columnconfigure(3, weight=0)
 
         # self.plot_btn = CTkButton(self, text="Plot Sine Wave", command=plotter.plot_sine_wave(50, 50, 0, 5))
         # self.plot_btn.grid(row=0, column=0, padx=20, pady=20)
@@ -212,6 +202,28 @@ class Help(CTkFrame):
         self.help.grid(row=1, column=0, padx=0)
 
 
+class ProgressBar(CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+
+        self.grid_rowconfigure(0, weight=0)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=10)
+
+        self.label = CTkLabel(self, text=f"Progress: {utils.read_progress()*100:.0f}%", font=(fonts['primary'], 16, "bold"))
+        self.label.grid(row=0, column=0, padx=0, pady=0, sticky="ew")
+
+        self.bar = CTkProgressBar(self, orientation="horizontal", fg_color=colours['foreground'], progress_color=colours['button'])
+        self.bar.set(utils.read_progress())
+        self.bar.grid(row=0, column=1, padx=0, pady=0, sticky="ew")
+
+
+    def progress(self):
+
+        self.label.configure(text=f"Progress: {utils.read_progress()*100:.0f}%")
+        self.bar.set(utils.read_progress())
+
+
 class App(CTk):
     def __init__(self):
         super().__init__()
@@ -269,28 +281,6 @@ class App(CTk):
             fg_color='gray92'
         )
         self.progress_bar.grid(row=2, column=0, padx=100, pady=10, sticky="nsew")
-
-
-class ProgressBar(CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-
-        self.grid_rowconfigure(0, weight=0)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=10)
-
-        self.label = CTkLabel(self, text=f"Progress: {utils.read_progress()*100:.0f}%", font=(fonts['primary'], 16, "bold"))
-        self.label.grid(row=0, column=0, padx=0, pady=0, sticky="ew")
-
-        self.bar = CTkProgressBar(self, orientation="horizontal", fg_color=colours['foreground'], progress_color=colours['button'])
-        self.bar.set(utils.read_progress())
-        self.bar.grid(row=0, column=1, padx=0, pady=0, sticky="ew")
-
-
-    def progress(self):
-
-        self.label.configure(text=f"Progress: {utils.read_progress()*100:.0f}%")
-        self.bar.set(utils.read_progress())
         
 
 if __name__ == "__main__":

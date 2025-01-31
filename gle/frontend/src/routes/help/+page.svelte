@@ -4,10 +4,10 @@
 </svelte:head>
 
 <div class="text-column">
-	<h1>How to use PartCeasy</h1>
+	<h1>How to use PartCZ</h1>
 
 	<p>
-		This page will contain instructions on how to use PartCeasy.
+		This page will contain instructions on how to use PartCZ.
 	</p>
 
 </div>
