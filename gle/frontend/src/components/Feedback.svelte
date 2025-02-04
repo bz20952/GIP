@@ -31,9 +31,9 @@
 </div>
 
 <style>
-  p {
-    margin: 1rem;
-    color: #333;
-  }
+    p {
+        margin: 1rem;
+        color: #333;
+    }
 </style>
 

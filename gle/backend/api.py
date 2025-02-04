@@ -2,8 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
-
 import filter as f
+
 
 # Initialise API
 app = FastAPI()
@@ -11,7 +11,7 @@ app = FastAPI()
 # Allow cross-origin requests from frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["localhost:5173"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
@@ -33,7 +33,10 @@ async def dft():
 
 @app.get('/time-domain')
 async def time_domain():
-    return {"message": "This should return either a graph of acceleration data."}
+    return {
+        # "message": "This should return either a graph of acceleration data.",
+        "message": "random.gif"
+    }
 
 
 @app.get('/raw-data')

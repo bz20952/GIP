@@ -39,13 +39,13 @@
         margin-bottom: 0.5rem;
     }
 
-    input[type="text"] {
+    /* input[type="text"] {
         color: black;
         padding: 0.5rem;
         font-size: 1rem;
         margin-bottom: 1rem;
         border-radius: 10px;
-    }
+    } */
 
     .btns {
         margin-top: 0.5rem;

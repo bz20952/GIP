@@ -27,7 +27,7 @@
 		left: 50%;
 		transform: translate(-50%, -50%);
 		background-color: azure;
-		min-width: 80%;
+		min-width: 60%;
 		max-width: 100%;
 		border-radius: 10px;
 		padding: 1rem;
