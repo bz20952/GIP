@@ -16,6 +16,14 @@
 </h1>
 
 <section>
+	<p>
+		Here you can see all of your available tools and start new experiments.
+		<br>
+		Every experiment consists of three stages; test setup, signal processing and modal analysis.
+		<br>
+		By clicking the button below, you can use your available tools to gather results.
+	</p>
+	
 	<button class='new-exp' on:click={() => goto('/toolkit/test')}>
 		Start a new experiment!
 	</button>
