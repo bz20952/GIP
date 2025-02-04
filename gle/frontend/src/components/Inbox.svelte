@@ -1,25 +1,35 @@
-<script>
-  export let emails = [
-    { sender: 'Alice', subject: 'Meeting Reminder', snippet: 'Don\'t forget we have a meeting...', read: true },
-    { sender: 'Bob', subject: 'Project Update', snippet: 'The project is moving along...', read: true },
-    { sender: 'Carol', subject: 'Dinner Invitation', snippet: 'Would you like to join us...', read: false }
-  ];
+<script lang="ts">
+	import { goto } from '$app/navigation';
+  import emails from '$lib/emails.json';
+  import ResultsForm from './ResultsForm.svelte';
+  import Feedback from './Feedback.svelte';
+  import { resultsForm, feedback } from '$lib/stores';
 </script>
 
-<div class="inbox-panel">
-    <h1 class="inbox-header">Messages</h1>
-    {#each emails as email}
-        <div class:email class:read={email.read}>
-            <div class="sender">{email.sender}</div>
-            <div class="subject">{email.subject}</div>
-            <div class="snippet">{email.snippet}</div>
-        </div>
-    {/each}
-</div>
+  <div class="inbox-panel">
+      <h1 class="inbox-header">Messages</h1>
+      {#each emails.emails as email}
+          <div class:email class:read={email.read}>
+            {#if !$resultsForm && !$feedback}
+              <div class="sender">{email.sender}</div>
+              <div class="subject">{email.subject}</div>
+              <div class="body">{email.body}</div>
+              <button class="submit-btn" on:click={() => $resultsForm = true}>Send results</button>
+              <button class="fb-btn" on:click={() => $feedback = true}>View feedback</button>
+            {:else if $resultsForm}
+              <ResultsForm requiredResults={email.results}/>
+            {:else if $feedback}
+              <Feedback emailId={email.id}/>
+            {/if}
+          </div>
+      {/each}
+  </div>
 
 <style>
   .inbox-header {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Segoe UI';
+    font-size: 20pt;
+    margin: 0.5rem;
   }
 
   .inbox-panel {
@@ -36,17 +46,14 @@
   .email {
     padding: 10px;
     border-bottom: 1px solid #eee;
-    cursor: pointer;
     border-radius: 10px;
+    border: 1px solid #a3a6a8;
+    margin: 1rem;
   }
 
-  .email:hover {
+  /* .email:hover {
     background-color: rgb(236, 241, 241);
-  }
-
-  .email:last-child {
-    border-bottom: none;
-  }
+  } */
 
   .email.read {
     background-color: #b4dc8d;
@@ -58,10 +65,12 @@
 
   .subject {
     margin-top: 5px;
+    font-style: italic;
+    color: #ff3e00;
   }
 
-  .snippet {
-    margin-top: 5px;
-    color: #666;
+  .submit-btn {
+    padding: 5px 10px;
+    margin-top: 0.5rem;
   }
 </style>

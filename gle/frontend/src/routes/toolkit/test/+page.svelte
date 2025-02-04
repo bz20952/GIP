@@ -54,20 +54,22 @@
         <input type="range" min="1" max="5" step="1" bind:value={shakerPosition}/>
     </div>
 
-    <div class="excitation-type">
-        <label for="excitation-type">Excitation type: </label>
-        <select name="excitation-type" id="excitation-type">
-            {#each $tools as tool}
-                {#if tool.available && tool.type === "excitation"}
-                    <option value={tool.name}>{tool.name}</option>
-                {/if}
-            {/each}
-        </select>
-    </div>
+    <div class="extra-params">
+        <div class="excitation-type">
+            <label for="excitation-type">Excitation type: </label>
+            <select name="excitation-type" id="excitation-type">
+                {#each $tools as tool}
+                    {#if tool.available && tool.type === "excitation"}
+                        <option value={tool.name}>{tool.name}</option>
+                    {/if}
+                {/each}
+            </select>
+        </div>
 
-    <div class="sampling-slider">
-        <label for="sampling-freq">Sampling frequency: <strong>{samplingFreq} kHz</strong></label>
-        <input type="range" min="100" max="600" step="100" bind:value={samplingFreq} />
+        <div class="sampling-slider">
+            <label for="sampling-freq">Sampling frequency: <strong>{samplingFreq} kHz</strong></label>
+            <input type="range" min="100" max="600" step="100" bind:value={samplingFreq} />
+        </div>
     </div>
 
     <button class="run-test" on:click={() => goto('/toolkit/process')}>Run Test</button>
@@ -142,6 +144,10 @@
         cursor: pointer;
     }
 
+    .extra-params {
+        width: 100%;
+    }
+
     .excitation-type {
         margin: 1rem;
     }
@@ -150,27 +156,27 @@
         background-color: azure;
         border-radius: 10px;
         margin: 0 1rem;
+        border: #2c6392 solid 1px;
     }
 
     .sampling-slider {
-        display: flex;
-        width: 100%;
-        margin: 2rem 0;
-        justify-content: center;
-        align-items: center;
+        width: 80%;
+        margin: 2rem 0 2rem 1rem;
     }
 
     .sampling-slider label {
-        padding: 0 2rem;
+        padding: 0 2rem 0 0;
     }
 
     .sampling-slider input[type="range"] {
         -webkit-appearance: none;
-        padding: 1px 0;
+        padding: 1px;
         width: 50%;
         border-radius: 5px;
         background-color: azure;
         border: 1px solid #2c6392;
+        justify-content: center;
+        align-items: center;
     }
 
     .sampling-slider input[type="range"]::-webkit-slider-thumb {
@@ -185,18 +191,11 @@
     }
 
     .run-test {
-        background-color: #2c6392;
-        border-radius: 10px;
-        color: white;
         margin: 1rem;
         width: 10%;
         display: flex;
         justify-content: center;
         align-content: center;
         padding: 0.5rem 0;
-    }
-
-    .run-test:hover {
-        background-color: #3b76a9;
     }
 </style>

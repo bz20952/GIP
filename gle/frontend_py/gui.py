@@ -236,9 +236,9 @@ class App(CTk):
         self.grid_rowconfigure(1, weight=0)
         self.grid_rowconfigure(2, weight=0)
 
-        banner_image = CTkImage(light_image=Image.open("./static/AnthonyStappan.png"), size=(200, 60))
-        self.banner_image = CTkLabel(self, image=banner_image, text="")
-        self.banner_image.grid(row=0, column=0, padx=0, pady=20, sticky="nsew")
+        # banner_image = CTkImage(light_image=Image.open("./static/AnthonyStappan.png"), size=(200, 60))
+        # self.banner_image = CTkLabel(self, image=banner_image, text="")
+        # self.banner_image.grid(row=0, column=0, padx=0, pady=20, sticky="nsew")
 
         self.tab_view = MyTabView(
             master=self, 

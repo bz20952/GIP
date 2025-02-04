@@ -56,4 +56,4 @@ async def filter(request: Request):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=8000)
+    uvicorn.run("api:app", port=8000, reload=True)

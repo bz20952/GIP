@@ -1,15 +1,13 @@
 <script>
-    import { onMount } from 'svelte';
-
 	let progress = 0;
 	let interval;
 
-	onMount(() => {
-		interval = setInterval(async () => {
-			const res = await fetch('http://localhost:3000/progress');
-			progress = await res.json();
-		}, 500);
-	});
+	// onMount(() => {
+	// 	interval = setInterval(async () => {
+	// 		const res = await fetch('http://localhost:3000/progress');
+	// 		progress = await res.json();
+	// 	}, 500);
+	// });
 </script>
 
 <div class="progress-bar">

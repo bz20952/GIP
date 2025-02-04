@@ -56,9 +56,6 @@
 	}
 
 	button {
-        background-color: #2c6392;
-        border-radius: 10px;
-        color: white;
         margin: 2rem;
         width: 30%;
         display: flex;
@@ -66,10 +63,6 @@
         align-content: center;
         padding: 0.5rem 0;
     }
-
-	button:hover {
-		background-color: #3b76a9;
-	}
 
 	.tools {
 		background-color: transparent;

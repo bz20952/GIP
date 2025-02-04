@@ -85,6 +85,14 @@ input,
 button {
 	font-size: inherit;
 	font-family: inherit;
+	border-radius: 10px;
+	background-color: #ff3e00;
+	color: white;
+	padding: 5px 10px;
+}
+
+button:hover {
+	background-color: #c5390a;
 }
 
 button:focus:not(:focus-visible) {
