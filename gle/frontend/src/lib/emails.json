@@ -1,0 +1,16 @@
+{
+    "emails": [
+        {
+            "id": 1,
+            "sender": "John Doe",
+            "subject": "Wing test needed ASAP",
+            "body": "Hey, X are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. Have a look in your toolkit and see what you can do.",
+            "results": [
+                {
+                    "name": "First natural frequency",
+                    "unit": "Hz"
+                }
+            ]
+        }
+    ]
+}

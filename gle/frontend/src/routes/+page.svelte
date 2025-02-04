@@ -1,20 +1,24 @@
 <script lang="ts">
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcomeFallback from '$lib/images/svelte-welcome.png';
 	import Inbox from '../components/Inbox.svelte';
 	import Splash from '../components/Splash.svelte';
-	import ProgressBar from '../components/ProgressBar.svelte';
+	import { splash } from '$lib/stores';
+	// import logo from '$lib/images/logo.jpg';
 </script>
 
 <svelte:head>
 	<title>Dashboard</title>
-	<meta name="description" content="Svelte demo app" />
+	<meta name="description" content="Dashboard" />
 </svelte:head>
 
+{#if $splash}
+	<Splash />
+{/if}
+
 <h1>
-	Welcome to the world of Gamified Engineering! 🚀
+	Plane Sailing Inc.
 </h1>
+
+<!-- <img src={logo} alt='Plane Sailing Inc.' /> -->
 
 <section>
 	<Inbox />

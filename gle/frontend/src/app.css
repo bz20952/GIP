@@ -81,13 +81,41 @@ pre {
 	margin: 0 auto;
 }
 
-input,
+input[type="text"] {
+	font-size: inherit;
+	font-family: inherit;
+	border-radius: 10px;
+	background-color: azure;
+	color: black;
+	padding: 5px 10px;
+	border: #2c6392 solid 1px;
+}
+
 button {
 	font-size: inherit;
 	font-family: inherit;
+	border-radius: 10px;
+	background-color: #ff3e00;
+	color: white;
+	padding: 5px 10px;
+}
+
+button:hover {
+	background-color: #c5390a;
 }
 
 button:focus:not(:focus-visible) {
+	outline: none;
+}
+
+select {
+	background-color: azure;
+	border-radius: 10px;
+	margin: 0 1rem;
+	border: #2c6392 solid 1px;
+}
+
+select:focus {
 	outline: none;
 }
 
