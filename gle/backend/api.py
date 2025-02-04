@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
+from dotenv import load_dotenv
+import os
 import filter as f
 
 
@@ -11,7 +13,7 @@ app = FastAPI()
 # Allow cross-origin requests from frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", f"http://{os.environ.get('PUBLIC_HOSTNAME')}:{os.environ.get('FRONTEND_PORT')}"],
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
@@ -59,4 +61,8 @@ async def filter(request: Request):
 
 
 if __name__ == "__main__":
-    uvicorn.run("api:app", port=8000, reload=True)
+    if os.environ.get('ENV') == 'docker':
+        uvicorn.run("api:app", host='0.0.0.0', port=os.environ.get('PUBLIC_BACKEND_PORT'), workers=4)
+    else:
+        load_dotenv('../.env')
+        uvicorn.run("api:app", port=os.environ.get('PUBLIC_BACKEND_PORT'), reload=True)
