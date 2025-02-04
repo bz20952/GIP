@@ -4,6 +4,7 @@
 	import welcomeFallback from '$lib/images/svelte-welcome.png';
 	import Inbox from '../components/Inbox.svelte';
 	import Splash from '../components/Splash.svelte';
+	import ProgressBar from '../components/ProgressBar.svelte';
 </script>
 
 <svelte:head>
@@ -11,13 +12,13 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<section>
-	<!-- <Splash /> -->
-</section>
+<h1>
+	Welcome to the world of Gamified Engineering! 🚀
+</h1>
 
-<div class="inbox">
+<section>
 	<Inbox />
-</div>
+</section>
 
 <style>
 	section {
@@ -30,21 +31,6 @@
 
 	h1 {
 		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
+		margin: 3rem 0rem;
 	}
 </style>

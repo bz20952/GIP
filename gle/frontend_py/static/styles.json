@@ -1,0 +1,17 @@
+{
+    "fonts": {
+        "primary": "Inter",
+        "secondary": "Segoe UI",
+        "tertiary": "Roboto"
+    },
+    "colours": {
+        "background": "transparent",
+        "foreground": "#FFFFFF",
+        "text": "#333333",
+        "button": "#7F8C8D",
+        "button_active": "#2C3E50",
+        "button_disabled": "#1C1C1C",
+        "button_hover": "#0065D9",
+        "border": "#1ABC9C"
+    }
+}
