@@ -8,4 +8,4 @@ RUN pip install -r requirements_docker.txt
 
 COPY . .
 
-CMD ["python", "api.py"]
+CMD [ "python", "api.py" ]

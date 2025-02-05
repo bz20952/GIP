@@ -10,7 +10,6 @@
 
     onMount(async () => {
         await getTimeDomainPlotPath();
-        console.log(timeDomainPlotPath);
         await getAnimationPath();
     });
 
@@ -110,6 +109,10 @@
 
     .cutoff-freq {
         margin: 1rem 0;
+    }
+
+    .cutoff-freq input {
+        width: 20%;
     }
 
     .dft {

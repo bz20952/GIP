@@ -1,28 +1,33 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
   import emails from '$lib/emails.json';
   import ResultsForm from './ResultsForm.svelte';
   import Feedback from './Feedback.svelte';
-  import { resultsForm, feedback } from '$lib/stores';
+  import { showResultsForm, showFeedback, progress } from '$lib/stores';
+
+  $: console.log($showFeedback);
 </script>
 
   <div class="inbox-panel">
       <h1 class="inbox-header">Messages</h1>
-      {#each emails.emails as email}
-          <div class:email class:read={email.read}>
-            {#if !$resultsForm && !$feedback}
-              <div class="sender">{email.sender}</div>
-              <div class="subject">{email.subject}</div>
-              <div class="body">{email.body}</div>
-              <button class="submit-btn" on:click={() => $resultsForm = true}>Send results</button>
-              <button class="fb-btn" on:click={() => $feedback = true}>View feedback</button>
-            {:else if $resultsForm}
-              <ResultsForm requiredResults={email.results}/>
-            {:else if $feedback}
-              <Feedback emailId={email.id}/>
-            {/if}
-          </div>
-      {/each}
+      <div class="message-container">
+        {#each emails.emails as email}
+          {#if email.id <= $progress.current + 1}
+              <div class:email class:read={email.read}>
+                {#if !$showResultsForm.includes(email.id) && !$showFeedback.includes(email.id)}
+                  <div class="sender">{email.sender}</div>
+                  <div class="subject">{email.subject}</div>
+                  <div class="body">{email.body}</div>
+                  <button class="submit-btn" on:click={() => $showResultsForm = [...$showResultsForm, email.id]}>Send results</button>
+                  <button class="fb-btn" on:click={() => $showFeedback = [...$showFeedback, email.id]}>View feedback</button>
+                {:else if $showResultsForm.includes(email.id)}
+                  <ResultsForm emailId={email.id}/>
+                {:else if $showFeedback.includes(email.id)}
+                  <Feedback emailId={email.id}/>
+                {/if}
+              </div>
+          {/if}
+        {/each}
+      </div>
   </div>
 
 <style>
@@ -39,8 +44,13 @@
     border: 1px solid #eee;
     border-radius: 10px;
     box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
     background-color: transparent;
+  }
+
+  .message-container {
+    /* padding: 10px; */
+    max-height: 30rem;
+    overflow-y: scroll;
   }
 
   .email {

@@ -15,14 +15,15 @@
 	Welcome to your Toolkit!
 </h1>
 
+<div class="sb-container">
+	<ul>
+		<li>Here you can see all of your available tools and start new experiments.</li>
+		<li>Every experiment consists of three stages; test setup, signal processing and modal analysis.</li>
+		<li>By clicking the button below, you can use your available tools to gather results.</li>
+	</ul>
+</div>
+
 <section>
-	<p>
-		Here you can see all of your available tools and start new experiments.
-		<br>
-		Every experiment consists of three stages; test setup, signal processing and modal analysis.
-		<br>
-		By clicking the button below, you can use your available tools to gather results.
-	</p>
 	
 	<button class='new-exp' on:click={() => goto('/toolkit/test')}>
 		Start a new experiment!
@@ -50,6 +51,12 @@
 </section>
 
 <style>
+	.sb-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
 	section {
 		display: flex;
 		flex-direction: column;
@@ -75,6 +82,10 @@
 		background-color: transparent;
 		border-radius: 10px;
 		box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+		max-width: 80%;
+		display: flex;
+		align-items: top;
+		justify-content: center;
 	}
 
 	.unlocked-tools {
@@ -87,5 +98,9 @@
 		margin: 2rem;
 		display: inline-block;
 		vertical-align: top;
+	}
+	
+	ul {
+		list-style: square;
 	}
 </style>

@@ -1,7 +1,7 @@
 import { PUBLIC_HOSTNAME } from '$env/static/public';
 import { PUBLIC_BACKEND_PORT } from '$env/static/public';
 
-export async function sendApiRequest(endpoint: string, method: string, body: any): Promise<any> {
+export async function sendApiRequest(endpoint: string, method: string, body: any = {}): Promise<any> {
 
   let errorMessage = '';
   let result;

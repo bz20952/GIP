@@ -1,13 +1,24 @@
 <script lang="ts">
-    import { resultsForm } from "$lib/stores";
+    import { showResultsForm, progress } from "$lib/stores";
+    import { removeItemAll } from "$lib/utils.ts";
+    import { emails } from "$lib/emails.json";
 
-    export let requiredResults;
+    export let emailId: number;
+    const currentEmail = emails.find((email) => email.id === emailId) as any;
+    const currentTask = $progress.tasks.find((task) => task.emailId === emailId) as any;
+    const requiredResults = currentEmail?.results as Array<any>; 
 
     let submitted: boolean = false;
 
     function handleSubmit(event: Event) {
         submitted = true;
-        return event
+        currentTask.feedbackStage = Math.min(currentTask.feedbackStage + 1, 3);  // Move to the next feedback stage after each submission (max feedback stage = 3)
+        const formData = new FormData(event.target as HTMLFormElement);
+        let i = 0;  // Answer indexer
+        requiredResults?.forEach((result) => {
+            currentTask.answers[i] = formData.get(result.name);
+            i += 1;
+        })
     }
 </script>
 
@@ -20,10 +31,10 @@
         </div>
     {/each}
     <div class='btns'>
-        <button class="back-btn" on:click={() => $resultsForm = false}>Back</button>
+        <button class="back-btn" on:click={() => $showResultsForm = removeItemAll($showResultsForm, emailId)}>Back</button>
         <button class="submit-btn" type="submit">Submit</button>
         {#if submitted}
-            <p>Results submitted successfully!</p>
+            <p class="success">Results submitted successfully!</p>
         {/if}
     </div>
 </form>
@@ -37,17 +48,15 @@
 
     label {
         margin-bottom: 0.5rem;
+        margin-right: 1rem;
     }
-
-    /* input[type="text"] {
-        color: black;
-        padding: 0.5rem;
-        font-size: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 10px;
-    } */
 
     .btns {
         margin-top: 0.5rem;
+    }
+
+    .success {
+        margin-top: 0.5rem;
+        color: green;
     }
 </style>

@@ -1,33 +1,62 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { feedback } from '$lib/stores';
-//   import { PUBLIC_HOSTNAME } from '$env/static/public';
-//   import { PUBLIC_BACKEND_PORT } from '$env/static/public';
+  import { showFeedback, progress, tools } from '$lib/stores';
+  import { removeItemAll } from '$lib/utils.ts';
+  import { emails } from '$lib/emails.json';
+  import Noti from './Noti.svelte';
 
-  export let emailId;
+  export let emailId: number;
+  const currentEmail = emails.find((email) => email.id === emailId) as any;
+  const currentTask = $progress.tasks.find((task) => task.emailId === emailId) as any;
 
-  let feedbackText = 'There is no feedback to view for this task.';
+  let feedbackText = 'There is no feedback yet for this task.';
+  let showNotification: boolean = false;
 
+  // On mounting this component, we compare the submitted answers to the correct answers and feed back accordingly.
   onMount(async () => {
-    // try {
-    //   const response = await fetch(`http://${PUBLIC_HOSTNAME}:${PUBLIC_BACKEND_PORT}/feedback?emailId=${emailId}`, { method: 'GET' }); // Replace with your backend URLemailId);
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     feedbackText = data.feedback;
-    //   } else {
-    //     console.error('Failed to fetch feedback');
-    //   }
-    // } catch (error) {
-    //   console.error('Error fetching feedback:', error);
-    // }
-    return
+      let correctAnswerCount: number = 0;
+      let i = 0;
+
+      console.log(currentTask)
+      console.log(currentEmail.feedback);
+      const feedbackStage = currentEmail.feedback.find((feedback) => feedback.stage === currentTask.feedbackStage);
+      console.log(feedbackStage);
+      currentTask.answers.forEach((answer: number) => {
+        // Acceptable answer margin of +- 10%
+        let upper_bound = 1.1*currentEmail.results[i].answer;
+        let lower_bound = 0.9*currentEmail.results[i].answer;
+        if (answer >= lower_bound && answer <= upper_bound) {
+          feedbackText = 'Well done!';
+          correctAnswerCount += 1;
+        } else {
+          feedbackText = feedbackStage.message;
+        }
+        i += 1;
+      })
+
+      // If all answers are correct or maximum feedback stage is reached, move to the next task and update progress and tools accordingly
+      if (correctAnswerCount === currentEmail.results.length || feedbackStage.stage === 3) {
+        $progress.current = Math.max(emailId, $progress.current); // Update progress
+
+        // Update tools with new unlocked ones
+        currentEmail.unlocks.forEach((tool: string) => {
+          const unlockedTool = $tools.find((t) => t.name === tool);
+          if (unlockedTool) {
+            unlockedTool.available = true;
+          }
+        });
+
+        showNotification = true;
+      }
   });
 </script>
 
+<!-- {#if showNotification}
+  <Noti />
+{/if} -->
 <div class="feedback-container">
   <p>{feedbackText}</p>
-
-  <button class="back-btn" on:click={() => $feedback = false}>Back</button>
+  <button class="back-btn" on:click={() => $showFeedback = removeItemAll($showFeedback, emailId)}>Back</button>
 </div>
 
 <style>

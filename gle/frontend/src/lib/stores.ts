@@ -2,9 +2,9 @@ import { writable } from 'svelte/store';
 
 export const splash = writable(true);
 
-export const resultsForm = writable(false);
+export const showResultsForm = writable([]);
 
-export const feedback = writable(false);
+export const showFeedback = writable([]);
 
 export const tools = writable([
     {
@@ -49,3 +49,34 @@ export const tools = writable([
     }
 ]);
 
+export const progress = writable({
+    total: 5,
+    current: 0,
+    tasks: [
+        {
+            emailId: 1,
+            answers: [],
+            feedbackStage: 0,
+        },
+        {
+            emailId: 2,
+            answers: [],
+            feedbackStage: 0,
+        },
+        {
+            emailId: 3,
+            answers: [],
+            feedbackStage: 0,
+        },
+        {
+            emailId: 4,
+            answers: [],
+            feedbackStage: 0,
+        },
+        {
+            emailId: 5,
+            answers: [],
+            feedbackStage: 0,
+        },
+    ]
+});
