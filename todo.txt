@@ -1,5 +1,5 @@
 FRONTEND
-- Finish modal param page.
+- Finish modal aram page.
 - Write Help page.
 - Create 'Getting started' youtube video.
 
