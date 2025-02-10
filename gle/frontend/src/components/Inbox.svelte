@@ -55,7 +55,7 @@
     padding: 10px;
     border-bottom: 1px solid #eee;
     border-radius: 10px;
-    border: 1px solid #a3a6a8;
+    border: 2px solid #b2c3d3;
     margin: 1rem;
   }
 

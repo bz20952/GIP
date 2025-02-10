@@ -89,11 +89,7 @@
     }
 
     .filter input {
-        background-color: azure;
-        border-radius: 10px;
         margin: 0 1rem;
-        border: #2c6392 solid 1px;
-        color: black;
     }
 
     .cutoff-freq {

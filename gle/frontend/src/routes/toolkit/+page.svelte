@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { tools } from '$lib/stores';
+	import Tooltip from '../../components/Tooltip.svelte';
 
-	let unlockedTools = $tools.filter(tool => tool.available).map(tool => tool.name);
-	let lockedTools = $tools.filter(tool => !tool.available).map(tool => tool.name);
+	let unlockedTools = $tools.filter(tool => tool.available);
+	let lockedTools = $tools.filter(tool => !tool.available);
 </script>
 
 <svelte:head>
@@ -29,21 +30,21 @@
 
 	<div class='tools'>
 		<div class="unlocked-tools">
-			<strong>Available tools:</strong>
-			<ul>
-				{#each unlockedTools as tool}
-					<li>{tool}</li>
-				{/each}
-			</ul>
+			<strong style="color: green;">Available tools</strong>
+			<br>
+			{#each unlockedTools as tool}
+				<Tooltip displayText={tool.name} tooltipText={tool.description} />
+				<br>
+			{/each}
 		</div>
 
 		<div class="locked-tools">
-			<strong>Tools to unlock:</strong>
-			<ul>
-				{#each lockedTools as tool}
-					<li>{tool}</li>
-				{/each}
-			</ul>
+			<strong style="color: orange;">Tools to unlock</strong>
+			<br>
+			{#each lockedTools as tool}
+				<Tooltip displayText={tool.name} tooltipText={tool.description} />
+				<br>
+			{/each}
 		</div>
 	</div>
 </section>
@@ -85,25 +86,26 @@
 		background-color: transparent;
 		border-radius: 10px;
 		box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
-		max-width: 80%;
+		min-width: 60%;
 		display: flex;
 		align-items: top;
 		justify-content: center;
+		text-align: center;
 	}
 
 	.unlocked-tools {
 		margin: 2rem;
 		display: inline-block;
 		vertical-align: top;
+		width: 50%;
+		/* border: 1px solid #860e0e; */
 	}
 
 	.locked-tools {
 		margin: 2rem;
 		display: inline-block;
 		vertical-align: top;
-	}
-	
-	ul {
-		list-style: square;
+		width: 50%;
+		/* border: 1px solid #df3333; */
 	}
 </style>

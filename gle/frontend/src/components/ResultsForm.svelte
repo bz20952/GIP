@@ -27,7 +27,7 @@
     {#each requiredResults as result}
         <div class="field">
             <label for={result.name}>{result.name}: </label>
-            <input type="text" id={result.name} name={result.name} required>
+            <input type="number" id={result.name} name={result.name} required>
             <span>{result.unit}</span>
         </div>
     {/each}

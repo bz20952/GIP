@@ -28,14 +28,23 @@ app.mount("/images", StaticFiles(directory="images"), name="images")
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {
+        "details": "This is the API root.",
+        "message": "Hello world!",
+        "success": True,
+        "error": False,
+        "code": 200,
+    }
 
 
 @app.get('/time-domain')
 async def time_domain():
     return {
         "details": "This should return either a graph of acceleration data.",
-        "message": ""
+        "message": f"{root_url}/images/random.gif",
+        "success": True,
+        "error": False,
+        "code": 200
     }
 
 
@@ -43,7 +52,10 @@ async def time_domain():
 async def forcing():
     return {
         "details": "This should the path to a forcing signal gif/plot.",
-        "message": f"{root_url}/images/random.gif"
+        "message": f"{root_url}/images/random.gif",
+        "success": True,
+        "error": False,
+        "code": 200
     }
 
 
@@ -51,7 +63,10 @@ async def forcing():
 async def animate():
     return {
         "details": "This should the path to a forcing signal gif/plot.",
-        "message": f"{root_url}/images/random.gif"
+        "message": f"{root_url}/images/random.gif",
+        "success": True,
+        "error": False,
+        "code": 200
     }
 
 
@@ -59,7 +74,10 @@ async def animate():
 async def dft():
     return {
         "details": "This should return the path to the DFT plot.",
-        "message": ""
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
     }
 
 
@@ -67,7 +85,10 @@ async def dft():
 async def frf_gain():
     return {
         "details": "This should return the path to the FRF gain plot.",
-        "message": ""
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
     }
 
 
@@ -75,7 +96,10 @@ async def frf_gain():
 async def frf_phase():
     return {
         "details": "This should return the path to the FRF phase plot.",
-        "message": ""
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
     }
 
 
@@ -83,7 +107,10 @@ async def frf_phase():
 async def bode():
     return {
         "details": "This should return the path to the Bode plot.",
-        "message": ""
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
     }
 
 
@@ -91,13 +118,16 @@ async def bode():
 async def nyquist():
     return {
         "details": "This should return the path to the Nyquist plot.",
-        "message": ""
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
     }
 
 
-@app.get('/raw-data')
-async def raw_data():
-    return {"message": "This should return raw data."}
+# @app.get('/raw-data')
+# async def raw_data():
+#     return {"message": "This should return raw data."}
 
 
 @app.get('/filter')
@@ -111,7 +141,13 @@ async def filter(request: Request):
     elif options['filterType'] == 'highpass':
         b, a = f.highpass(options['upperCutoff'], options['samplingFreq'])
 
-    return {"message": "This should return a filtered graph."}
+    return {
+        "details": "This should return a filtered graph.",
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
+    }
 
 
 if __name__ == "__main__":

@@ -42,4 +42,5 @@ export interface Tool {
     name: string;
     available: boolean;
     type: string;
+    description: string;
 }
