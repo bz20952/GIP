@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 import filter as f
+import plotter as p
 
 # Initialise API
 app = FastAPI()
@@ -23,7 +24,13 @@ app.mount("/images", StaticFiles(directory="images"), name="images")
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {
+        "message": "Hello Me",
+        "description": "This is the API for the signal generator.",
+        "success": True,
+        "error": False,
+        "code": 200
+    }
 
 
 @app.get('/dft')
@@ -33,6 +40,7 @@ async def dft():
 
 @app.get('/time-domain')
 async def time_domain():
+    p.plot_sine_wave(50, 1, 60)
     return {"message": "This should return either a graph of acceleration data."}
 
 
@@ -56,4 +64,4 @@ async def filter(request: Request):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=8000)
+    uvicorn.run("api:app", port=8000, reload=True)

@@ -1,0 +1,25 @@
+import serial
+import csv
+import time
+
+# Set the correct COM port (check in Arduino IDE -> Tools -> Port)
+ser = serial.Serial('/dev/cu.usbmodem82679401', 115200)  # Replace 'COMx' with your port (e.g., COM3 or /dev/ttyACM0 on Linux)
+time.sleep(2)  # Give the connection some time to initialize
+
+filename = "teensy_data.csv"
+
+# Open CSV file and write header
+with open(filename, "w", newline="") as file:
+    writer = csv.writer(file)
+    # writer.writerow(["Time (ms)", "A0", "A1", "A2", "A3"])  # CSV header
+    writer.writerow(["Time (ms)", "A0"])  # CSV header
+    try:
+        while True:
+            line = ser.readline().decode('utf-8').strip()  # Read serial data
+            data = line.split(",")  # Split values
+            if len(data) == 2:  # Ensure we have all 5 values (time + 4 analog)
+                writer.writerow(data)
+                print(data)  # Print to console for debugging
+    except KeyboardInterrupt:
+        print("\nData collection stopped.")
+        ser.close()

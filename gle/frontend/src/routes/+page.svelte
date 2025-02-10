@@ -4,6 +4,24 @@
 	import welcomeFallback from '$lib/images/svelte-welcome.png';
 	import Inbox from '../components/Inbox.svelte';
 	import Splash from '../components/Splash.svelte';
+
+	let timeData: string | null = null;
+
+	async function fetchTime() {
+		try {
+			const response = await fetch('http://localhost:8000/time-domain');
+			if (response.ok) {
+				const data = await response.json();
+				timeData = data.time;
+			} else {
+				console.error('Failed to fetch time data');
+			}
+		} catch (error) {
+			console.error('Error fetching time data:', error);
+		}
+	}
+
+	fetchTime();
 </script>
 
 <svelte:head>
@@ -18,6 +36,8 @@
 <div class="inbox">
 	<Inbox />
 </div>
+
+<img src="http://localhost:8000/images/sine_wave.png" alt="Welcome to Svelte" />
 
 <style>
 	section {

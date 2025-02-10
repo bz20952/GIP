@@ -2,6 +2,7 @@ import numpy as np
 import sounddevice as sd
 from trace import plot_wave_gif
 import threading
+from scipy.signal import butter, lfilter
 
 def generate_sine_wave(frequency, amplitude, phase, duration, sample_rate=44100):
     t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
@@ -14,10 +15,19 @@ def generate_sine_sweep(start_freq, end_freq, amplitude, duration, sample_rate=4
     wave = amplitude * np.sin(2 * np.pi * freqs * t)
     return wave
 
-def generate_random_signal(amplitude, duration, sample_rate=44100):
+def bandpass_filter(data, lowcut, highcut, sample_rate, order=5):
+    nyquist = 0.5 * sample_rate
+    low = lowcut / nyquist
+    high = highcut / nyquist
+    b, a = butter(order, [low, high], btype='band')
+    y = lfilter(b, a, data)
+    return y
+
+def generate_random_signal(lowcut, highcut, amplitude, duration, sample_rate=44100):
     t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
     wave = amplitude * np.random.uniform(-1, 1, size=t.shape)
-    return wave
+    filtered_wave = bandpass_filter(wave, lowcut, highcut, sample_rate)
+    return filtered_wave
 
 def generate_stepped_sweep(start_freq, end_freq, amplitude, duration, sample_rate=44100):
     t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
@@ -36,10 +46,10 @@ if __name__ == "__main__":
     # duration = float(input("Enter the duration of the sine wave (seconds): "))
     sample_rate = 41000
 
-    wave = generate_sine_wave(50, 1, 0, 60, sample_rate)
-    # wave = generate_sine_sweep(0.5, 300, 1, 60, sample_rate)
-    # wave = generate_random_signal(1, 60, sample_rate)
-    # wave = generate_stepped_sweep(0.5, 300, 1, 60, sample_rate)
+    # wave = generate_sine_wave(1000, 1, 0, 60, sample_rate)
+    # wave = generate_sine_sweep(500, 600, 1, 10, sample_rate)
+    # wave = generate_random_signal(0.5, 600, 1, 10, sample_rate)
+    # wave = generate_stepped_sweep(0.5, 600, 1, 60, sample_rate)
 
     # # Play the wave in a separate thread
     # sound_thread = threading.Thread(target=play_wave, args=(wave, sample_rate))
