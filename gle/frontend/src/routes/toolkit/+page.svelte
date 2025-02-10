@@ -15,12 +15,10 @@
 	Welcome to your Toolkit!
 </h1>
 
-<div class="sb-container">
-	<ul>
-		<li>Here you can see all of your available tools and start new experiments.</li>
-		<li>Every experiment consists of three stages; test setup, signal processing and modal analysis.</li>
-		<li>By clicking the button below, you can use your available tools to gather results.</li>
-	</ul>
+<div class="instructions">
+	Here you can see all of your available tools and start new experiments.<br>
+	Every experiment consists of three stages; <strong>test setup</strong>, <strong>signal processing</strong> and <strong>modal analysis</strong>.<br>
+	By clicking the button below, you can use your available tools to gather results.<br>
 </div>
 
 <section>
@@ -51,11 +49,16 @@
 </section>
 
 <style>
-	.sb-container {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
+    .instructions {
+        font-family: 'Segoe UI';
+        font-size: 16pt;
+        text-align: center;
+        margin-top: 2rem;
+        box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        padding: 0.5rem;
+        background-color: azure;
+    }
 
 	section {
 		display: flex;

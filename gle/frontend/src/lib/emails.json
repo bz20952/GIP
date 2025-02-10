@@ -10,6 +10,11 @@
                     "name": "First natural frequency",
                     "unit": "Hz",
                     "answer": 50
+                },
+                {
+                    "name": "First mode shape",
+                    "unit": "",
+                    "answer": 1
                 }
             ],
             "feedback": [

@@ -1,12 +1,13 @@
-import { writable } from 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
+import type { Tool, Progress, Task } from './types';
 
-export const splash = writable(true);
+export const splash: Writable<boolean> = writable(true);
 
-export const showResultsForm = writable([]);
+export const showResultsForm: Writable<number[]> = writable([]);
 
-export const showFeedback = writable([]);
+export const showFeedback: Writable<number[]> = writable([]);
 
-export const tools = writable([
+export const tools: Writable<Tool[]> = writable([
     {
         name: 'Free vibration',
         available: true,
@@ -38,18 +39,33 @@ export const tools = writable([
         type: 'signalProcessing',
     },
     {
+        name: 'Bode',
+        available: false,
+        type: 'signalProcessing',
+    },
+    {
+        name: 'Nyquist',
+        available: false,
+        type: 'signalProcessing',
+    },
+    {
+        name: 'Frequency response function',
+        available: false,
+        type: 'analysis'
+    },
+    {
         name: 'Circle fitting',
         available: false,
         type: 'analysis',
     },
     {
         name: 'Half power',
-        availability: true,
+        available: false,
         type: 'analysis',
     }
 ]);
 
-export const progress = writable({
+export const progress: Writable<Progress> = writable({
     total: 5,
     current: 0,
     tasks: [

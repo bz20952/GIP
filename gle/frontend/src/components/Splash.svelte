@@ -11,7 +11,7 @@
 		<br><br>
 		That's where you come in.
 		You are about to be given 5 challenges to demonstrate your expertise, impress clients and save the company.
-		Navigate to the <strong>Help</strong> tab for instructions on getting started.
+		Navigate to the <a href="/help"><strong>Help</strong></a> tab for guidance on getting started.
 		<br><br>
 		Are you ready?
 	</p>

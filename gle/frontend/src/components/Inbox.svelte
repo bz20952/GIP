@@ -3,8 +3,6 @@
   import ResultsForm from './ResultsForm.svelte';
   import Feedback from './Feedback.svelte';
   import { showResultsForm, showFeedback, progress } from '$lib/stores';
-
-  $: console.log($showFeedback);
 </script>
 
   <div class="inbox-panel">

@@ -7,6 +7,9 @@ import os
 import filter as f
 
 
+# Define root URL
+root_url = f"http://{os.environ.get('PUBLIC_HOSTNAME')}:{os.environ.get('PUBLIC_BACKEND_PORT')}"
+
 # Initialise API
 app = FastAPI()
 
@@ -28,16 +31,67 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get('/dft')
-async def dft():
-    return {"message": "This should return either a graph or frequency content raw data."}
-
-
 @app.get('/time-domain')
 async def time_domain():
     return {
-        # "message": "This should return either a graph of acceleration data.",
-        "message": "random.gif"
+        "details": "This should return either a graph of acceleration data.",
+        "message": ""
+    }
+
+
+@app.get('/forcing')
+async def forcing():
+    return {
+        "details": "This should the path to a forcing signal gif/plot.",
+        "message": f"{root_url}/images/random.gif"
+    }
+
+
+@app.get('/animate')
+async def animate():
+    return {
+        "details": "This should the path to a forcing signal gif/plot.",
+        "message": f"{root_url}/images/random.gif"
+    }
+
+
+@app.get('/dft')
+async def dft():
+    return {
+        "details": "This should return the path to the DFT plot.",
+        "message": ""
+    }
+
+
+@app.get('/frf-gain')
+async def frf_gain():
+    return {
+        "details": "This should return the path to the FRF gain plot.",
+        "message": ""
+    }
+
+
+@app.get('/frf-phase')
+async def frf_phase():
+    return {
+        "details": "This should return the path to the FRF phase plot.",
+        "message": ""
+    }
+
+
+@app.get('/bode')
+async def bode():
+    return {
+        "details": "This should return the path to the Bode plot.",
+        "message": ""
+    }
+
+
+@app.get('/nyquist')
+async def nyquist():
+    return {
+        "details": "This should return the path to the Nyquist plot.",
+        "message": ""
     }
 
 

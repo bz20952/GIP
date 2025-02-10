@@ -1,34 +1,29 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { sendApiRequest } from '$lib/api';
-    import { PUBLIC_HOSTNAME, PUBLIC_BACKEND_PORT } from '$env/static/public';
+    import { getPath } from '$lib/utils';
 	import { goto } from '$app/navigation';
 
     let filterType: string = 'none';
-    let timeDomainPlotPath: string;
-    let animationPath: string;
+
+    let plotPaths = new Map([
+        ['time-domain', ''],
+        ['forcing', ''],
+        ['animate', '']
+    ]);
 
     onMount(async () => {
-        await getTimeDomainPlotPath();
-        await getAnimationPath();
+        plotPaths.keys().forEach(async (endpoint: string) => {
+            plotPaths.set(endpoint, await getPath(endpoint));
+        });
     });
-
-    async function getTimeDomainPlotPath() {
-        const result = await sendApiRequest('time-domain', 'GET', {});
-        timeDomainPlotPath = `http://${PUBLIC_HOSTNAME}:${PUBLIC_BACKEND_PORT}/images/${result.message}`;
-    };
-
-    async function getAnimationPath() {
-        const result = await sendApiRequest('animate', 'GET', {});
-        animationPath = `http://${PUBLIC_HOSTNAME}:${PUBLIC_BACKEND_PORT}/images/${result.message}`;
-    };
 </script>
 
 <h1>Signal Processing</h1>
 
 <div class="plot-container">
-    <img src={timeDomainPlotPath} alt='Time domain plot' class="time-domain" />
-    <img src={timeDomainPlotPath} alt='Animation' class="animation" />
+    <img src={plotPaths.get('time-domain')} alt='Time-domain response' class="time-domain plot" />
+    <img src={plotPaths.get('forcing')} alt='Forcing signal' class="forcing plot" />
+    <img src={plotPaths.get('animate')} alt='Animation' class="animation plot" />
 </div>
 
 <section>
@@ -42,19 +37,19 @@
         </select>
         <div class="cutoff-freq">
             {#if filterType === 'low-pass' || filterType === 'high-pass'}
-                <label for="cutoff-freq">Cutoff frequency: </label>
+                <label for="cutoff-freq">Cutoff frequency (Hz): </label>
                 <input type="number" name="cutoff-freq" />
             {:else if filterType === 'band-pass'}
-                    <label for="lower-cutoff">Lower cutoff frequency: </label>
+                    <label for="lower-cutoff">Lower cutoff frequency (Hz): </label>
                     <input type="number" name="lower-cutoff" />
-                    <label for="upper-cutoff">Upper cutoff frequency: </label>
+                    <label for="upper-cutoff">Upper cutoff frequency (Hz): </label>
                     <input type="number" name="upper-cutoff" />
             {/if}
         </div>
     </div>
 
     <div>
-        <button class="dft" on:click={() => goto('/toolkit/analyse')}>Compute DFT</button>
+        <button class="analyse" on:click={() => goto('/toolkit/analyse')}>Analyse</button>
     </div>
 </section>
 
@@ -79,13 +74,7 @@
         align-items: center;
     }
 
-    .time-domain {
-        width: 40%;
-        height: auto;
-        margin: 0 1rem;
-    }
-
-    .animation {
+    .plot {
         width: 40%;
         height: auto;
         margin: 0 1rem;
@@ -115,7 +104,7 @@
         width: 20%;
     }
 
-    .dft {
+    .analyse {
         margin: 1rem;
     }
 </style>

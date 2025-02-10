@@ -1,12 +1,13 @@
 <script lang="ts">
     import { showResultsForm, progress } from "$lib/stores";
-    import { removeItemAll } from "$lib/utils.ts";
+    import { removeItemAll } from "$lib/utils";
     import { emails } from "$lib/emails.json";
+    import type { Email, Result, Task } from "$lib/types";
 
     export let emailId: number;
-    const currentEmail = emails.find((email) => email.id === emailId) as any;
-    const currentTask = $progress.tasks.find((task) => task.emailId === emailId) as any;
-    const requiredResults = currentEmail?.results as Array<any>; 
+    const currentEmail = emails.find((email) => email.id === emailId) as Email;
+    const currentTask = $progress.tasks.find((task) => task.emailId === emailId) as Task;
+    const requiredResults = currentEmail?.results as Result[]; 
 
     let submitted: boolean = false;
 
@@ -44,6 +45,10 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .field {
+        margin: 0.2rem 0;
     }
 
     label {

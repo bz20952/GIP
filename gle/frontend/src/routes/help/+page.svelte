@@ -8,6 +8,7 @@
 <section>
 	<p>
 		This page will contain instructions on how to use.
+		Do NOT press refresh.
 	</p>
 </section>
 
