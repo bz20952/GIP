@@ -8,7 +8,7 @@ def read_csv(options: dict):
     """Reads csv file and returns a pandas dataframe."""
 
     filename = u.format_filename(options)
-    df = pd.read_csv(f'./data/{filename}', header=0)
+    df = pd.read_csv(f'./data/{filename}.csv', header=0)
 
     return df
 

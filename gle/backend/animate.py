@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import pandas as pd
 import math
+from utils import format_filename
 
 
 fig, ax = plt.subplots(figsize=(8, 5), dpi=120)
@@ -38,7 +39,6 @@ def animate(i, u, step, accelerometers: dict):
 
     # However, if columns remain a constant length, then they have infinite stiffness which is impossible in reality
     z = [i*0.1 for i, label in enumerate(u.columns[1:]) if accelerometers[label]]
-    print(z)
 
     ax.plot(z, y, marker='o', color='k')
 
@@ -63,7 +63,7 @@ def animate_beam(data: pd.DataFrame, options: dict):
     print('Target animation duration: ', frames/true_fps, 's')
 
     ani = animation.FuncAnimation(fig, animate, fargs=(data, n, options['accelerometers']), frames=frames, init_func=init)
-    ani.save('./images/beam.gif', writer='pillow', fps=true_fps)
+    ani.save(f'./images/{format_filename(options)}_animate.gif', writer='pillow', fps=true_fps)
 
     # plt.show()
 

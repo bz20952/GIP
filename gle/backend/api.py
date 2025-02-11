@@ -7,6 +7,8 @@ import os
 import filter as f
 import reader as r
 import plotter as p
+import animate as a
+import utils as u
 
 
 # Define root URL
@@ -44,6 +46,8 @@ async def run_test(request: Request):
     options = await request.json()
     data = r.read_csv(options)
     p.plot_acceleration(data, options)
+    p.plot_forcing(data, options)
+    a.animate_beam(u.accel_to_disp(data, options), options)
 
     return {
         "details": "This endpoint generates all required plots based on user input during Test Setup.",
@@ -54,18 +58,23 @@ async def run_test(request: Request):
     }
 
 
-@app.get('/time-domain')
-async def time_domain():
+@app.post('/time-domain')
+async def time_domain(request: Request):
+    options = await request.json()
+    data = r.read_csv(options)
+    plot_path = p.plot_acceleration(data, options)
+    print(os.path.join(root_url, plot_path))
+
     return {
         "details": "This should return either a graph of acceleration data.",
-        "message": f"{root_url}/images/random.gif",
+        "message": os.path.join(root_url, plot_path),
         "success": True,
         "error": False,
         "code": 200
     }
 
 
-@app.get('/forcing')
+@app.post('/forcing')
 async def forcing():
     return {
         "details": "This should the path to a forcing signal gif/plot.",
@@ -76,7 +85,7 @@ async def forcing():
     }
 
 
-@app.get('/animate')
+@app.post('/animate')
 async def animate():
     return {
         "details": "This should the path to a forcing signal gif/plot.",

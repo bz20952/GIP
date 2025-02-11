@@ -1,5 +1,9 @@
 import { writable, type Writable } from 'svelte/store';
-import type { Tool, Progress, Task } from './types';
+import type { Tool, Progress } from './types';
+
+export const sessionId: Writable<string> = writable(
+    Math.random().toString(36).substring(2, 14)
+);
 
 export const splash: Writable<boolean> = writable(true);
 
@@ -107,3 +111,5 @@ export const progress: Writable<Progress> = writable({
         },
     ]
 });
+
+export const testOptions: Writable<any> = writable({});

@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import { getPath } from '$lib/utils';
 	import { goto } from '$app/navigation';
+    import { testOptions } from '$lib/stores';
 
     let filterType: string = 'none';
 
@@ -13,9 +14,15 @@
 
     onMount(async () => {
         plotPaths.keys().forEach(async (endpoint: string) => {
-            plotPaths.set(endpoint, await getPath(endpoint));
+            plotPaths.set(endpoint, await getPath(endpoint, $testOptions));
         });
     });
+
+    // onMount(async () => {
+    //     plotPaths.keys().forEach((plotType: string) => {
+    //         plotPaths.set(plotType, getPath($testOptions, plotType));
+    //     });
+    // });
 </script>
 
 <h1>Signal Processing</h1>

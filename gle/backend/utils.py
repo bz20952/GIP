@@ -6,7 +6,9 @@ def format_filename(options: dict):
 
     """Format filename to standard schema."""
 
-    return f"{options['excitationType']}_{options['samplingFreq']}_{options['shakerPosition']}.csv"
+    excitation = options['excitationType'].split(' ')[0].upper()
+
+    return f"{excitation}_{options['samplingFreq']}_{options['shakerPosition']}"
 
 
 def accel_to_disp(data: pd.DataFrame, options: dict):
@@ -32,8 +34,7 @@ def accel_to_disp(data: pd.DataFrame, options: dict):
         # Store displacement
         displacement_df[col] = s
 
-    # Save displacement data to CSV
-    displacement_df.to_csv(format_filename(options), index=False)
+    return displacement_df
 
 
 if __name__ == '__main__':

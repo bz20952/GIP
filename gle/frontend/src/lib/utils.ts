@@ -53,7 +53,12 @@ export async function sendApiRequest(endpoint: string, method: string, body: any
   }
 }
 
-export async function getPath(endpoint: string): Promise<string> {
-  const result = await sendApiRequest(endpoint, 'GET', {});
+export async function getPath(endpoint: string, options: any): Promise<string> {
+  const result = await sendApiRequest(endpoint, 'POST', options);
   return result.message;
 }
+
+// export function getPath(options: any, plotType: string): string {
+//   const fileName = `${options['excitationType']}_${options['samplingFreq']}_${options['shakerPosition']}_${plotType}`;
+//   return `http://${PUBLIC_HOSTNAME}:${PUBLIC_BACKEND_PORT}/images/${fileName}`;
+// }
