@@ -5,6 +5,8 @@ import uvicorn
 from dotenv import load_dotenv
 import os
 import filter as f
+import reader as r
+import plotter as p
 
 
 # Define root URL
@@ -31,6 +33,21 @@ async def root():
     return {
         "details": "This is the API root.",
         "message": "Hello world!",
+        "success": True,
+        "error": False,
+        "code": 200,
+    }
+
+
+@app.post("/run-test")
+async def run_test(request: Request):
+    options = await request.json()
+    data = r.read_csv(options)
+    p.plot_acceleration(data, options)
+
+    return {
+        "details": "This endpoint generates all required plots based on user input during Test Setup.",
+        "message": "Plots generated.",
         "success": True,
         "error": False,
         "code": 200,

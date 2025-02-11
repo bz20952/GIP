@@ -9,14 +9,20 @@
     import beam from '$lib/images/beam.png';
     import speaker from '$lib/images/speaker.png';
     import { tools } from '$lib/stores';
+    import { sendApiRequest } from '$lib/utils';
 
-    let accel1: boolean = false;
-    let accel2: boolean = false;
-    let accel3: boolean = false;
-    let accel4: boolean = false;
-    let accel5: boolean = false;
-    let shakerPosition: number;
-    let samplingFreq: number;
+    let requestBody = {
+        accelerometers: {
+            '0': false,
+            'l/4': false,
+            'l/2': false,
+            '3l/4': false,
+            'l': false
+        },
+        shakerPosition: '',
+        excitationType: '',
+        samplingFreq: ''
+    };
 
     function limitAccelSelection(event: Event) {
         const checkboxes = document.querySelectorAll('.checkbox-row input[type="checkbox"]');
@@ -25,6 +31,11 @@
         if (checkedCount > 3) {
             (event.target as HTMLInputElement).checked = false;
         }
+    }
+
+    function handleRunTest(event: Event) {
+        sendApiRequest('/run-test', 'POST', requestBody);
+        goto('/toolkit/process');
     }
 </script>
 
@@ -41,23 +52,23 @@
 
 <section class="experiment">
     <div class="checkbox-row">
-        <input class='accelerometer' type="checkbox" bind:checked={accel1} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel2} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel3} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel4} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel5} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={requestBody['accelerometers']['0']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={requestBody['accelerometers']['l/4']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={requestBody['accelerometers']['l/2']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={requestBody['accelerometers']['3l/4']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={requestBody['accelerometers']['l']} on:change={limitAccelSelection} />
     </div>
 
     <img class="beam" src={beam} alt="Free-free beam" />
 
     <div class="shaker-slider">
-        <input type="range" min="1" max="5" step="1" bind:value={shakerPosition}/>
+        <input type="range" min="1" max="5" step="1" bind:value={requestBody['shakerPosition']}/>
     </div>
 
     <div class="extra-params">
         <div class="excitation-type">
             <label for="excitation-type">Excitation type: </label>
-            <select name="excitation-type" id="excitation-type">
+            <select name="excitation-type" id="excitation-type" bind:value={requestBody['excitationType']}>
                 {#each $tools as tool}
                     {#if tool.available && tool.type === "excitation"}
                         <option value={tool.name}>{tool.name}</option>
@@ -67,12 +78,12 @@
         </div>
 
         <div class="sampling-slider">
-            <label for="sampling-freq">Sampling frequency: <strong>{samplingFreq} kHz</strong></label>
-            <input type="range" min="100" max="600" step="100" bind:value={samplingFreq} />
+            <label for="sampling-freq">Sampling frequency: <strong>{requestBody['samplingFreq']} kHz</strong></label>
+            <input type="range" min="100" max="600" step="100" bind:value={requestBody['samplingFreq']} />
         </div>
     </div>
 
-    <button class="run-test" on:click={() => goto('/toolkit/process')}>Run Test</button>
+    <button class="run-test" on:click={handleRunTest}>Run Test</button>
 </section>
 
 <style>

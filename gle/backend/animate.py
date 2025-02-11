@@ -15,29 +15,30 @@ def init():
     return line,
 
 
-def animate(i, u, step):
+def animate(i, u, step, accelerometers: dict):
 
     """Animator."""
 
     L = 0.1
-    num_accels = 5
 
     ax.clear()
 
-    ax.set_xlim(0-L, L*num_accels)
-    ax.set_ylim(-0.02, 0.02)
+    ax.set_xlim(0-L, L*5)
+    ax.set_ylim(-20, 20)
 
     ax.set_ylabel('Displacement [m]')
 
     step_no = i*step
-    y = [0, u['u_1'][step_no], u['u_2'][step_no], u['u_3'][step_no], u['u_4'][step_no]]
+    y = [u[i][step_no] for i in u.columns[1:] if accelerometers[i]]
+    # y = [0, u['u_1'][step_no], u['u_2'][step_no], u['u_3'][step_no], u['u_4'][step_no]]
 
     # If we assume that the columns on each storey remain a constant length then z = sqrt((j*L)^2-x^2)
-    z = [0]
-    z.extend([math.sqrt((L*j)**2-(u[f'u_{j}'][i])**2) for j in range(1, num_accels)])
+    # z = [0]
+    # z.extend([math.sqrt((L*j)**2-(u[f'u_{j}'][i])**2) for j in range(1, num_accels)])
 
     # However, if columns remain a constant length, then they have infinite stiffness which is impossible in reality
-    # z = [L*j for j in range(num_accels)]
+    z = [i*0.1 for i, label in enumerate(u.columns[1:]) if accelerometers[label]]
+    print(z)
 
     ax.plot(z, y, marker='o', color='k')
 
@@ -47,26 +48,39 @@ def animate(i, u, step):
     return line,
 
 
-def animate_beam(u):
+def animate_beam(data: pd.DataFrame, options: dict):
 
-    """Animate beam usinh displacement data."""
+    """Animate beam using displacement data."""
 
     # Plot at every nth interval
-    n = 50
+    n = 1
 
-    frames = round(len(u['t'])/n)
-    fps = round(frames/max(u['t']))
+    frames = round(len(data['t'])/n)
+    fps = round(frames/max(data['t']))
     speed = 1
     true_fps = speed*fps
 
     print('Target animation duration: ', frames/true_fps, 's')
 
-    ani = animation.FuncAnimation(fig, animate, fargs=(u, n), frames=frames, init_func=init)
+    ani = animation.FuncAnimation(fig, animate, fargs=(data, n, options['accelerometers']), frames=frames, init_func=init)
     ani.save('./images/beam.gif', writer='pillow', fps=true_fps)
 
     # plt.show()
 
 
 if __name__ == '__main__':
-    u = pd.read_excel('./data/test.xlsx')
-    animate_beam(u)
+    import reader as r
+    options = {
+        'excitationType': 'FREE',
+        'samplingFreq': '400',
+        'shakerPosition': '5',
+        'accelerometers': {
+            '0': True,
+            'l/4': True,
+            'l/2': False,
+            '3l/4': False,
+            'l': True
+        }
+    }
+    data = pd.read_csv('./data/disp.csv')
+    animate_beam(data, options)
