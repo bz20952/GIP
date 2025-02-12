@@ -1,22 +1,25 @@
-<!-- Ideally this will have some customisable test setup animation of the beam. Where:
-- Accelerometers can be placed.
-- Excitation location can be selected.
-- Excitation type can be selected.
-- Sampling frequency can be selected. -->
-
 <script lang="ts">
     import { goto } from '$app/navigation';
     import beam from '$lib/images/beam.png';
     import speaker from '$lib/images/speaker.png';
-    import { tools } from '$lib/stores';
+    import { tools, sessionId } from '$lib/stores';
+    // import { sendApiRequest } from '$lib/utils';
 
-    let accel1: boolean = false;
-    let accel2: boolean = false;
-    let accel3: boolean = false;
-    let accel4: boolean = false;
-    let accel5: boolean = false;
-    let shakerPosition: number;
-    let samplingFreq: number;
+    let showSpinner = false;
+
+    let testOptions = {
+        sessionId: $sessionId,
+        accelerometers: {
+            '0': true,
+            'l/4': false,
+            'l/2': false,
+            '3l/4': false,
+            'l': false
+        },
+        shakerPosition: 3,
+        excitationType: 'Free vibration',
+        samplingFreq: 400
+    };
 
     function limitAccelSelection(event: Event) {
         const checkboxes = document.querySelectorAll('.checkbox-row input[type="checkbox"]');
@@ -24,8 +27,15 @@
         
         if (checkedCount > 3) {
             (event.target as HTMLInputElement).checked = false;
+        } else if (checkedCount < 1) {
+            (event.target as HTMLInputElement).checked = true;
         }
     }
+
+    // function handleRunTest(event: Event) {
+    //     sendApiRequest('run-test', 'POST', testOptions);
+    //     goto('/toolkit/process');
+    // }
 </script>
 
 <svelte:head>
@@ -41,36 +51,41 @@
 
 <section class="experiment">
     <div class="checkbox-row">
-        <input class='accelerometer' type="checkbox" bind:checked={accel1} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel2} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel3} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel4} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel5} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={testOptions['accelerometers']['0']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={testOptions['accelerometers']['l/4']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={testOptions['accelerometers']['l/2']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={testOptions['accelerometers']['3l/4']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={testOptions['accelerometers']['l']} on:change={limitAccelSelection} />
     </div>
 
     <img class="beam" src={beam} alt="Free-free beam" />
 
     <div class="shaker-slider">
-        <input type="range" min="1" max="5" step="1" bind:value={shakerPosition}/>
+        <input type="range" min="1" max="5" step="1" bind:value={testOptions['shakerPosition']}/>
     </div>
 
-    <div class="excitation-type">
-        <label for="excitation-type">Excitation type: </label>
-        <select name="excitation-type" id="excitation-type">
-            {#each $tools as tool}
-                {#if tool.available && tool.type === "excitation"}
-                    <option value={tool.name}>{tool.name}</option>
-                {/if}
-            {/each}
-        </select>
-    </div>
+    <div class="extra-params">
+        <div class="excitation-type">
+            <label for="excitation-type">Excitation type:</label>
+            <select name="excitation-type" id="excitation-type" bind:value={testOptions['excitationType']}>
+                {#each $tools as tool}
+                    {#if tool.available && tool.type === "excitation"}
+                        <option value={tool.name}>{tool.name}</option>
+                    {/if}
+                {/each}
+            </select>
+        </div>
 
-    <div class="sampling-slider">
-        <label for="sampling-freq">Sampling frequency: <strong>{samplingFreq} kHz</strong></label>
-        <input type="range" min="100" max="600" step="100" bind:value={samplingFreq} />
+        <div class="sampling-slider">
+            <label for="sampling-freq">Sampling frequency: <strong>{testOptions['samplingFreq']} kHz</strong></label>
+            <input type="range" min="100" max="600" step="100" bind:value={testOptions['samplingFreq']} />
+        </div>
     </div>
 
     <button class="run-test" on:click={() => goto('/toolkit/process')}>Run Test</button>
+    {#if showSpinner}
+        <div class="fa spinner"></div>
+    {/if}
 </section>
 
 <style>
@@ -142,6 +157,10 @@
         cursor: pointer;
     }
 
+    .extra-params {
+        width: 100%;
+    }
+
     .excitation-type {
         margin: 1rem;
     }
@@ -150,27 +169,27 @@
         background-color: azure;
         border-radius: 10px;
         margin: 0 1rem;
+        border: #2c6392 solid 1px;
     }
 
     .sampling-slider {
-        display: flex;
-        width: 100%;
-        margin: 2rem 0;
-        justify-content: center;
-        align-items: center;
+        width: 80%;
+        margin: 2rem 0 2rem 1rem;
     }
 
     .sampling-slider label {
-        padding: 0 2rem;
+        padding: 0 2rem 0 0;
     }
 
     .sampling-slider input[type="range"] {
         -webkit-appearance: none;
-        padding: 1px 0;
+        padding: 1px;
         width: 50%;
         border-radius: 5px;
         background-color: azure;
         border: 1px solid #2c6392;
+        justify-content: center;
+        align-items: center;
     }
 
     .sampling-slider input[type="range"]::-webkit-slider-thumb {
@@ -185,18 +204,11 @@
     }
 
     .run-test {
-        background-color: #2c6392;
-        border-radius: 10px;
-        color: white;
         margin: 1rem;
         width: 10%;
         display: flex;
         justify-content: center;
         align-content: center;
         padding: 0.5rem 0;
-    }
-
-    .run-test:hover {
-        background-color: #3b76a9;
     }
 </style>

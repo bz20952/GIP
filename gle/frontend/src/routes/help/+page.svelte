@@ -3,62 +3,67 @@
 	<meta name="description" content="Help" />
 </svelte:head>
 
-<div class="text-column">
-	<h1>How to use PartCZ</h1>
+<h1>User guide</h1>
 
-	<p>
-		This page will contain instructions on how to use PartCZ.
-	</p>
+<section>
+	<div class="summary">
+		Watch <a href="https://www.bbc.co.uk/news" target="_blank">this video</a> for a visual how-to guide.
+		Or keep reading for a quick summary.
+	</div>
 
-</div>
+	<div class='written-guide'>
+		<!-- <i><strong>TL;DR</strong></i> -->
+		<ul>
+			<li>View your current tasks on your <a href="/">Dashboard</a>. There are five tasks in total.</li>
+			<li>View your progress at the bottom of any page at any time.</li>
+			<li>To start a task, navigate to the <a href="/toolkit">Toolkit</a>. Hovering over a tool will reveal a short description.</li>
+			<li>In order to complete a task, click <strong>Send results</strong> under the message and enter one or more numerical answers obtained from your experiment.</li>
+			<li>In order to check whether or not you have completed the task successfully, click <strong>View feedback</strong>. If you have completed the task successfully, a new task will appear.</li>
+		</ul>	
+	</div>
+	<div class="closing">If you come across any issues, please ask one of the research team for help. All feedback is very helpful to us in improving and maintaing this tool!</div>
+</section>
 
 <style>
-	span {
-		display: inline-flex;
+	section {
+		display: flex;
+		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		font-size: 0.8em;
-		width: 2.4em;
-		height: 2.4em;
-		background-color: white;
-		box-sizing: border-box;
-		border-radius: 2px;
-		border-width: 2px;
-		color: rgba(0, 0, 0, 0.7);
+		flex: 0.6;
 	}
 
-	.missing {
-		background: rgba(255, 255, 255, 0.5);
-		color: rgba(0, 0, 0, 0.5);
+	h1 {
+		width: 100%;
+		margin-top: 3rem;
 	}
 
-	.close {
-		border-style: solid;
-		border-color: var(--color-theme-2);
+	.summary {
+        font-family: 'Segoe UI';
+        font-size: 16pt;
+        text-align: center;
+        margin-bottom: 3rem;
+        box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        padding: 1rem;
+        background-color: azure;
+    }
+
+	.written-guide {
+		margin: 2rem;
 	}
 
-	.exact {
-		background: var(--color-theme-2);
-		color: white;
+	ul {
+		list-style: square;
 	}
 
-	.example {
-		display: flex;
-		justify-content: flex-start;
-		margin: 1rem 0;
-		gap: 0.2rem;
+	li {
+		padding: 0.5rem;
 	}
 
-	.example span {
-		font-size: 1.4rem;
-	}
-
-	p span {
-		position: relative;
-		border-width: 1px;
-		border-radius: 1px;
-		font-size: 0.4em;
-		transform: scale(2) translate(0, -10%);
-		margin: 0 1em;
+	.closing {
+		text-align: center;
+		font-size: 18pt;
+		margin: 2rem 0rem;
 	}
 </style>

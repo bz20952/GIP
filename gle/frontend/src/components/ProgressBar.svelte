@@ -1,21 +1,19 @@
-<script>
-    import { onMount } from 'svelte';
+<script lang="ts">
+	import { progress } from "$lib/stores";
 
-	let progress = 0;
-	let interval;
-
-	onMount(() => {
-		interval = setInterval(async () => {
-			const res = await fetch('http://localhost:3000/progress');
-			progress = await res.json();
-		}, 500);
-	});
+	let current: number;
+	
+	$: {
+		progress.subscribe((val) => {
+			current = (val.current/val.total)*100;
+		});
+	}
 </script>
 
 <div class="progress-bar">
-	<div class="progress-bar-inner" style={`width: ${progress}%`}></div>
+	<div class="progress-bar-inner" style={`width: ${current}%`}></div>
 </div>
-<p class="progress-label">Progress: {progress}%</p>
+<p class="progress-label">Progress: {current}%</p>
 
 <style>
 	.progress-bar {
