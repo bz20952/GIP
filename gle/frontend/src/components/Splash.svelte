@@ -1,34 +1,46 @@
 <script>
-	import { onMount } from 'svelte';
-
-	let visible = false;
-
-	onMount(() => {
-		visible = true;
-		setTimeout(() => {
-			visible = false;
-		}, 2000);
-	});
+	import { splash } from '$lib/stores';
 </script>
+
+<div class="splash">
+	<h1 class="welcome">Welcome to the world of Gamified Engineering! 🚀</h1>
+	<p>
+		You are an engineer at Plane Sailing Inc who specialise in dynamics testing for aviation.
+		Recently shareholders have begun to worry that the company is falling behind the competition.
+		If things don't change soon, Plane Sailing might encounter rough waters.
+		<br><br>
+		That's where you come in.
+		You are about to be given 5 challenges to demonstrate your expertise, impress clients and save the company.
+		Navigate to the <a href="/help"><strong>Help</strong></a> tab for guidance on getting started.
+		<br><br>
+		Are you ready?
+	</p>
+	<button class="close-btn" on:click={() => $splash=false}>Let's go.</button>
+</div>
 
 <style>
 	.splash {
-		font-size: 2rem;
-		font-weight: bold;
-		opacity: 0;
-		transition: opacity 1s ease-out;
+		transition: opacity 0.5s ease-out;
 		position: fixed;
 		top: 50%;
 		text-align: center;
-        text-wrap: nowrap;
 		left: 50%;
 		transform: translate(-50%, -50%);
+		background-color: azure;
+		min-width: 60%;
+		max-width: 100%;
+		border-radius: 10px;
+		padding: 1rem;
+		box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
 	}
 
-	.splash.visible {
-		opacity: 1;
-		font-size: 2rem;
+	.welcome {
+		padding: 0 0 1rem 0;
+	}
+
+	.close-btn {
+		color: white;
+		margin: 1rem;
+		border-radius: 10px;
 	}
 </style>
-
-<div class="splash" class:visible={visible}>Welcome to the world of Gamified Engineering! 🚀</div>

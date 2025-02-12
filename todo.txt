@@ -1,0 +1,10 @@
+FRONTEND
+- Finish modal param page.
+- Write Help page.
+- Create 'Getting started' youtube video.
+
+BACKEND
+- Multiple users will be interacting with the file system at once. Therefore, in order to speed up the app, we should always check whether a plot exists before generating a new one.
+
+API
+- Define standard response schema.

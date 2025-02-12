@@ -1,0 +1,22 @@
+services:
+  
+  app:
+    container_name: app
+    image: ghcr.io/cheshirecat51/gle-app:latest
+    ports:
+      - "$PUBLIC_BACKEND_PORT:$PUBLIC_BACKEND_PORT"
+    environment:
+      - PUBLIC_HOSTNAME=$PUBLIC_HOSTNAME
+      - PUBLIC_BACKEND_PORT=$PUBLIC_BACKEND_PORT
+      - FRONTEND_PORT=$FRONTEND_PORT
+      - ENV=$ENV
+
+  web:
+    container_name: web
+    image: ghcr.io/cheshirecat51/gle-web:latest
+    ports:
+      - "$FRONTEND_PORT:$FRONTEND_PORT"
+    environment:
+      - PUBLIC_HOSTNAME=$PUBLIC_HOSTNAME
+      - PUBLIC_BACKEND_PORT=$PUBLIC_BACKEND_PORT
+      - FRONTEND_PORT=$FRONTEND_PORT

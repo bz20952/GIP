@@ -2,9 +2,17 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
-
+from dotenv import load_dotenv
+import os
 import filter as f
+import reader as r
 import plotter as p
+import animate as a
+import utils as u
+
+
+# Define root URL
+root_url = f"http://{os.environ.get('PUBLIC_HOSTNAME')}:{os.environ.get('PUBLIC_BACKEND_PORT')}"
 
 # Initialise API
 app = FastAPI()
@@ -12,7 +20,7 @@ app = FastAPI()
 # Allow cross-origin requests from frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["localhost:5173"],
+    allow_origins=["http://localhost:5173", f"http://{os.environ.get('PUBLIC_HOSTNAME')}:{os.environ.get('FRONTEND_PORT')}"],
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
@@ -25,8 +33,63 @@ app.mount("/images", StaticFiles(directory="images"), name="images")
 @app.get("/")
 async def root():
     return {
-        "message": "Hello Me",
-        "description": "This is the API for the signal generator.",
+        "details": "This is the API root.",
+        "message": "Hello world!",
+        "success": True,
+        "error": False,
+        "code": 200,
+    }
+
+
+@app.post("/run-test")
+async def run_test(request: Request):
+    options = await request.json()
+    data = r.read_csv(options)
+    p.plot_acceleration(data, options)
+    p.plot_forcing(data, options)
+    a.animate_beam(u.accel_to_disp(data, options), options)
+
+    return {
+        "details": "This endpoint generates all required plots based on user input during Test Setup.",
+        "message": "Plots generated.",
+        "success": True,
+        "error": False,
+        "code": 200,
+    }
+
+
+@app.post('/time-domain')
+async def time_domain(request: Request):
+    options = await request.json()
+    data = r.read_csv(options)
+    plot_path = p.plot_acceleration(data, options)
+    print(os.path.join(root_url, plot_path))
+
+    return {
+        "details": "This should return either a graph of acceleration data.",
+        "message": os.path.join(root_url, plot_path),
+        "success": True,
+        "error": False,
+        "code": 200
+    }
+
+
+@app.post('/forcing')
+async def forcing():
+    return {
+        "details": "This should the path to a forcing signal gif/plot.",
+        "message": f"{root_url}/images/random.gif",
+        "success": True,
+        "error": False,
+        "code": 200
+    }
+
+
+@app.post('/animate')
+async def animate():
+    return {
+        "details": "This should the path to a forcing signal gif/plot.",
+        "message": f"{root_url}/images/random.gif",
         "success": True,
         "error": False,
         "code": 200
@@ -35,18 +98,62 @@ async def root():
 
 @app.get('/dft')
 async def dft():
-    return {"message": "This should return either a graph or frequency content raw data."}
+    return {
+        "details": "This should return the path to the DFT plot.",
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
+    }
 
 
-@app.get('/time-domain')
-async def time_domain():
-    p.plot_sine_wave(50, 1, 60)
-    return {"message": "This should return either a graph of acceleration data."}
+@app.get('/frf-gain')
+async def frf_gain():
+    return {
+        "details": "This should return the path to the FRF gain plot.",
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
+    }
 
 
-@app.get('/raw-data')
-async def raw_data():
-    return {"message": "This should return raw data."}
+@app.get('/frf-phase')
+async def frf_phase():
+    return {
+        "details": "This should return the path to the FRF phase plot.",
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
+    }
+
+
+@app.get('/bode')
+async def bode():
+    return {
+        "details": "This should return the path to the Bode plot.",
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
+    }
+
+
+@app.get('/nyquist')
+async def nyquist():
+    return {
+        "details": "This should return the path to the Nyquist plot.",
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
+    }
+
+
+# @app.get('/raw-data')
+# async def raw_data():
+#     return {"message": "This should return raw data."}
 
 
 @app.get('/filter')
@@ -60,8 +167,18 @@ async def filter(request: Request):
     elif options['filterType'] == 'highpass':
         b, a = f.highpass(options['upperCutoff'], options['samplingFreq'])
 
-    return {"message": "This should return a filtered graph."}
+    return {
+        "details": "This should return a filtered graph.",
+        "message": "",
+        "success": True,
+        "error": False,
+        "code": 200
+    }
 
 
 if __name__ == "__main__":
-    uvicorn.run("api:app", port=8000, reload=True)
+    if os.environ.get('ENV') == 'docker':
+        uvicorn.run("api:app", host='0.0.0.0', port=int(os.environ.get('PUBLIC_BACKEND_PORT')), workers=4)
+    else:
+        load_dotenv('../.env')
+        uvicorn.run("api:app", port=int(os.environ.get('PUBLIC_BACKEND_PORT')), reload=True)

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Header from './Header.svelte';
 	import '../app.css';
+	import ProgressBar from '../components/ProgressBar.svelte';
 
 	let { children } = $props();
 </script>
@@ -13,9 +14,7 @@
 	</main>
 
 	<footer>
-		<p>
-			This is the footer.
-		</p>
+		<ProgressBar />
 	</footer>
 </div>
 

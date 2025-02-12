@@ -1,0 +1,21 @@
+services:
+  app:
+    container_name: app
+    build: ./backend
+    ports:
+      - "$PUBLIC_BACKEND_PORT:$PUBLIC_BACKEND_PORT"
+    environment:
+      - PUBLIC_HOSTNAME=$PUBLIC_HOSTNAME
+      - PUBLIC_BACKEND_PORT=$PUBLIC_BACKEND_PORT
+      - FRONTEND_PORT=$FRONTEND_PORT
+      - ENV=$ENV
+
+  web:
+    container_name: web
+    build: ./frontend
+    ports:
+      - "$FRONTEND_PORT:$FRONTEND_PORT"
+    environment:
+      - PUBLIC_HOSTNAME=$PUBLIC_HOSTNAME
+      - PUBLIC_BACKEND_PORT=$PUBLIC_BACKEND_PORT
+      - FRONTEND_PORT=$FRONTEND_PORT
