@@ -39,26 +39,51 @@ def play_wave(wave, sample_rate=44100):
     sd.play(wave, samplerate=sample_rate)
     sd.wait()
 
+def define_signal():
+
+    """Defines signal sent to shaker."""
+
+    excitation_type = input("Enter the type of excitation (sine, sweep, random, stepped): ")
+    amplitude = float(input("Enter the amplitude of the sine wave: "))
+    duration = float(input("Enter the duration of the sine wave (seconds): "))
+
+    if excitation_type == "sine":
+        frequency = float(input("Enter the frequency of the sine wave (Hz): "))
+        wave = generate_sine_wave(frequency, amplitude, 0, duration)
+    elif excitation_type == "sweep":
+        start_freq = float(input("Enter the start frequency of the sweep (Hz): "))
+        end_freq = float(input("Enter the end frequency of the sweep (Hz): "))
+        wave = generate_sine_sweep(start_freq, end_freq, amplitude, duration)
+    elif excitation_type == "random":
+        lowcut = float(input("Enter the lower cutoff frequency of the bandpass filter (Hz): "))
+        highcut = float(input("Enter the upper cutoff frequency of the bandpass filter (Hz): "))
+        wave = generate_random_signal(lowcut, highcut, amplitude, duration)
+
+    # wave = generate_sine_wave(1000, 1, 0, 60)
+
+    return wave
+
+
 if __name__ == "__main__":
     # frequency = float(input("Enter the frequency of the sine wave (Hz): "))
     # amplitude = float(input("Enter the amplitude of the sine wave: "))
     # phase = float(input("Enter the phase of the sine wave (radians): "))
     # duration = float(input("Enter the duration of the sine wave (seconds): "))
-    sample_rate = 41000
+    sample_rate = 44100
 
-    # wave = generate_sine_wave(1000, 1, 0, 60, sample_rate)
-    # wave = generate_sine_sweep(500, 600, 1, 10, sample_rate)
-    # wave = generate_random_signal(0.5, 600, 1, 10, sample_rate)
+    # wave = generate_sine_wave(300, 1, 0, 60, sample_rate)
+    # wave = generate_sine_sweep(500, 900, 1, 10, sample_rate)
+    wave = generate_random_signal(0.5, 600, 1, 20, sample_rate)
     # wave = generate_stepped_sweep(0.5, 600, 1, 60, sample_rate)
 
-    # # Play the wave in a separate thread
-    # sound_thread = threading.Thread(target=play_wave, args=(wave, sample_rate))
-    # sound_thread.start()
+    # Play the wave in a separate thread
+    sound_thread = threading.Thread(target=play_wave, args=(wave, sample_rate))
+    sound_thread.start()
 
     # n = 25  # Sample the wave at every nth data point for plotting
     # ani = plot_wave_gif(wave[::n], sample_rate//n, filename='sine_sweep.gif', save=True)
 
-    # # Keep the script running while the sound plays
-    # sound_thread.join()
+    # Keep the script running while the sound plays
+    sound_thread.join()
 
     play_wave(wave, sample_rate)
