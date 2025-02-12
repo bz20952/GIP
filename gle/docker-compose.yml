@@ -1,7 +1,8 @@
 services:
+  
   app:
     container_name: app
-    build: ./backend
+    image: ghcr.io/cheshirecat51/gle-app:latest
     ports:
       - "$PUBLIC_BACKEND_PORT:$PUBLIC_BACKEND_PORT"
     environment:
@@ -12,7 +13,7 @@ services:
 
   web:
     container_name: web
-    build: ./frontend
+    image: ghcr.io/cheshirecat51/gle-web:latest
     ports:
       - "$FRONTEND_PORT:$FRONTEND_PORT"
     environment:

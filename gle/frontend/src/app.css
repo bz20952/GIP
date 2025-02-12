@@ -91,6 +91,16 @@ input[type="text"] {
 	border: #2c6392 solid 1px;
 }
 
+input[type="number"] {
+	font-size: inherit;
+	font-family: inherit;
+	border-radius: 10px;
+	background-color: azure;
+	color: black;
+	padding: 5px 10px;
+	border: #2c6392 solid 1px;
+}
+
 button {
 	font-size: inherit;
 	font-family: inherit;

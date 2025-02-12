@@ -1,13 +1,25 @@
 <script lang="ts">
-    import { resultsForm } from "$lib/stores";
+    import { showResultsForm, progress } from "$lib/stores";
+    import { removeItemAll } from "$lib/utils";
+    import { emails } from "$lib/emails.json";
+    import type { Email, Result, Task } from "$lib/types";
 
-    export let requiredResults;
+    export let emailId: number;
+    const currentEmail = emails.find((email) => email.id === emailId) as Email;
+    const currentTask = $progress.tasks.find((task) => task.emailId === emailId) as Task;
+    const requiredResults = currentEmail?.results as Result[]; 
 
     let submitted: boolean = false;
 
     function handleSubmit(event: Event) {
         submitted = true;
-        return event
+        currentTask.feedbackStage = Math.min(currentTask.feedbackStage + 1, 3);  // Move to the next feedback stage after each submission (max feedback stage = 3)
+        const formData = new FormData(event.target as HTMLFormElement);
+        let i = 0;  // Answer indexer
+        requiredResults?.forEach((result) => {
+            currentTask.answers[i] = formData.get(result.name);
+            i += 1;
+        })
     }
 </script>
 
@@ -15,15 +27,15 @@
     {#each requiredResults as result}
         <div class="field">
             <label for={result.name}>{result.name}: </label>
-            <input type="text" id={result.name} name={result.name} required>
+            <input type="number" id={result.name} name={result.name} required>
             <span>{result.unit}</span>
         </div>
     {/each}
     <div class='btns'>
-        <button class="back-btn" on:click={() => $resultsForm = false}>Back</button>
+        <button class="back-btn" on:click={() => $showResultsForm = removeItemAll($showResultsForm, emailId)}>Back</button>
         <button class="submit-btn" type="submit">Submit</button>
         {#if submitted}
-            <p>Results submitted successfully!</p>
+            <p class="success">Results submitted successfully!</p>
         {/if}
     </div>
 </form>
@@ -35,19 +47,21 @@
         align-items: flex-start;
     }
 
-    label {
-        margin-bottom: 0.5rem;
+    .field {
+        margin: 0.2rem 0;
     }
 
-    /* input[type="text"] {
-        color: black;
-        padding: 0.5rem;
-        font-size: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 10px;
-    } */
+    label {
+        margin-bottom: 0.5rem;
+        margin-right: 1rem;
+    }
 
     .btns {
         margin-top: 0.5rem;
+    }
+
+    .success {
+        margin-top: 0.5rem;
+        color: green;
     }
 </style>

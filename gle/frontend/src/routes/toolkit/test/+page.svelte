@@ -1,22 +1,25 @@
-<!-- Ideally this will have some customisable test setup animation of the beam. Where:
-- Accelerometers can be placed.
-- Excitation location can be selected.
-- Excitation type can be selected.
-- Sampling frequency can be selected. -->
-
 <script lang="ts">
     import { goto } from '$app/navigation';
     import beam from '$lib/images/beam.png';
     import speaker from '$lib/images/speaker.png';
-    import { tools } from '$lib/stores';
+    import { tools, sessionId } from '$lib/stores';
+    // import { sendApiRequest } from '$lib/utils';
 
-    let accel1: boolean = false;
-    let accel2: boolean = false;
-    let accel3: boolean = false;
-    let accel4: boolean = false;
-    let accel5: boolean = false;
-    let shakerPosition: number;
-    let samplingFreq: number;
+    let showSpinner = false;
+
+    let testOptions = {
+        sessionId: $sessionId,
+        accelerometers: {
+            '0': true,
+            'l/4': false,
+            'l/2': false,
+            '3l/4': false,
+            'l': false
+        },
+        shakerPosition: 3,
+        excitationType: 'Free vibration',
+        samplingFreq: 400
+    };
 
     function limitAccelSelection(event: Event) {
         const checkboxes = document.querySelectorAll('.checkbox-row input[type="checkbox"]');
@@ -24,8 +27,15 @@
         
         if (checkedCount > 3) {
             (event.target as HTMLInputElement).checked = false;
+        } else if (checkedCount < 1) {
+            (event.target as HTMLInputElement).checked = true;
         }
     }
+
+    // function handleRunTest(event: Event) {
+    //     sendApiRequest('run-test', 'POST', testOptions);
+    //     goto('/toolkit/process');
+    // }
 </script>
 
 <svelte:head>
@@ -41,23 +51,23 @@
 
 <section class="experiment">
     <div class="checkbox-row">
-        <input class='accelerometer' type="checkbox" bind:checked={accel1} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel2} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel3} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel4} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel5} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={testOptions['accelerometers']['0']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={testOptions['accelerometers']['l/4']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={testOptions['accelerometers']['l/2']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={testOptions['accelerometers']['3l/4']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={testOptions['accelerometers']['l']} on:change={limitAccelSelection} />
     </div>
 
     <img class="beam" src={beam} alt="Free-free beam" />
 
     <div class="shaker-slider">
-        <input type="range" min="1" max="5" step="1" bind:value={shakerPosition}/>
+        <input type="range" min="1" max="5" step="1" bind:value={testOptions['shakerPosition']}/>
     </div>
 
     <div class="extra-params">
         <div class="excitation-type">
-            <label for="excitation-type">Excitation type: </label>
-            <select name="excitation-type" id="excitation-type">
+            <label for="excitation-type">Excitation type:</label>
+            <select name="excitation-type" id="excitation-type" bind:value={testOptions['excitationType']}>
                 {#each $tools as tool}
                     {#if tool.available && tool.type === "excitation"}
                         <option value={tool.name}>{tool.name}</option>
@@ -67,12 +77,15 @@
         </div>
 
         <div class="sampling-slider">
-            <label for="sampling-freq">Sampling frequency: <strong>{samplingFreq} kHz</strong></label>
-            <input type="range" min="100" max="600" step="100" bind:value={samplingFreq} />
+            <label for="sampling-freq">Sampling frequency: <strong>{testOptions['samplingFreq']} kHz</strong></label>
+            <input type="range" min="100" max="600" step="100" bind:value={testOptions['samplingFreq']} />
         </div>
     </div>
 
     <button class="run-test" on:click={() => goto('/toolkit/process')}>Run Test</button>
+    {#if showSpinner}
+        <div class="fa spinner"></div>
+    {/if}
 </section>
 
 <style>

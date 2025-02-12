@@ -1,7 +1,19 @@
 import { PUBLIC_HOSTNAME } from '$env/static/public';
 import { PUBLIC_BACKEND_PORT } from '$env/static/public';
 
-export async function sendApiRequest(endpoint: string, method: string, body: any): Promise<any> {
+export function removeItemAll(arr: Array<any>, value: any): Array<number> {
+    var i = 0;
+    while (i < arr.length) {
+      if (arr[i] === value) {
+        arr.splice(i, 1);
+      } else {
+        ++i;
+      }
+    }
+    return arr;
+}
+
+export async function sendApiRequest(endpoint: string, method: string, body: any = {}): Promise<any> {
 
   let errorMessage = '';
   let result;
@@ -40,3 +52,13 @@ export async function sendApiRequest(endpoint: string, method: string, body: any
       return errorMessage;
   }
 }
+
+export async function getPath(endpoint: string, options: any): Promise<string> {
+  const result = await sendApiRequest(endpoint, 'POST', options);
+  return result.message;
+}
+
+// export function getPath(options: any, plotType: string): string {
+//   const fileName = `${options['excitationType']}_${options['samplingFreq']}_${options['shakerPosition']}_${plotType}`;
+//   return `http://${PUBLIC_HOSTNAME}:${PUBLIC_BACKEND_PORT}/images/${fileName}`;
+// }

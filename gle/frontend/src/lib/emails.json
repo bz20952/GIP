@@ -8,9 +8,86 @@
             "results": [
                 {
                     "name": "First natural frequency",
-                    "unit": "Hz"
+                    "unit": "Hz",
+                    "answer": 50
+                },
+                {
+                    "name": "First mode shape",
+                    "unit": "",
+                    "answer": 1
                 }
-            ]
+            ],
+            "feedback": [
+                {
+                    "stage": 1,
+                    "message": "Hi, unfortunately that doesn't quite match our simulations. Try using free vibration with no filtering."
+                },
+                {
+                    "stage": 2,
+                    "message": "We need a slightly more precise simulation. Try free vibration, 600 kHz sampling frequency and no filtering."
+                },
+                {
+                    "stage": 3,
+                    "message": "Our in-house testing gives a first natural frequency of 50 Hz. Press back to continue."
+                }
+            ],
+            "unlocks": ["Sine sweep"]
+        },
+        {
+            "id": 2,
+            "sender": "John Doe",
+            "subject": "Wing test needed ASAP",
+            "body": "Hey, X are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. Have a look in your toolkit and see what you can do.",
+            "results": [
+                {
+                    "name": "First natural frequency",
+                    "unit": "Hz",
+                    "answer": 50
+                }
+            ],
+            "feedback": [
+                {
+                    "stage": 1,
+                    "message": "Hi, unfortunately that doesn't quite match our simulations. Try using free vibration with no filtering."
+                },
+                {
+                    "stage": 2,
+                    "message": "We need a slightly more precise simulation. Try free vibration, 600 kHz sampling frequency and no filtering."
+                },
+                {
+                    "stage": 3,
+                    "message": "Our in-house testing gives a first natural frequency of 50 Hz. Press back to continue."
+                }
+            ],
+            "unlocks": ["Sine sweep"]
+        },
+        {
+            "id": 3,
+            "sender": "John Doe",
+            "subject": "Wing test needed ASAP",
+            "body": "Hey, X are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. Have a look in your toolkit and see what you can do.",
+            "results": [
+                {
+                    "name": "First natural frequency",
+                    "unit": "Hz",
+                    "answer": 50
+                }
+            ],
+            "feedback": [
+                {
+                    "stage": 1,
+                    "message": "Hi, unfortunately that doesn't quite match our simulations. Try using free vibration with no filtering."
+                },
+                {
+                    "stage": 2,
+                    "message": "We need a slightly more precise simulation. Try free vibration, 600 kHz sampling frequency and no filtering."
+                },
+                {
+                    "stage": 3,
+                    "message": "Our in-house testing gives a first natural frequency of 50 Hz."
+                }
+            ],
+            "unlocks": ["Sine sweep"]
         }
     ]
 }

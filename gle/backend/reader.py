@@ -1,11 +1,15 @@
 import pandas as pd
+import utils as u
 
 # This is where we store our data manipulation functions
 
-def read_csv(file_name: str):
+def read_csv(options: dict):
 
     """Reads csv file and returns a pandas dataframe."""
 
-    df = pd.read_csv(f'./data/{file_name}', header=0)
+    filename = u.format_filename(options)
+    df = pd.read_csv(f'./data/{filename}.csv', header=0)
 
     return df
+
+
