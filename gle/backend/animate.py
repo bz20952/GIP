@@ -83,8 +83,6 @@ def animate_beam(data: pd.DataFrame, options: dict):
     plot_path = f'./images/{format_filename(options)}_anim.gif'
     ani.save(plot_path, writer='pillow', fps=true_fps)
 
-    # plt.show()
-
     return plot_path
 
 

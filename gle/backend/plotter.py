@@ -16,12 +16,14 @@ async def plot_acceleration(data: pd.DataFrame, options: dict):
     """Plot raw acceleration data."""
 
     accelerometers = options['accelerometers']
+    file_suffix = ''
 
     for acc in accelerometers.keys():
         if accelerometers[acc]:
+            file_suffix += f'_{acc}'
             plt.plot(data['t'], data[acc], label=acc)
 
-    plot_path = f'./images/{u.format_filename(options)}_accel.png'
+    plot_path = f'./images/{u.format_filename(options)}_accel{file_suffix}.png'
     
     plt.xlabel('Time [s]')
     plt.ylabel(r'Acceleration [m/s$^2$]')
