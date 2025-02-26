@@ -14,7 +14,7 @@
 
     onMount(async () => {
         plotPaths.keys().forEach(async (endpoint: string) => {
-            plotPaths.set(endpoint, await getPath(endpoint, $testOptions));
+            plotPaths = plotPaths.set(endpoint, await getPath(endpoint, $testOptions));
         });
     });
 
@@ -25,12 +25,29 @@
     // });
 </script>
 
+<svelte:head>
+	<title>Signal processing</title>
+	<meta name="description" content="Signal processing" />
+</svelte:head>
+
 <h1>Signal Processing</h1>
 
-<div class="plot-container">
-    <img src={plotPaths.get('time-domain')} alt='Time-domain response' class="time-domain plot" />
-    <img src={plotPaths.get('forcing')} alt='Forcing signal' class="forcing plot" />
-    <img src={plotPaths.get('animate')} alt='Animation' class="animation plot" />
+<div class="plot-container"> 
+    {#if plotPaths.get('time-domain')}
+        <img src={plotPaths.get('time-domain')} alt='Time-domain response' class="time-domain plot" />
+    {:else}
+        <i class="fa fa-spinner fa-pulse"></i>
+    {/if}
+    {#if plotPaths.get('forcing')}
+        <img src={plotPaths.get('forcing')} alt='Forcing signal' class="forcing plot" />
+    {:else}
+        <i class="fa fa-spinner fa-pulse"></i>
+    {/if}
+    {#if plotPaths.get('animate')}
+        <img src={plotPaths.get('animate')} alt='Animation' class="animation plot" />
+    {:else}
+        <i class="fa fa-spinner fa-pulse"></i>
+    {/if}
 </div>
 
 <section>
@@ -74,9 +91,14 @@
 		flex: 0.6;
 	}
 
+    .fa-spinner {
+        font-size: 2rem;
+        padding: 0 2rem;
+    }
+
     .plot-container {
         display: flex;
-        flex-direction: row;
+        /* flex-direction: row; */
         justify-content: center;
         align-items: center;
     }
@@ -85,6 +107,8 @@
         width: 40%;
         height: auto;
         margin: 0 1rem;
+        box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
     }
 
     .filter {

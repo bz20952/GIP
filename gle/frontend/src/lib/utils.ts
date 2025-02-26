@@ -41,7 +41,6 @@ export async function sendApiRequest(endpoint: string, method: string, body: any
       
       if (response.ok) {
           result = await response.json();
-          console.log(result.message);
           return result;
       } else {
           errorMessage = 'Recieved bad response.';

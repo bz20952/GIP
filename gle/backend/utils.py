@@ -1,5 +1,6 @@
 import pandas as pd
 from scipy.integrate import cumulative_trapezoid
+import os
 
 
 def format_filename(options: dict):
@@ -8,7 +9,19 @@ def format_filename(options: dict):
 
     excitation = options['excitationType'].split(' ')[0].upper()
 
-    return f"{excitation}_{options['samplingFreq']}_{options['shakerPosition']}"
+    locations = ['0', 'l/4', 'l/2', '3l/4', 'l']
+    shaker_position = locations.index(options['shakerPosition'])
+
+    return f"{excitation}_{options['samplingFreq']}_{shaker_position}"
+
+
+def check_if_file_exists(options: dict, plot_type: str):
+
+    """Check if file exists before generating a new one."""
+
+    filename = format_filename(options) + '_'  + plot_type
+
+    return os.path.isfile(f"./images/{filename}")
 
 
 def accel_to_disp(data: pd.DataFrame, options: dict):

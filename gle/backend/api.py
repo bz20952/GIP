@@ -61,9 +61,13 @@ async def run_test(request: Request):
 @app.post('/time-domain')
 async def time_domain(request: Request):
     options = await request.json()
-    data = r.read_csv(options)
-    plot_path = p.plot_acceleration(data, options)
-    print(os.path.join(root_url, plot_path))
+    file_ext = 'accel.png'
+
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        plot_path = await p.plot_acceleration(data, options)
+    else:
+        plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
 
     return {
         "details": "This should return either a graph of acceleration data.",
@@ -75,10 +79,19 @@ async def time_domain(request: Request):
 
 
 @app.post('/forcing')
-async def forcing():
+async def forcing(request: Request):
+    options = await request.json()
+    file_ext = 'force.png'
+
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        plot_path = await p.plot_forcing(data, options)
+    else:
+        plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
+
     return {
-        "details": "This should the path to a forcing signal gif/plot.",
-        "message": f"{root_url}/images/random.gif",
+        "details": "This gives the path to a forcing signal plot.",
+        "message": os.path.join(root_url, plot_path),
         "success": True,
         "error": False,
         "code": 200
@@ -86,10 +99,19 @@ async def forcing():
 
 
 @app.post('/animate')
-async def animate():
+async def animate(request: Request):
+    options = await request.json()
+    file_ext = 'anim.gif'
+
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        plot_path = a.animate_beam(data, options)
+    else:
+        plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
+
     return {
         "details": "This should the path to a forcing signal gif/plot.",
-        "message": f"{root_url}/images/random.gif",
+        "message": os.path.join(root_url, plot_path),
         "success": True,
         "error": False,
         "code": 200

@@ -1,0 +1,7 @@
+{
+    "details": "This is the API root.",
+    "message": "Hello world!",
+    "success": true,
+    "error": false,
+    "code": 200
+}
