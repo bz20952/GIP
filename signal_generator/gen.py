@@ -38,8 +38,9 @@ if __name__ == "__main__":
 
     # wave = generate_sine_wave(2, 50, 0, 5, sample_rate)
     # wave = generate_sine_sweep(0.5, 1.5, 50, 5, sample_rate)
+    wave=generate_random_signal(5,10,sample_rate)
     # wave = generate_stepped_sweep(0.5, 2, 50, 10, sample_rate)
-    wave=generate_random_signal(50,50,sample_rate)
+   
 
     # Play the wave in a separate thread
     sound_thread = threading.Thread(target=play_wave, args=(wave, sample_rate))
