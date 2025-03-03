@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
     import { tools } from '$lib/stores';
+    import Highchart from '../../../components/Highchart.svelte';
 
     let plotPaths = new Map([
         ['dft', ''],
@@ -27,6 +28,7 @@
         <img src={plotPaths.get('frf-gain')} alt='Frequency response function (gain)' class="frf-gain plot" />
         <img src={plotPaths.get('frf-phase')} alt='Frequency response function (phase)' class="frf-phase plot" />
     {/if}
+    <Highchart />
 </div>
 
 <section>

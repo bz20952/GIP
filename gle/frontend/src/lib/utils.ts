@@ -41,7 +41,6 @@ export async function sendApiRequest(endpoint: string, method: string, body: any
       
       if (response.ok) {
           result = await response.json();
-          console.log(result.message);
           return result;
       } else {
           errorMessage = 'Recieved bad response.';
@@ -53,7 +52,7 @@ export async function sendApiRequest(endpoint: string, method: string, body: any
   }
 }
 
-export async function getPath(endpoint: string, options: any): Promise<string> {
+export async function getPath(endpoint: string, options: any = {}): Promise<string> {
   const result = await sendApiRequest(endpoint, 'POST', options);
   return result.message;
 }
