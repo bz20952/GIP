@@ -1,27 +1,7 @@
 from scipy.signal import butter
 from scipy import signal
 import pandas as pd
-# import matplotlib.pyplot as plt
-from plotter import plot_acceleration
-
-#input needed:
-#csv file of acceleration vs time
-#location of accelerometer
-#fs #sampling frequency
-#low pass cutoff
-#high pass cutoff
-#low band cutoff
-#high band cutoff
-
-# # Read the CSV file
-# filename = 'gle/backend/data/FREE_400_4.csv'  # Replace with the actual filename
-
-# # Assuming the file has two columns: 'Time' and 'Acceleration'
-# data = pd.read_csv(filename)  # Reads the CSV file into a DataFrame
-
-# # Extract time and acceleration data from the DataFrame
-# time = data['t']  # Time column
-# acceleration = data['l/2']  # Acceleration column
+from utils import format_filename
 
 
 def filter(data: pd.DataFrame, options: dict):
@@ -39,9 +19,10 @@ def filter(data: pd.DataFrame, options: dict):
     for acc in accelerometers.keys():
         data[acc] = signal.lfilter(b, a, data[acc])
 
-    plot_path = plot_acceleration(data, options, 'filtered')
+    data_path = f'./data/{format_filename(options)}_filtered_{options['lowerCutoff']}_{options['upperCutoff']}.csv'
+    data.to_csv(data_path, index=False)
 
-    return plot_path
+    return data_path
 
 
 def lowpass(cutoff, fs, order=5):
@@ -67,18 +48,11 @@ def bandpass(lowcut, highcut, fs, order=5):
 
 
 if __name__ == "__main__":
-    # b,a=bandpass(60,500,2000)
-    # b,a=lowpass(500,2000)
-    # accel_bandpass=signal.lfilter(b,a,acceleration)
-
-    # plt.figure(figsize=(10, 6))
-    # plt.plot(time, accel_bandpass, label='Filtered Data', color='r', linewidth=2)
-    # plt.plot(time, acceleration, label='Unfiltered Data', color='b', linewidth=2)
-    # plt.xlabel('Time [s]')
-    # plt.ylabel('Amplitude')
-    # #plt.title('Filtered Signal')
-    # plt.legend(loc='best')
-    # plt.grid(True)
-    # plt.show()
-
-    filter()
+    # The following is used to test the filtering functionality
+    import json
+    import reader as r
+    with open('./templates/requestFormat.json') as f:
+        options = json.load(f)
+    data = r.read_csv(options)
+    data_path = filter(data, options)
+    print(data_path)

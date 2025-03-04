@@ -11,18 +11,20 @@ plt.rcParams.update({
 })
 
 
-async def plot_acceleration(data: pd.DataFrame, options: dict, file_suffix: str = ''):
+async def plot_acceleration(data: pd.DataFrame, options: dict):
 
     """Plot raw acceleration data."""
 
+    file_suffix = ''
     accelerometers = options['accelerometers']
 
-    for acc in accelerometers.keys():
+    for index, acc in enumerate(accelerometers.keys()):
         if accelerometers[acc]:
-            file_suffix += f'_{acc}'
+            file_suffix += f'_{index}'
             plt.plot(data['t'], data[acc], label=acc)
 
     plot_path = f'./images/{u.format_filename(options)}_accel{file_suffix}.png'
+    print(plot_path)
     
     plt.xlabel('Time [s]')
     plt.ylabel(r'Acceleration [m/s$^2$]')
@@ -52,14 +54,10 @@ async def plot_forcing(data: pd.DataFrame, options: dict):
     return plot_path
 
 
-# if __name__ == '__main__':
-#     import reader as r
-#     data = r.read_csv('FREE_400_5')
-#     plot_forcing(data)
-#     # plot_acceleration(data, {
-#     #     '0': True,
-#     #     'l/4': False,
-#     #     'l/2': False,
-#     #     '3l/4': False,
-#     #     'l': True
-#     # })
+if __name__ == '__main__':
+    import json
+    import reader as r
+    with open('./templates/requestFormat.json') as f:
+        options = json.load(f)
+    data = r.read_csv(options)
+    plot_acceleration(data, options)

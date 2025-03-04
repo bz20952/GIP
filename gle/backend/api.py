@@ -65,7 +65,7 @@ async def time_domain(request: Request):
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
-        plot_path = p.plot_acceleration(data, options)
+        plot_path = await p.plot_acceleration(data, options)
     else:
         plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
 
@@ -85,7 +85,7 @@ async def forcing(request: Request):
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
-        plot_path = p.plot_forcing(data, options)
+        plot_path = await p.plot_forcing(data, options)
     else:
         plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
 
@@ -105,7 +105,7 @@ async def animate(request: Request):
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
-        plot_path = a.animate_beam(data, options)
+        plot_path = await a.animate_beam(data, options)
     else:
         plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
 
@@ -181,17 +181,17 @@ async def nyquist():
 @app.get('/filter')
 async def filter(request: Request):
     options = await request.json()
-    file_ext = ''
+    file_ext = 'filtered.png'
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
-        plot_path = f.filter(data, options)
+        data_path = f.filter(data, options)
     else:
-        plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
+        data_path = f'./images/{u.format_filename(options)}_{file_ext}'
 
     return {
-        "details": "This should return a filtered graph.",
-        "message": os.path.join(root_url, plot_path),
+        "details": "This should return the path to a filtered data file.",
+        "message": os.path.join(root_url, data_path),
         "success": True,
         "error": False,
         "code": 200

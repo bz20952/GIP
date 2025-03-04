@@ -12,14 +12,23 @@ def format_filename(options: dict):
     locations = ['0', 'l/4', 'l/2', '3l/4', 'l']
     shaker_position = locations.index(options['shakerPosition'])
 
-    return f"{excitation}_{options['samplingFreq']}_{shaker_position}"
+    return f"{excitation}_{shaker_position}"
 
 
 def check_if_file_exists(options: dict, plot_type: str):
 
     """Check if file exists before generating a new one."""
 
-    filename = format_filename(options) + '_'  + plot_type
+    if plot_type == 'accel.png':
+        accelerometers = options['accelerometers']
+        file_suffix = ''
+        for index, acc in enumerate(accelerometers.keys()):
+            if accelerometers[acc]:
+                file_suffix += f'_{index}'
+        filename = format_filename(options) + '_accel_' + file_suffix + '.png'
+        print(filename)
+    else:
+        filename = format_filename(options) + '_'  + plot_type
 
     return os.path.isfile(f"./images/{filename}")
 

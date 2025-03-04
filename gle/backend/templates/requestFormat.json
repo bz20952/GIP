@@ -6,10 +6,10 @@
         "3l/4": false,
         "l": false
     },
-    "shakerPosition": "l/2",
+    "shakerPosition": "l",
     "excitationType": "Free vibration",
     "samplingFreq": 400,
-    "filterType": "band-pass",
+    "filterType": "bandpass",
     "lowerCutoff": 10,
     "upperCutoff": 20
 }
