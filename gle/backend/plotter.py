@@ -11,12 +11,11 @@ plt.rcParams.update({
 })
 
 
-async def plot_acceleration(data: pd.DataFrame, options: dict):
+async def plot_acceleration(data: pd.DataFrame, options: dict, file_suffix: str = ''):
 
     """Plot raw acceleration data."""
 
     accelerometers = options['accelerometers']
-    file_suffix = ''
 
     for acc in accelerometers.keys():
         if accelerometers[acc]:
