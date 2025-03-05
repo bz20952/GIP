@@ -141,8 +141,8 @@ if __name__ == '__main__':
             'l': False
         },
         'samplingFreq': 2048,
-        'shakerPosition': 5,
+        'shakerPosition': 'l',
     }
     data = r.read_csv(options)
-    # plot_dft(data, options)
-    plot_nyquist(data, options)
+    plot_dft(data, options)
+    # plot_nyquist(data, options)
