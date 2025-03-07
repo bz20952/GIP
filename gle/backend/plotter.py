@@ -40,7 +40,7 @@ def plot_forcing(data: pd.DataFrame, options: dict):
 
     plot_path = f'./images/{u.format_filename(options)}_force.png'
 
-    plt.plot(data['t'], data['F'])
+    plt.plot(data['t'], data['FA_1'])
     plt.xlabel('Time [s]')
     plt.ylabel('Force [N]')
     plt.title('Raw Forcing Data')
@@ -85,8 +85,8 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
     accelerometers = options['accelerometers']
     sample_rate = options['samplingFreq']
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')  # Create a 3D subplot
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='3d')  # Create a 3D subplot
 
     for acc in accelerometers.keys():
         if accelerometers[acc]:
@@ -95,13 +95,13 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
             f = f[:n//2]
             # f = f[:5000]
             fftacc = (np.fft.fft(data[acc]))[:n//2]
-            fftforce = (np.fft.fft(data['F']))[:n//2]
+            fftforce = (np.fft.fft(data['F' + acc]))[:n//2]
             frf = fftacc/fftforce
             frfReal = np.real(frf)
             frfImag = np.imag(frf)
 
-            ax.plot(f, frfReal, frfImag, label=acc) #3d plot
-            # plt.plot(frfReal, frfImag, label=acc) #2d plot
+            # ax.plot(f, frfReal, frfImag, label=acc) #3d plot
+            plt.plot(frfReal, frfImag, label=acc) #2d plot
 
 
     # ax.set_xlim(150, 200)  # Set limits for the z-axis (Frequency) #3d plot
@@ -110,18 +110,18 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
 
     plot_path = f'./images/{u.format_filename(options)}_nyquist.png'
 
-    ax.set_ylabel('Re') #3d plot
-    ax.set_zlabel('Im') #3d plot
-    ax.set_xlabel('Frequency [Hz]') #3d plot
-    ax.set_title('Inertance Nyquist plot') #3d plot
+    # ax.set_ylabel('Re') #3d plot
+    # ax.set_zlabel('Im') #3d plot
+    # ax.set_xlabel('Frequency [Hz]') #3d plot
+    # ax.set_title('Inertance Nyquist plot') #3d plot
 
-    # plt.xlabel('Re') #2d plot
-    # plt.ylabel('Im') #2d plot
-    # plt.title('Inertance Nyquist plot') #2d plot
+    plt.xlabel('Re') #2d plot
+    plt.ylabel('Im') #2d plot
+    plt.title('Inertance Nyquist plot') #2d plot
     plt.legend()
     plt.grid(True)
     plt.show()
-    # plt.close()          
+    plt.close()
 
     return plot_path
 
@@ -138,7 +138,7 @@ def plot_bode(data: pd.DataFrame, options: dict):
             n = len(data[acc])
             f = np.fft.fftfreq(n, 1/sample_rate)[:n//2]  # Positive frequencies
             fftacc = np.fft.fft(data[acc])[:n//2]
-            fftforce = np.fft.fft(data['F'])[:n//2]
+            fftforce = np.fft.fft(data['F' + acc])[:n//2]
 
             # Avoid division by zero
             fftforce[np.abs(fftforce) < 1e-10] = np.finfo(float).eps
@@ -179,13 +179,13 @@ def plot_bode(data: pd.DataFrame, options: dict):
 if __name__ == '__main__':
     import reader as r
     options = {
-        'excitationType': 'SINE',
+        'excitationType': 'SINE_SWEEP',
         'accelerometers': {
-            '0': True,
-            'l/4': False,
-            'l/2': False,
-            '3l/4': False,
-            'l': False
+            'A_1': True,
+            'A_2': False,
+            'A_3': False,
+            'A_4': False,
+            'A_5': False
         },
         'samplingFreq': 2048,
         'shakerPosition': '0',
@@ -194,5 +194,5 @@ if __name__ == '__main__':
     # plot_acceleration(data, options)
     # plot_forcing(data, options)
     # plot_dft(data, options)
-    # plot_nyquist(data, options)
-    plot_bode(data, options)
+    plot_nyquist(data, options)
+    # plot_bode(data, options)
