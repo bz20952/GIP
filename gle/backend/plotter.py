@@ -22,7 +22,7 @@ def plot_acceleration(data: pd.DataFrame, options: dict):
             file_suffix += f'_{acc}'
             plt.plot(data['t'], data[acc], label=acc)
 
-    plot_path = f'./images/{u.format_filename(options)}_accel{file_suffix}.png'
+    plot_path = f'./images/{u.format_filename(options)}_{options['samplingFreq']}_accel{file_suffix}.png'
     
     plt.xlabel('Time [s]')
     plt.ylabel(r'Acceleration [m/s$^2$]')
@@ -38,9 +38,9 @@ def plot_forcing(data: pd.DataFrame, options: dict):
     
     """Plot raw forcing data."""
 
-    plot_path = f'./images/{u.format_filename(options)}_force.png'
+    plot_path = f'./images/{u.format_filename(options)}_{options['samplingFreq']}_force.png'
 
-    plt.plot(data['t'], data['FA_1'])
+    plt.plot(data['t'], data['FA_0'])
     plt.xlabel('Time [s]')
     plt.ylabel('Force [N]')
     plt.title('Raw Forcing Data')
@@ -54,9 +54,11 @@ def plot_dft(data: pd.DataFrame, options: dict):
 
     accelerometers = options['accelerometers']
     sample_rate = options['samplingFreq']
+    file_suffix = '' 
 
     for acc in accelerometers.keys():
         if accelerometers[acc]:
+            file_suffix += f'_{acc}'
             n = len(data[acc])
             f = np.fft.fftfreq(n, 1/sample_rate)
             f = f[:n//2]
@@ -64,7 +66,7 @@ def plot_dft(data: pd.DataFrame, options: dict):
 
             plt.scatter(f, fft, s=10, label=acc)
 
-    plot_path = f'./images/{u.format_filename(options)}_dft.png'
+    plot_path = f'./images/{u.format_filename(options)}_{options['samplingFreq']}_dft{file_suffix}.png'
 
     plt.xlabel('Frequency [Hz]')
     plt.ylabel('Amplitude')
@@ -84,12 +86,14 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
 
     accelerometers = options['accelerometers']
     sample_rate = options['samplingFreq']
+    file_suffix = ''    
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')  # Create a 3D subplot
 
     for acc in accelerometers.keys():
         if accelerometers[acc]:
+            file_suffix += f'_{acc}'
             n = len(data[acc])
             f = np.fft.fftfreq(n, 1/sample_rate)
             f = f[:n//2]
@@ -107,7 +111,7 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
     # ax.set_ylim(y_min, y_max)  # Set limits for the x-axis (Real part) #3d plot
     # ax.set_zlim(z_min, z_max)  # Set limits for the y-axis (Imaginary part) #3d plot
 
-    plot_path = f'./images/{u.format_filename(options)}_nyquist.png'
+    plot_path = f'./images/{u.format_filename(options)}_{options['samplingFreq']}_nyquist{file_suffix}.png'
 
     ax.set_ylabel('Re') #3d plot
     ax.set_zlabel('Im') #3d plot
@@ -130,9 +134,11 @@ def plot_bode(data: pd.DataFrame, options: dict):
 
     accelerometers = options['accelerometers']
     sample_rate = options['samplingFreq']
+    file_suffix = '' 
 
     for acc in accelerometers.keys():
         if accelerometers[acc]:
+            file_suffix += f'_{acc}'
             # Compute FFT and Frequency Response Function
             n = len(data[acc])
             f = np.fft.fftfreq(n, 1/sample_rate)[:n//2]  # Positive frequencies
@@ -168,7 +174,7 @@ def plot_bode(data: pd.DataFrame, options: dict):
     plt.subplot(2, 1, 2)
     plt.legend()
 
-    plot_path = f'./images/{u.format_filename(options)}_bode.png'
+    plot_path = f'./images/{u.format_filename(options)}_{options['samplingFreq']}_bode{file_suffix}.png'
     plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
     plt.show()
     plt.close()
