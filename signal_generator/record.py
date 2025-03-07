@@ -2,6 +2,9 @@ import serial
 import csv
 import time
 import threading
+import matplotlib.pyplot as plt
+import numpy as np
+from collections import deque
 from gen import define_signal, play_wave
 from post_process import post_process
 
@@ -21,6 +24,11 @@ time.sleep(2)  # Allow serial connection to initialize
 filename = "teensy_data.csv"
 recording = False  # Flag to control recording
 
+# Data buffer for plotting
+window_size = 200  # Number of points to display
+time_vals = deque(maxlen=window_size)
+a0_vals = deque(maxlen=window_size)
+
 # Function to listen for keypress (Runs in a separate thread)
 def listen_for_keypress():
     global recording
@@ -37,6 +45,25 @@ def listen_for_keypress():
 thread = threading.Thread(target=listen_for_keypress, daemon=True)
 thread.start()
 
+# Initialize live plotting
+plt.ion()
+fig, ax = plt.subplots()
+line, = ax.plot([], [], label="Acceleration (A0)")
+ax.set_xlabel("Time (ms)")
+ax.set_ylabel("Acceleration (A0)")
+ax.set_title("Live Accelerometer Data")
+ax.legend()
+
+# Function to update plot
+def update_plot():
+    if time_vals:  # Only update if there's data
+        line.set_xdata(time_vals)
+        line.set_ydata(a0_vals)
+        ax.relim()
+        ax.autoscale_view()
+        plt.draw()
+        plt.pause(0.01)
+
 # Open CSV file and start data collection
 with open(filename, "w", newline="") as file:
     writer = csv.writer(file)
@@ -51,6 +78,13 @@ with open(filename, "w", newline="") as file:
             if recording and len(data) == 2:  # Ensure correct number of values
                 writer.writerow(data)
                 print(data)  # Print to console for debugging
+
+
+                # Store data for plotting (Convert to float/int)
+                time_vals.append(float(data[0]))  # Time (ms)
+                a0_vals.append(int(data[1]))  # Acceleration (A0)
+
+                update_plot()  # Update the plot
 
             # else:
             #     print("\nData collection stopped.")
