@@ -1,10 +1,10 @@
 {
     "accelerometers": {
-        "0": true,
-        "l/4": false,
-        "l/2": false,    
-        "3l/4": false,
-        "l": false
+        "A0": true,
+        "A1": false,
+        "A2": false,    
+        "A3": false,
+        "A4": false
     },
     "shakerPosition": "l",
     "excitationType": "Free vibration",

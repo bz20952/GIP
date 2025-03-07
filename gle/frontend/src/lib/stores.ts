@@ -111,15 +111,15 @@ export const progress: Writable<Progress> = writable({
 export const testOptions: Writable<any> = writable({
     "sessionId": Math.random().toString(36).substring(2, 14),
     "accelerometers": {
-        "0": true,
-        "l/4": false,
-        "l/2": false,    
-        "3l/4": false,
-        "l": false
+        "A0": true,
+        "A1": false,
+        "A2": false,    
+        "A3": false,
+        "A4": false
     },
     "shakerPosition": "l/2",
     "excitationType": "Free vibration",
-    "samplingFreq": 100,
+    "samplingFreq": 512,
     "filterType": "lowPass",
     "lowerCutoff": 0,
     "upperCutoff": 0

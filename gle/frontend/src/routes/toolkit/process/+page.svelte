@@ -36,10 +36,12 @@
     {:else}
         <i class="fa fa-spinner fa-pulse"></i>
     {/if}
-    {#if plotPaths.get('forcing')}
-        <img src={plotPaths.get('forcing')} alt='Forcing signal' class="forcing plot" />
-    {:else}
-        <i class="fa fa-spinner fa-pulse"></i>
+    {#if $testOptions.excitationType !== 'Free vibration'}
+        {#if plotPaths.get('forcing')}
+            <img src={plotPaths.get('forcing')} alt='Forcing signal' class="forcing plot" />
+        {:else}
+            <i class="fa fa-spinner fa-pulse"></i>
+        {/if}
     {/if}
     {#if plotPaths.get('animate')}
         <img src={plotPaths.get('animate')} alt='Animation' class="animation plot" />

@@ -68,8 +68,8 @@
         </div>
 
         <div class="sampling-slider">
-            <label for="sampling-freq">Sampling frequency: <strong>{$testOptions['samplingFreq']} kHz</strong></label>
-            <input type="range" min="100" max="600" step="100" bind:value={$testOptions['samplingFreq']} />
+            <label for="sampling-freq">Sampling frequency: <strong>{$testOptions['samplingFreq']} Hz</strong></label>
+            <input type="range" min="512" max="2048" step="512" bind:value={$testOptions['samplingFreq']} />
         </div>
     </div>
 
