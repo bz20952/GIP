@@ -93,7 +93,6 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
             n = len(data[acc])
             f = np.fft.fftfreq(n, 1/sample_rate)
             f = f[:n//2]
-            # f = f[:5000]
             fftacc = (np.fft.fft(data[acc]))[:n//2]
             fftforce = (np.fft.fft(data['F' + acc]))[:n//2]
             frf = fftacc/fftforce
@@ -179,10 +178,10 @@ def plot_bode(data: pd.DataFrame, options: dict):
 if __name__ == '__main__':
     import reader as r
     options = {
-        'excitationType': 'RANDOM',
+        'excitationType': 'SINE_SWEEP',
         'accelerometers': {
-            'A_1': False,
-            'A_2': True,
+            'A_1': True,
+            'A_2': False,
             'A_3': False,
             'A_4': False,
             'A_5': False
@@ -193,6 +192,6 @@ if __name__ == '__main__':
     data = r.read_csv(options)
     # plot_acceleration(data, options)
     # plot_forcing(data, options)
-    # plot_dft(data, options)
-    # plot_nyquist(data, options)
+    plot_dft(data, options)
+    plot_nyquist(data, options)
     plot_bode(data, options)
