@@ -74,20 +74,20 @@ if __name__ == "__main__":
 
     # wave = generate_sine_wave(300, 1, 0, 60, sample_rate)
     # wave = generate_sine_sweep(0.5, 1000, 1, 20, sample_rate)
-    # wave = generate_random_signal(0.5, 1000, 1, 100, sample_rate)
-    wave = generate_stepped_sweep(0.5, 1000, 1, 20, sample_rate)
+    wave = generate_random_signal(0.5, 1000, 1, 100, sample_rate)
+    # wave = generate_stepped_sweep(0.5, 1000, 1, 20, sample_rate)
 
     # Play the wave in a separate thread
-    # sound_thread = threading.Thread(target=play_wave, args=(wave, sample_rate))
-    # sound_thread.start()
+    sound_thread = threading.Thread(target=play_wave, args=(wave, sample_rate))
+    sound_thread.start()
 
     # n = 25  # Sample the wave at every nth data point for plotting
     # ani = plot_wave_gif(wave[::n], sample_rate//n, filename='sine_sweep.gif', save=True)
 
     # Keep the script running while the sound plays
-    # sound_thread.join()
+    sound_thread.join()
 
     # play_wave(wave, sample_rate)
-    plt.figure()
-    plot_path = f'./images/wave.png'
-    plt.plot(wave)
+    # plt.figure()
+    # plot_path = f'./images/wave.png'
+    # plt.plot(wave)

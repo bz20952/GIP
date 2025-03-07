@@ -85,8 +85,8 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
     accelerometers = options['accelerometers']
     sample_rate = options['samplingFreq']
 
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111, projection='3d')  # Create a 3D subplot
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')  # Create a 3D subplot
 
     for acc in accelerometers.keys():
         if accelerometers[acc]:
@@ -100,8 +100,8 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
             frfReal = np.real(frf)
             frfImag = np.imag(frf)
 
-            # ax.plot(f, frfReal, frfImag, label=acc) #3d plot
-            plt.plot(frfReal, frfImag, label=acc) #2d plot
+            ax.plot(f, frfReal, frfImag, label=acc) #3d plot
+            # plt.plot(frfReal, frfImag, label=acc) #2d plot
 
 
     # ax.set_xlim(150, 200)  # Set limits for the z-axis (Frequency) #3d plot
@@ -110,14 +110,14 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
 
     plot_path = f'./images/{u.format_filename(options)}_nyquist.png'
 
-    # ax.set_ylabel('Re') #3d plot
-    # ax.set_zlabel('Im') #3d plot
-    # ax.set_xlabel('Frequency [Hz]') #3d plot
-    # ax.set_title('Inertance Nyquist plot') #3d plot
+    ax.set_ylabel('Re') #3d plot
+    ax.set_zlabel('Im') #3d plot
+    ax.set_xlabel('Frequency [Hz]') #3d plot
+    ax.set_title('Inertance Nyquist plot') #3d plot
 
-    plt.xlabel('Re') #2d plot
-    plt.ylabel('Im') #2d plot
-    plt.title('Inertance Nyquist plot') #2d plot
+    # plt.xlabel('Re') #2d plot
+    # plt.ylabel('Im') #2d plot
+    # plt.title('Inertance Nyquist plot') #2d plot
     plt.legend()
     plt.grid(True)
     plt.show()
@@ -179,10 +179,10 @@ def plot_bode(data: pd.DataFrame, options: dict):
 if __name__ == '__main__':
     import reader as r
     options = {
-        'excitationType': 'SINE_SWEEP',
+        'excitationType': 'RANDOM',
         'accelerometers': {
-            'A_1': True,
-            'A_2': False,
+            'A_1': False,
+            'A_2': True,
             'A_3': False,
             'A_4': False,
             'A_5': False
@@ -194,5 +194,5 @@ if __name__ == '__main__':
     # plot_acceleration(data, options)
     # plot_forcing(data, options)
     # plot_dft(data, options)
-    plot_nyquist(data, options)
-    # plot_bode(data, options)
+    # plot_nyquist(data, options)
+    plot_bode(data, options)
