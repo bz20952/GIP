@@ -8,12 +8,14 @@ def filter(data: pd.DataFrame, options: dict):
 
     """Wrapper function to identify the type of filter and call the appropriate filter function."""
 
-    if options['filterType'] == 'bandpass':
+    if options['filterType'] == 'bandPass':
         b, a = bandpass(options['lowerCutoff'], options['upperCutoff'], options['samplingFreq'])
-    elif options['filterType'] == 'lowpass':
-        b, a = lowpass(options['lowerCutoff'], options['samplingFreq'])
-    elif options['filterType'] == 'highpass':
-        b, a = highpass(options['upperCutoff'], options['samplingFreq'])
+    elif options['filterType'] == 'lowPass':
+        b, a = lowpass(options['upperCutoff'], options['samplingFreq'])
+    elif options['filterType'] == 'highPass':
+        b, a = highpass(options['lowerCutoff'], options['samplingFreq'])
+    else:
+        return f'./data/{format_filename(options)}.csv'
 
     accelerometers = options['accelerometers']
     for acc in accelerometers.keys():
@@ -43,7 +45,7 @@ def bandpass(lowcut, highcut, fs, order=5):
     nyq = 0.5 * fs
     low = lowcut / nyq
     high = highcut / nyq
-    b, a = butter(order, [low, high], btype='band')
+    b, a = butter(order, [low, high], btype='band', analog=False)
     return b, a
 
 

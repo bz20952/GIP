@@ -24,7 +24,6 @@ async def plot_acceleration(data: pd.DataFrame, options: dict):
             plt.plot(data['t'], data[acc], label=acc)
 
     plot_path = f'./images/{u.format_filename(options)}_accel{file_suffix}.png'
-    print(plot_path)
     
     plt.xlabel('Time [s]')
     plt.ylabel(r'Acceleration [m/s$^2$]')

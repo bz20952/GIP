@@ -9,7 +9,7 @@
     "shakerPosition": "l",
     "excitationType": "Free vibration",
     "samplingFreq": 400,
-    "filterType": "bandpass",
+    "filterType": "bandPass",
     "lowerCutoff": 10,
     "upperCutoff": 20
 }

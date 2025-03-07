@@ -1,10 +1,6 @@
 import { writable, type Writable } from 'svelte/store';
 import type { Tool, Progress } from './types';
 
-export const sessionId: Writable<string> = writable(
-    Math.random().toString(36).substring(2, 14)
-);
-
 export const splash: Writable<boolean> = writable(true);
 
 export const showResultsForm: Writable<number[]> = writable([]);
@@ -40,7 +36,7 @@ export const tools: Writable<Tool[]> = writable([
         name: 'Stepped sweep',
         available: false,
         type: 'excitation',
-        description: 'Displace and release a beam with no external forcing. Typically used to determine natural frequencies.'
+        description: 'Generate a stepped signal which gradually changes frequency. Typically used to determine natural frequencies.'
     },
     {
         name: 'Discrete Fourier transform',
@@ -112,4 +108,19 @@ export const progress: Writable<Progress> = writable({
     ]
 });
 
-export const testOptions: Writable<any> = writable({});
+export const testOptions: Writable<any> = writable({
+    "sessionId": Math.random().toString(36).substring(2, 14),
+    "accelerometers": {
+        "0": true,
+        "l/4": false,
+        "l/2": false,    
+        "3l/4": false,
+        "l": false
+    },
+    "shakerPosition": "l/2",
+    "excitationType": "Free vibration",
+    "samplingFreq": 100,
+    "filterType": "lowPass",
+    "lowerCutoff": 0,
+    "upperCutoff": 0
+});

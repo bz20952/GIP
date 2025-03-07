@@ -20,17 +20,26 @@ def check_if_file_exists(options: dict, plot_type: str):
     """Check if file exists before generating a new one."""
 
     if plot_type == 'accel.png':
-        accelerometers = options['accelerometers']
-        file_suffix = ''
-        for index, acc in enumerate(accelerometers.keys()):
-            if accelerometers[acc]:
-                file_suffix += f'_{index}'
-        filename = format_filename(options) + '_accel_' + file_suffix + '.png'
-        print(filename)
+        filename = format_accel_plot_name(options)
     else:
         filename = format_filename(options) + '_'  + plot_type
 
     return os.path.isfile(f"./images/{filename}")
+
+
+def format_accel_plot_name(options: dict):
+
+    """Format filename to standard schema."""
+
+    accelerometers = options['accelerometers']
+    file_suffix = ''
+    for index, acc in enumerate(accelerometers.keys()):
+        if accelerometers[acc]:
+            file_suffix += f'_{index}'
+
+    filename = format_filename(options) + '_accel' + file_suffix + '.png'
+
+    return filename
 
 
 def accel_to_disp(data: pd.DataFrame, options: dict):

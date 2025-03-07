@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { getPath } from '$lib/utils';
+	import { getPath, sendApiRequest } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-    import { tools } from '$lib/stores';
+    import { testOptions, tools } from '$lib/stores';
     import Highchart from '../../../components/Highchart.svelte';
 
     let plotPaths = new Map([
@@ -12,8 +12,9 @@
     ]);
 
     onMount(async () => {
+        await sendApiRequest('filter', 'POST', $testOptions);
         plotPaths.keys().forEach(async (endpoint: string) => {
-            plotPaths.set(endpoint, await getPath(endpoint));
+            plotPaths.set(endpoint, await getPath(endpoint, $testOptions));
         });
     });
 </script>
