@@ -2,25 +2,11 @@
     import { goto } from '$app/navigation';
     import beam from '$lib/images/beam.png';
     import speaker from '$lib/images/speaker.png';
-    import { tools, sessionId } from '$lib/stores';
+    import { tools } from '$lib/stores';
     import { testOptions } from '$lib/stores';
     // import { sendApiRequest } from '$lib/utils';
 
     let showSpinner = false;
-
-    $testOptions = {
-        sessionId: $sessionId,
-        accelerometers: {
-            '0': true,
-            'l/4': false,
-            'l/2': false,
-            '3l/4': false,
-            'l': false
-        },
-        shakerPosition: 'l/2',
-        excitationType: 'Free vibration',
-        samplingFreq: 400
-    };
 
     const locations = ['0', 'l/4', 'l/2', '3l/4', 'l'];
 
@@ -82,8 +68,8 @@
         </div>
 
         <div class="sampling-slider">
-            <label for="sampling-freq">Sampling frequency: <strong>{$testOptions['samplingFreq']} kHz</strong></label>
-            <input type="range" min="100" max="600" step="100" bind:value={$testOptions['samplingFreq']} />
+            <label for="sampling-freq">Sampling frequency: <strong>{$testOptions['samplingFreq']} Hz</strong></label>
+            <input type="range" min="512" max="2048" step="512" bind:value={$testOptions['samplingFreq']} />
         </div>
     </div>
 
