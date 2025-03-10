@@ -1,52 +1,80 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { showFeedback, progress, tools } from '$lib/stores';
+  import { showFeedback, progress, tools, testOptions } from '$lib/stores';
   import { removeItemAll } from '$lib/utils';
   import { emails } from '$lib/emails.json';
   import Noti from './Noti.svelte';
-	import type { Email, Task, Tool, Feedback } from '$lib/types';
+	import type { Email, Tool, Feedback, Result, TestOptions } from '$lib/types';
 
   export let emailId: number;
-  const currentEmail = emails.find((email) => email.id === emailId) as Email;
-  const currentTask = $progress.tasks.find((task) => task.emailId === emailId) as Task;
+  const currentEmail = emails.find((email) => email.id === emailId) as Email;  
 
-  let feedbackText = 'There is no feedback yet for this task.';
+  let feedbackText = {
+    message: 'There is no feedback yet.',
+    colour: 'black'
+  };
   let showNotification: boolean = false;
 
   // On mounting this component, we compare the submitted answers to the correct answers and feed back accordingly.
   onMount(async () => {
-      let correctAnswerCount: number = 0;
-      let i = 0;
+      const result = currentEmail.results.find((result: Result) => result.subtaskId === $progress.currentTask.currentSubtask.subtaskId) as Result;
+      const feedbackStage = result.feedback.find((feedback: Feedback) => feedback.stage === $progress.currentTask.currentSubtask.feedbackStage) as Feedback;
 
-      const feedbackStage: Feedback | undefined = currentEmail.feedback.find((feedback: Feedback) => feedback.stage === currentTask.feedbackStage);
-      currentTask.answers.forEach((answer: number) => {
-        // Acceptable answer margin of +- 10%
-        let upper_bound = 1.1*currentEmail.results[i].answer;
-        let lower_bound = 0.9*currentEmail.results[i].answer;
-        if (answer >= lower_bound && answer <= upper_bound) {
-          correctAnswerCount += 1;
-        } else {
-          feedbackText = feedbackStage?.message as string;
+      if (result.inputType === 'text' || result.inputType === 'select') {
+        if ($progress.currentTask.currentSubtask.answer === result.answer) {
+          $progress.currentTask.currentSubtask.correct = true;
         }
-        i += 1;
-      })
+      } else if (result.inputType === 'number') {
+        // Acceptable answer margin of +- 10%
+        let upper_bound = 1.1*(result.answer as number);
+        let lower_bound = 0.9*(result.answer as number);
+        if ($progress.currentTask.currentSubtask.answer as number >= lower_bound && $progress.currentTask.currentSubtask.answer as number <= upper_bound) {
+          $progress.currentTask.currentSubtask.correct = true;
+        }
+      } else if (result.inputType === 'none') {
+        Object.keys(result.answer).forEach((key) => {
+          if (result.answer[key] === $testOptions[key as keyof TestOptions]) {
+            $progress.currentTask.currentSubtask.correct = true;
+          }
+        })
+      }
+
+      if ($progress.currentTask.currentSubtask.correct) {
+        feedbackText = {
+          message: result.praise,
+          colour: 'green'
+        }
+      } else {
+        feedbackText = {
+          message: feedbackStage.message as string,
+          colour: 'red'
+        }
+      }
 
       // If all answers are correct or maximum feedback stage is reached, move to the next task and update progress and tools accordingly
-      if (correctAnswerCount === currentEmail.results.length || feedbackStage?.stage === 3) {
-        if (correctAnswerCount === currentEmail.results.length) {
-          feedbackText = 'Well done!';  // Change this to be more encouraging
+      if ($progress.currentTask.currentSubtask.subtaskId === currentEmail.results.length) {
+        if ($progress.currentTask.currentSubtask.correct || $progress.currentTask.currentSubtask.feedbackStage === result.feedback.length){
+          $progress.current = Math.max(emailId, $progress.current); // Update progress
+          $progress.currentTask.emailId += 1;
+          $progress.currentTask.currentSubtask.subtaskId = 1;
+          $progress.currentTask.currentSubtask.feedbackStage = 0;
+          $progress.currentTask.currentSubtask.answer = undefined;
+          $progress.currentTask.currentSubtask.correct = false;
+
+          // Update tools with new unlocked ones
+          currentEmail.unlocks.forEach((tool: string) => {
+            const unlockedTool: Tool | undefined = $tools.find((t) => t.name === tool);
+            if (unlockedTool) {
+              unlockedTool.available = true;
+            }
+          });
+          showNotification = true;
         }
-        $progress.current = Math.max(emailId, $progress.current); // Update progress
-
-        // Update tools with new unlocked ones
-        currentEmail.unlocks.forEach((tool: string) => {
-          const unlockedTool: Tool | undefined = $tools.find((t) => t.name === tool);
-          if (unlockedTool) {
-            unlockedTool.available = true;
-          }
-        });
-
-        showNotification = true;
+      } else if ($progress.currentTask.currentSubtask.correct || $progress.currentTask.currentSubtask.feedbackStage === result.feedback.length) {
+        $progress.currentTask.currentSubtask.subtaskId += 1;
+        $progress.currentTask.currentSubtask.feedbackStage = 0;
+        $progress.currentTask.currentSubtask.answer = undefined;
+        $progress.currentTask.currentSubtask.correct = false;
       }
   });
 </script>
@@ -55,7 +83,7 @@
   <Noti />
 {/if} -->
 <div class="feedback-container">
-  <p>{feedbackText}</p>
+  <p style="color: {feedbackText.colour}">{feedbackText.message}</p>
   <button class="back-btn" on:click={() => $showFeedback = removeItemAll($showFeedback, emailId)}>Back</button>
 </div>
 

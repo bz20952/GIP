@@ -2,92 +2,344 @@
     "emails": [
         {
             "id": 1,
-            "sender": "John Doe",
-            "subject": "Wing test needed ASAP",
-            "body": "Hey, X are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. Have a look in your toolkit and see what you can do.",
+            "sender": "Lada Ovelace",
+            "subject": "Wing test needed ASAP!",
+            "body": "Hey, Flairbus are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. I'd recommend estimating frequency from the unforced time-domain response. Have a look in your toolkit and see what you can do.",
             "results": [
                 {
+                    "subtaskId": 1,
                     "name": "First natural frequency",
+                    "inputType": "number",
                     "unit": "Hz",
-                    "answer": 50
-                },
-                {
-                    "name": "First mode shape",
-                    "unit": "",
-                    "answer": 1
+                    "tooltipId": 1,
+                    "answer": 100,
+                    "praise": "Nice one! The client will be pleased with such a quick turnaround.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Hmm, your measured natural frequency is not quite right. Remember, frequency is 1/T, where T is the period of a single oscillation."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Try again, making sure to maximise your sampling frequency to get the highest possible measurement resolution."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Our in-house testing gives a first natural frequency of 100 Hz."
+                        }
+                    ]
                 }
             ],
-            "feedback": [
-                {
-                    "stage": 1,
-                    "message": "Hi, unfortunately that doesn't quite match our simulations. Try using free vibration with no filtering."
-                },
-                {
-                    "stage": 2,
-                    "message": "We need a slightly more precise simulation. Try free vibration, 600 kHz sampling frequency and no filtering."
-                },
-                {
-                    "stage": 3,
-                    "message": "Our in-house testing gives a first natural frequency of 50 Hz. Press back to continue."
-                }
-            ],
-            "unlocks": ["Sine sweep"]
+            "unlocks": ["Hammer testing", "Sine sweep", "Stepped sweep"]
         },
         {
             "id": 2,
-            "sender": "John Doe",
-            "subject": "Wing test needed ASAP",
-            "body": "Hey, X are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. Have a look in your toolkit and see what you can do.",
+            "sender": "Tikola Nesla",
+            "subject": "Modal test data needed",
+            "body": "I need a quick and rough estimate of the natural frequencies of the wing before my next stakeholder meeting. Please setup a test and choose an appropriate excitation method (NOTE: the wing is too stiff to execute free vibration testing in this case). Time is of the essence!",
             "results": [
                 {
-                    "name": "First natural frequency",
+                    "subtaskId": 1,
+                    "name": "Excitation type",
+                    "inputType": "none",
+                    "unit": "",
+                    "tooltipId": 2,
+                    "answer": {
+                        "excitationType": "Hammer testing"
+                    },
+                    "praise": "Great! A hammer test provides a quick and simple test considering the constraints of the task.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "The method you've chosen would take too long. Try another."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Since we are not too concerned with accuracy at the moment, a much simpler and excitation method can be used."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Hammer testing is the correct method."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 2,
+                    "name": "Tip hardness",
+                    "inputType": "select",
+                    "options": ["Tip 1", "Tip 2"],
+                    "unit": "",
+                    "tooltipId": 3,
+                    "answer": "Tip 2",
+                    "praise": "Yes, well done! Tip 2 has a bandwidth of x-y Hz enabling all three expected modes to be excited",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "A harder tip is able to excite a wider range of natural frequencies."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Check the excitation bandwidth of the tip."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Tip 2 is correct as it enables excitation of all three modes."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 3,
+                    "name": "Second natural frequency",
+                    "inputType": "number",
                     "unit": "Hz",
-                    "answer": 50
+                    "tooltipId": 4,
+                    "answer": 150,
+                    "praise": "Correct! You successfully setup an appropriate test and employed the discrete Fourier transform.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "That doesn't seem to match our simulations. Make sure you are using Hammer testing."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Not quite, read carefully off the DFT graph."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Our in-house testing gives a second natural frequency of 100 Hz. Press back to continue."
+                        }
+                    ]
                 }
             ],
-            "feedback": [
-                {
-                    "stage": 1,
-                    "message": "Hi, unfortunately that doesn't quite match our simulations. Try using free vibration with no filtering."
-                },
-                {
-                    "stage": 2,
-                    "message": "We need a slightly more precise simulation. Try free vibration, 600 kHz sampling frequency and no filtering."
-                },
-                {
-                    "stage": 3,
-                    "message": "Our in-house testing gives a first natural frequency of 50 Hz. Press back to continue."
-                }
-            ],
-            "unlocks": ["Sine sweep"]
+            "unlocks": ["Bode"]
         },
         {
             "id": 3,
-            "sender": "John Doe",
-            "subject": "Wing test needed ASAP",
-            "body": "Hey, X are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. Have a look in your toolkit and see what you can do.",
+            "sender": "Fichael Maraday",
+            "subject": "Modelling vibration caused by engine",
+            "body": "In an aircraft wing, the engine (which vibrates a lot!) is usually located at the middle of the wing. Conduct a modal test to simulate the dynamics. Click 'Send Results' for a list of required data.",
             "results": [
                 {
-                    "name": "First natural frequency",
+                    "subtaskId": 1,
+                    "name": "Experimental setup",
+                    "inputType": "none",
+                    "unit": "",
+                    "tooltipId": 5,
+                    "answer": {
+                        "accelerometers": {
+                            "A0": true,
+                            "A1": false,
+                            "A2": true,    
+                            "A3": false,
+                            "A4": true
+                        },
+                        "shakerPosition": 2
+                    },
+                    "praise": "Nice one! You have setup the test correctly.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Not quite, make sure you are exciting the structure from where the engine would be located."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 2,
+                    "name": "Response frequency",
+                    "inputType": "number",
                     "unit": "Hz",
-                    "answer": 50
-                }
-            ],
-            "feedback": [
-                {
-                    "stage": 1,
-                    "message": "Hi, unfortunately that doesn't quite match our simulations. Try using free vibration with no filtering."
+                    "tooltipId": 6,
+                    "answer": 5,
+                    "praise": "Oh no, you got it wrong. However, it seems that it is not your fault, there is something wrong with the measured data!",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Not quite, make sure you are exciting the structure from where the engine would be located."
+                        }
+                    ]
                 },
                 {
-                    "stage": 2,
-                    "message": "We need a slightly more precise simulation. Try free vibration, 600 kHz sampling frequency and no filtering."
-                },
-                {
-                    "stage": 3,
-                    "message": "Our in-house testing gives a first natural frequency of 50 Hz."
+                    "subtaskId": 3,
+                    "name": "What error can cause the frequency of the response to be measured incorrectly?",
+                    "inputType": "select",
+                    "options": ["Aliasing", "Leakage", "Hysteretic damping"],
+                    "unit": "",
+                    "tooltipId": 7,
+                    "answer": "Aliasing",
+                    "praise": "Correct! Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency. This is why the response frequency is measured incorrectly.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Unfortunately that is not correct."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Unfortunately that is not correct."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Aliasing is the correct answer."
+                        }
+                    ]
                 }
             ],
-            "unlocks": ["Sine sweep"]
+            "unlocks": ["Nyquist"]
+        },
+        {
+            "id": 4,
+            "sender": "Fichard Reynman",
+            "subject": "We need modal damping ratios!",
+            "body": "Hello, I've heard big things about your modal testing expertise. Please can you produce a Nyquist plot and use it to estimate modal damping ratios?",
+            "results": [
+                {
+                    "subtaskId": 1,
+                    "name": "Radius of the circle",
+                    "inputType": "number", 
+                    "unit": "",
+                    "tooltipId": 8,
+                    "answer": 20,
+                    "praise": "That is correct! Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Not quite, maybe try a different excitation method to produce a higher resolution Nyquist plot."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Unfortunately that is not correct. Try using Sine sweep with maximum sampling frequency."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Our finite element simulations give a radius of 20."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 2,
+                    "name": "Third natural frequency",
+                    "inputType": "number",
+                    "unit": "Hz",
+                    "tooltipId": 9,
+                    "answer": 200,
+                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Not quite, look for the frequency where the sweep rate is at its maximum."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Try reading off the frequency where the circle crosses the real axis."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "The third natural frequency should be roughly 200 Hz."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 3,
+                    "name": "Third modal damping ratio",
+                    "inputType": "number",
+                    "unit": "%",
+                    "tooltipId": 9,
+                    "answer": 20,
+                    "praise": "Spot on! This is the most accurate estimate of zeta from the plot.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "It might be easier to find the angle subtended from the origin to the point of interest and use angle identities."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Use the pair of points closest to the resonance point for more accurate estimate of damping."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "The third modal damping ratio is expected to be around 20%."
+                        }
+                    ]
+                }
+            ],
+            "unlocks": []
+        },
+        {
+            "id": 5,
+            "sender": "Fichard Reynman",
+            "subject": "We need modal damping ratios!",
+            "body": "Hello, I've heard big things about your modal testing expertise. Please can you produce a Nyquist plot and use it to estimate modal damping ratios?",
+            "results": [
+                {
+                    "subtaskId": 1,
+                    "name": "Radius of the circle",
+                    "inputType": "number", 
+                    "unit": "",
+                    "tooltipId": 8,
+                    "answer": 20,
+                    "praise": "That is correct! Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Not quite, maybe try a different excitation method to produce a higher resolution Nyquist plot."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Unfortunately that is not correct. Try using Sine sweep with maximum sampling frequency."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Our finite element simulations give a radius of 20."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 2,
+                    "name": "Third natural frequency",
+                    "inputType": "number",
+                    "unit": "Hz",
+                    "tooltipId": 9,
+                    "answer": 200,
+                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Not quite, look for the frequency where the sweep rate is at its maximum."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Try reading off the frequency where the circle crosses the real axis."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "The third natural frequency should be roughly 200 Hz."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 3,
+                    "name": "Third modal damping ratio",
+                    "inputType": "number",
+                    "unit": "%",
+                    "tooltipId": 9,
+                    "answer": 20,
+                    "praise": "Spot on! This is the most accurate estimate of zeta from the plot.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "It might be easier to find the angle subtended from the origin to the point of interest and use angle identities."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Use the pair of points closest to the resonance point for more accurate estimate of damping."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "The third modal damping ratio is expected to be around 20%."
+                        }
+                    ]
+                }
+            ],
+            "unlocks": []
         }
     ]
 }

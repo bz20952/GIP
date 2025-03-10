@@ -40,18 +40,18 @@
 
 <section class="experiment">
     <div class="checkbox-row">
-        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['0']} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['l/4']} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['l/2']} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['3l/4']} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['l']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A0']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A1']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A2']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A3']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A4']} on:change={limitAccelSelection} />
     </div>
 
     <img class="beam" src={beam} alt="Free-free beam" />
 
     <div class="shaker-slider">
         <input type="range" min=0 max={locations.length - 1} step=1 value=2 on:change={(event: Event) => {
-            $testOptions['shakerPosition'] = locations[(event.target as HTMLInputElement).valueAsNumber];
+            $testOptions['shakerPosition'] = (event.target as HTMLInputElement).valueAsNumber;
         }}/>
     </div>
 

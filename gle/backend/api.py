@@ -81,13 +81,13 @@ async def time_domain(request: Request):
 @app.post('/forcing')
 async def forcing(request: Request):
     options = await request.json()
-    file_ext = 'force.png'
+    file_ext = 'force'
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
         plot_path = await p.plot_forcing(data, options)
     else:
-        plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
+        plot_path = f'./images/{u.format_filename(options)}_{file_ext}.png'
 
     return {
         "details": "This gives the path to a forcing signal plot.",
@@ -101,13 +101,13 @@ async def forcing(request: Request):
 @app.post('/animate')
 async def animate(request: Request):
     options = await request.json()
-    file_ext = 'anim.gif'
+    file_ext = 'anim'
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
         plot_path = await a.animate_beam(data, options)
     else:
-        plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
+        plot_path = u.format_accel_plot_name(options, file_ext)
 
     return {
         "details": "This should the path to a forcing signal gif/plot.",
@@ -119,10 +119,19 @@ async def animate(request: Request):
 
 
 @app.post('/dft')
-async def dft():
+async def dft(request: Request):
+    options = await request.json()
+    file_ext = 'dft'
+
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        plot_path = await p.plot_dft(data, options)
+    else:
+        plot_path = u.format_accel_plot_name(options, file_ext)
+
     return {
         "details": "This should return the path to the DFT plot.",
-        "message": "",
+        "message": os.path.join(root_url, plot_path),
         "success": True,
         "error": False,
         "code": 200

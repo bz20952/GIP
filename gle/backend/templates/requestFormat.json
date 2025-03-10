@@ -1,4 +1,5 @@
 {
+    "serialNumber": "1234",
     "accelerometers": {
         "A0": true,
         "A1": false,
@@ -6,9 +7,9 @@
         "A3": false,
         "A4": false
     },
-    "shakerPosition": "l",
-    "excitationType": "Free vibration",
-    "samplingFreq": 400,
+    "shakerPosition": 4,
+    "excitationType": "Sine sweep",
+    "samplingFreq": 512,
     "filterType": "bandPass",
     "lowerCutoff": 10,
     "upperCutoff": 20
