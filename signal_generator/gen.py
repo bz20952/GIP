@@ -25,9 +25,12 @@ def generate_sine_sweep(start_freq, end_freq, amplitude, duration, sample_rate=4
 #     return y
 
 def generate_random_signal(lowcut, highcut, amplitude, duration, sample_rate=44100):
-    t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
-    wave = amplitude * np.random.uniform(-1, 1, size=t.shape)
-    # filtered_wave = bandpass_filter(wave, lowcut, highcut, sample_rate)
+    freqs = np.linspace(lowcut, highcut, 1000)
+    wave = np.zeros(int(sample_rate * duration))
+    for freq in freqs:
+        sine_amplitude = (np.random.random() - 0.5)*2
+        wave += generate_sine_wave(freq, sine_amplitude, 0, duration, sample_rate)
+    wave = (wave/max(np.abs(wave)))*amplitude
     return wave
 
 def generate_stepped_sweep(start_freq, end_freq, amplitude, duration, sample_rate=44100):
@@ -74,20 +77,21 @@ if __name__ == "__main__":
 
     # wave = generate_sine_wave(300, 1, 0, 60, sample_rate)
     # wave = generate_sine_sweep(0.5, 1000, 1, 20, sample_rate)
-    wave = generate_random_signal(0.5, 1000, 1, 100, sample_rate)
+    wave = generate_random_signal(50, 100, 0.1, 10, sample_rate)
     # wave = generate_stepped_sweep(0.5, 1000, 1, 20, sample_rate)
 
-    # Play the wave in a separate thread
-    sound_thread = threading.Thread(target=play_wave, args=(wave, sample_rate))
-    sound_thread.start()
+    # # Play the wave in a separate thread
+    # sound_thread = threading.Thread(target=play_wave, args=(wave, sample_rate))
+    # sound_thread.start()
 
     # n = 25  # Sample the wave at every nth data point for plotting
     # ani = plot_wave_gif(wave[::n], sample_rate//n, filename='sine_sweep.gif', save=True)
 
-    # Keep the script running while the sound plays
-    sound_thread.join()
+    # # Keep the script running while the sound plays
+    # sound_thread.join()
 
     # play_wave(wave, sample_rate)
-    # plt.figure()
+    plt.figure()
     # plot_path = f'./images/wave.png'
-    # plt.plot(wave)
+    plt.plot(wave)
+    plt.show()
