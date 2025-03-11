@@ -16,12 +16,14 @@
 
 <h1>Modal Parameter Identification</h1>
 
-<div class="plot-container">
+<div class="plots-container">
     {#each plotPaths.keys() as toolEndpoint}
         {#if $tools.find(tool => tool.endpoint == toolEndpoint)?.available}
             {#if plotPaths.get(toolEndpoint)}
-                <a href="http://localhost:8000/images/{plotPaths.get(toolEndpoint)}">Open fullscreen</a>
-                <img src={plotPaths.get(toolEndpoint)} alt={toolEndpoint} class="plot" />
+                <div class="plot-container">
+                    <img src={plotPaths.get(toolEndpoint)} alt={toolEndpoint} class="plot" />
+                    <a class="fullscreen-link" href={plotPaths.get(toolEndpoint)} target="_blank" rel="noopener noreferrer">Open fullscreen</a>
+                </div>
                 <!-- <img src={plotPaths.get(toolEndpoint)} alt={toolEndpoint} class="plot" /> -->
             {:else}
                 <i class="fa fa-spinner fa-pulse"></i>
@@ -51,11 +53,22 @@
 		margin: 3rem 0rem;
 	}
 
-	.plot-container {
+	.plots-container {
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
+    }
+
+    .plot-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .fullscreen-link {
+        margin: 1rem;
     }
 
     .plot {

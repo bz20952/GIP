@@ -1,5 +1,5 @@
 <script lang="ts">
-  import emails from '$lib/emails.json';
+  import { emails } from '$lib/emails.json';
   import ResultsForm from './ResultsForm.svelte';
   import Feedback from './Feedback.svelte';
   import { showResultsForm, showFeedback, progress } from '$lib/stores';
@@ -8,7 +8,7 @@
   <div class="inbox-panel">
       <h1 class="inbox-header">Messages</h1>
       <div class="message-container">
-        {#each emails.emails.reverse() as email}
+        {#each emails.slice().reverse() as email}
           {#if email.id <= $progress.current + 1}
               <div class:email>
                 {#if !$showResultsForm.includes(email.id) && !$showFeedback.includes(email.id)}

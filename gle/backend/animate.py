@@ -70,7 +70,7 @@ async def animate_beam(data: pd.DataFrame, options: dict):
     data = accel_to_disp(data, options)
 
     # Plot at every nth interval
-    n = len(data)//10
+    n = len(data)//20
 
     frames = round(len(data['t'])/n)
     fps = round(frames/max(data['t']))

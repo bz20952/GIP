@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 from dotenv import load_dotenv
 import os
+import json
 import filter as f
 import reader as r
 import plotter as p
@@ -197,6 +198,56 @@ async def filter(request: Request):
     return {
         "details": "This should return the path to a filtered data file.",
         "message": os.path.join(root_url, data_path),
+        "success": True,
+        "error": False,
+        "code": 200
+    }
+
+
+@app.post('/start-tracking')
+async def start_tracking(request: Request):
+    options = await request.json()
+    
+    try:
+        with open(f'./tracking/{options["serialNumber"]}.json', 'r') as f:
+            tracking_data = json.load(f)
+    except FileNotFoundError:
+        with open(f'./templates/tracking.json', 'r') as f:
+            tracking_data = json.load(f)
+    
+    tracking_data[str(options["subtaskId"])]["startTime"] = options["timestamp"]
+
+    with open(f'./tracking/{options["serialNumber"]}.json', 'w') as f:
+        json.dump(tracking_data, f)
+
+    return {
+        "detail": "Starts tracking of subtask.",
+        "message": "Tracking of subtask {options['subtaskId']} started.",
+        "success": True,
+        "error": False,
+        "code": 200
+    }
+
+
+@app.post('/stop-tracking')
+async def start_tracking(request: Request):
+    options = await request.json()
+    
+    try:
+        with open(f'./tracking/{options["serialNumber"]}.json', 'r') as f:
+            tracking_data = json.load(f)
+    except FileNotFoundError:
+        with open(f'./templates/tracking.json', 'r') as f:
+            tracking_data = json.load(f)
+    
+    tracking_data[str(options["subtaskId"])]["endTime"] = options["timestamp"]  # Check if subtask is already being tracked
+
+    with open(f'./tracking/{options["serialNumber"]}.json', 'w') as f:
+        json.dump(tracking_data, f)
+
+    return {
+        "detail": "Stops tracking of subtask.",
+        "message": f"Tracking of subtask {options['subtaskId']} stopped.",
         "success": True,
         "error": False,
         "code": 200

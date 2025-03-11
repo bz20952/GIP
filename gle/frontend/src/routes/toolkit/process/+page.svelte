@@ -9,9 +9,6 @@
         ['forcing', ''],
         ['animate', '']
     ]);
-    // plotPaths.keys().forEach(async (endpoint: string) => {
-    //     plotPaths = plotPaths.set(endpoint, await getPath(endpoint, $testOptions));
-    // });
 
     onMount(() => {
         plotPaths.keys().forEach(async (endpoint: string) => {

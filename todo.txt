@@ -1,3 +1,6 @@
 FRONTEND
 - Create 'Getting started' youtube video.
 - Task 5 tracking.
+
+BACKEND
+- Standard plot formatting.

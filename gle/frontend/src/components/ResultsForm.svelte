@@ -16,7 +16,6 @@
         $progress.currentTask.currentSubtask.feedbackStage = Math.min($progress.currentTask.currentSubtask.feedbackStage + 1, currentResult.feedback.length);
         const formData = new FormData(event.target as HTMLFormElement);
         $progress.currentTask.currentSubtask.answer = formData.get(currentResult.name);
-        console.log($progress.currentTask.currentSubtask);
     }
 </script>
 

@@ -1,13 +1,15 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { showFeedback, progress, tools, testOptions } from '$lib/stores';
-  import { removeItemAll } from '$lib/utils';
+  import { removeItemAll, sendApiRequest } from '$lib/utils';
   import { emails } from '$lib/emails.json';
   import Noti from './Noti.svelte';
 	import type { Email, Tool, Feedback, Result, TestOptions } from '$lib/types';
 
   export let emailId: number;
   const currentEmail = emails.find((email) => email.id === emailId) as Email;  
+  const result = currentEmail.results.find((result: Result) => result.subtaskId === $progress.currentTask.currentSubtask.subtaskId) as Result;
+  const feedbackStage = result.feedback.find((feedback: Feedback) => feedback.stage === $progress.currentTask.currentSubtask.feedbackStage) as Feedback;
 
   let feedbackText = {
     message: 'There is no feedback yet.',
@@ -17,9 +19,6 @@
 
   // On mounting this component, we compare the submitted answers to the correct answers and feed back accordingly.
   onMount(async () => {
-      const result = currentEmail.results.find((result: Result) => result.subtaskId === $progress.currentTask.currentSubtask.subtaskId) as Result;
-      const feedbackStage = result.feedback.find((feedback: Feedback) => feedback.stage === $progress.currentTask.currentSubtask.feedbackStage) as Feedback;
-
       if (result.inputType === 'text' || result.inputType === 'select') {
         if ($progress.currentTask.currentSubtask.answer === result.answer) {
           $progress.currentTask.currentSubtask.correct = true;
@@ -53,7 +52,10 @@
 
       // If all answers are correct or maximum feedback stage is reached, move to the next task and update progress and tools accordingly
       if ($progress.currentTask.currentSubtask.subtaskId === currentEmail.results.length) {
-        if ($progress.currentTask.currentSubtask.correct || $progress.currentTask.currentSubtask.feedbackStage === result.feedback.length){
+
+        // The following should only be called when the last subtask in a task has been completed
+        console.log($progress.currentTask.emailId, emails.length)
+        if (($progress.currentTask.currentSubtask.correct || $progress.currentTask.currentSubtask.feedbackStage === result.feedback.length)) {
           $progress.current = Math.max(emailId, $progress.current); // Update progress
           $progress.currentTask.emailId += 1;
           $progress.currentTask.currentSubtask.subtaskId = 1;
@@ -68,23 +70,35 @@
               unlockedTool.available = true;
             }
           });
-          showNotification = true;
+          showNotification = true;  // Notify user of new task
         }
+
       } else if ($progress.currentTask.currentSubtask.correct || $progress.currentTask.currentSubtask.feedbackStage === result.feedback.length) {
         $progress.currentTask.currentSubtask.subtaskId += 1;
         $progress.currentTask.currentSubtask.feedbackStage = 0;
         $progress.currentTask.currentSubtask.answer = undefined;
         $progress.currentTask.currentSubtask.correct = false;
+
+        // Tracking time to complete each of the tasks in task 5
+        if ($progress.currentTask.emailId === emails.length) {
+          sendApiRequest('stop-tracking', 'POST', { serialNumber: $testOptions.serialNumber, subtaskId: $progress.currentTask.currentSubtask.subtaskId-1, timestamp: Math.floor(Date.now() / 1000) });
+          sendApiRequest('start-tracking', 'POST', { serialNumber: $testOptions.serialNumber, subtaskId: $progress.currentTask.currentSubtask.subtaskId, timestamp: Math.floor(Date.now() / 1000) });
+        };
       }
   });
 </script>
 
-{#if showNotification}
+{#if showNotification && emailId <= emails.length}
   <Noti />
 {/if}
 <div class="feedback-container">
   <p style="color: {feedbackText.colour}">{feedbackText.message}</p>
-  <button class="back-btn" on:click={() => $showFeedback = removeItemAll($showFeedback, emailId)}>Back</button>
+  {#if (emailId < $progress.currentTask.emailId)}
+    <p><i>You have completed all tasks in this message.</i></p>
+  {:else}
+    <p><i>You have completed {$progress.currentTask.currentSubtask.subtaskId-1}/{currentEmail.results.length} tasks in this message.</i></p>
+    <button class="back-btn" on:click={() => $showFeedback = removeItemAll($showFeedback, emailId)}>Back</button>
+  {/if}
 </div>
 
 <style>

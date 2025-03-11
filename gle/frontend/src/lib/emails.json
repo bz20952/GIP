@@ -47,7 +47,7 @@
                     "answer": {
                         "excitationType": "Hammer testing"
                     },
-                    "praise": "Great! A hammer test provides a quick and simple test considering the constraints of the task. Return to Send Results to continue.",
+                    "praise": "Great! A hammer test provides a quick and simple test considering the constraints of the task.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -71,7 +71,7 @@
                     "unit": "",
                     "tooltipId": 3,
                     "answer": "Tip 2",
-                    "praise": "Yes, well done! Tip 2 has a bandwidth of x-y Hz enabling all three expected modes to be excited. Return to Send Results to continue.",
+                    "praise": "Yes, well done! Tip 2 has a bandwidth of x-y Hz enabling all three expected modes to be excited.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -106,7 +106,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Our in-house testing gives a second natural frequency of 100 Hz. Press back to continue."
+                            "message": "Our in-house testing gives a second natural frequency of 100 Hz."
                         }
                     ]
                 }
@@ -139,7 +139,7 @@
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Not quite, make sure you are exciting the structure from where the engine would be located. Return to Send Results to continue."
+                            "message": "Not quite, make sure you are exciting the structure from where the engine would be located."
                         }
                     ]
                 },
@@ -150,7 +150,7 @@
                     "unit": "Hz",
                     "tooltipId": 6,
                     "answer": 5,
-                    "praise": "Oh no, you got it wrong. However, it seems that it is not your fault, there is something wrong with the measured data! Return to Send Results to continue.",
+                    "praise": "Oh no, you got it wrong. However, it seems that it is not your fault, there is something wrong with the measured data!",
                     "feedback": [
                         {
                             "stage": 1,
@@ -178,7 +178,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Aliasing is the correct answer."
+                            "message": "Aliasing is the correct answer. Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency."
                         }
                     ]
                 }
@@ -198,7 +198,7 @@
                     "unit": "",
                     "tooltipId": 8,
                     "answer": 20,
-                    "praise": "That is correct! Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate. Return to Send Results to continue.",
+                    "praise": "That is correct! Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -221,7 +221,7 @@
                     "unit": "Hz",
                     "tooltipId": 9,
                     "answer": 200,
-                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum. Return to Send Results to continue.",
+                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -277,7 +277,7 @@
                     "unit": "",
                     "tooltipId": 10,
                     "answer": "2",
-                    "praise": "Perfect! The engine is rotating at 9000 rpm = 150 Hz which is approximately the second natural frequency. Return to Send Results to continue.",
+                    "praise": "Perfect! The engine is rotating at 9000 rpm = 150 Hz which is approximately the second natural frequency.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -297,7 +297,7 @@
                     "unit": "",
                     "tooltipId": 11,
                     "answer": "[1,0,1]",
-                    "praise": "Perfect! Our finite element models agree with this observation. Return to Send Results to continue.",
+                    "praise": "Perfect! Our finite element models agree with this observation.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -320,7 +320,7 @@
                     "unit": "%",
                     "tooltipId": 12,
                     "answer": 10,
-                    "praise": "Perfect! Our finite element models agree with this observation. Return to Send Results to continue.",
+                    "praise": "Perfect! Our finite element models agree with this observation.",
                     "feedback": [
                         {
                             "stage": 1,
