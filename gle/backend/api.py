@@ -61,13 +61,13 @@ async def run_test(request: Request):
 @app.post('/time-domain')
 async def time_domain(request: Request):
     options = await request.json()
-    file_ext = 'accel.png'
+    file_ext = 'accel'
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
         plot_path = await p.plot_acceleration(data, options)
     else:
-        plot_path = f'./images/{u.format_accel_plot_name(options)}' 
+        plot_path = f'./images/{u.format_accel_plot_name(options, file_ext)}' 
 
     return {
         "details": "This should return either a graph of acceleration data.",
@@ -107,7 +107,7 @@ async def animate(request: Request):
         data = r.read_csv(options)
         plot_path = await a.animate_beam(data, options)
     else:
-        plot_path = u.format_accel_plot_name(options, file_ext)
+        plot_path = f'./images/{u.format_accel_plot_name(options, file_ext)}'
 
     return {
         "details": "This should the path to a forcing signal gif/plot.",
@@ -127,7 +127,7 @@ async def dft(request: Request):
         data = r.read_csv(options)
         plot_path = await p.plot_dft(data, options)
     else:
-        plot_path = u.format_accel_plot_name(options, file_ext)
+        plot_path = f'./images/{u.format_accel_plot_name(options, file_ext)}' 
 
     return {
         "details": "This should return the path to the DFT plot.",
@@ -138,33 +138,20 @@ async def dft(request: Request):
     }
 
 
-@app.post('/frf-gain')
-async def frf_gain():
-    return {
-        "details": "This should return the path to the FRF gain plot.",
-        "message": "",
-        "success": True,
-        "error": False,
-        "code": 200
-    }
-
-
-@app.post('/frf-phase')
-async def frf_phase():
-    return {
-        "details": "This should return the path to the FRF phase plot.",
-        "message": "",
-        "success": True,
-        "error": False,
-        "code": 200
-    }
-
-
 @app.post('/bode')
-async def bode():
+async def bode(request: Request):
+    options = await request.json()
+    file_ext = 'bode'
+
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        plot_path = await p.plot_bode(data, options)
+    else:
+        plot_path = f'./images/{u.format_accel_plot_name(options, file_ext)}' 
+
     return {
         "details": "This should return the path to the Bode plot.",
-        "message": "",
+        "message": os.path.join(root_url, plot_path),
         "success": True,
         "error": False,
         "code": 200
@@ -172,10 +159,19 @@ async def bode():
 
 
 @app.post('/nyquist')
-async def nyquist():
+async def nyquist(request: Request):
+    options = await request.json()
+    file_ext = 'nyquist'
+
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        plot_path = await p.plot_nyquist(data, options)
+    else:
+        plot_path = f'./images/{u.format_accel_plot_name(options, file_ext)}' 
+
     return {
         "details": "This should return the path to the Nyquist plot.",
-        "message": "",
+        "message": os.path.join(root_url, plot_path),
         "success": True,
         "error": False,
         "code": 200

@@ -42,20 +42,23 @@ export const tools: Writable<Tool[]> = writable([
     {
         name: 'Discrete Fourier transform',
         available: false,
-        type: 'signalProcessing',
-        description: 'A mathematical tool used to convert discrete time-domain data to the frequency-domain.'
+        type: 'analysis',
+        description: 'A mathematical tool used to convert discrete time-domain data to the frequency-domain.',
+        endpoint: 'dft'
     },
     {
         name: 'Bode',
         available: false,
-        type: 'signalProcessing',
-        description: 'Visualise the gain and phase of the frequency response. May be used to estimate natural frequencies and modal damping ratios.'
+        type: 'analysis',
+        description: 'Visualise the gain and phase of the frequency response. May be used to estimate natural frequencies and modal damping ratios.',
+        endpoint: 'bode'
     },
     {
         name: 'Nyquist',
         available: false,
-        type: 'signalProcessing',
-        description: 'Visualise the gain and phase of the frequency response. May be used to estimate natural frequencies and modal damping ratios.'
+        type: 'analysis',
+        description: 'Visualise the gain and phase of the frequency response. May be used to estimate natural frequencies and modal damping ratios.',
+        endpoint: 'nyquist'
     }
     // {
     //     name: 'Frequency response function',

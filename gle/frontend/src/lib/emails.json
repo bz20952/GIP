@@ -30,7 +30,7 @@
                     ]
                 }
             ],
-            "unlocks": ["Hammer testing", "Sine sweep", "Stepped sweep"]
+            "unlocks": ["Hammer testing", "Sine sweep", "Discrete Fourier transform"]
         },
         {
             "id": 2,
@@ -47,7 +47,7 @@
                     "answer": {
                         "excitationType": "Hammer testing"
                     },
-                    "praise": "Great! A hammer test provides a quick and simple test considering the constraints of the task.",
+                    "praise": "Great! A hammer test provides a quick and simple test considering the constraints of the task. Return to Send Results to continue.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -71,7 +71,7 @@
                     "unit": "",
                     "tooltipId": 3,
                     "answer": "Tip 2",
-                    "praise": "Yes, well done! Tip 2 has a bandwidth of x-y Hz enabling all three expected modes to be excited",
+                    "praise": "Yes, well done! Tip 2 has a bandwidth of x-y Hz enabling all three expected modes to be excited. Return to Send Results to continue.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -111,7 +111,7 @@
                     ]
                 }
             ],
-            "unlocks": ["Bode"]
+            "unlocks": ["Bode", "Stepped sweep"]
         },
         {
             "id": 3,
@@ -139,7 +139,7 @@
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Not quite, make sure you are exciting the structure from where the engine would be located."
+                            "message": "Not quite, make sure you are exciting the structure from where the engine would be located. Return to Send Results to continue."
                         }
                     ]
                 },
@@ -150,7 +150,7 @@
                     "unit": "Hz",
                     "tooltipId": 6,
                     "answer": 5,
-                    "praise": "Oh no, you got it wrong. However, it seems that it is not your fault, there is something wrong with the measured data!",
+                    "praise": "Oh no, you got it wrong. However, it seems that it is not your fault, there is something wrong with the measured data! Return to Send Results to continue.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -198,7 +198,7 @@
                     "unit": "",
                     "tooltipId": 8,
                     "answer": 20,
-                    "praise": "That is correct! Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate.",
+                    "praise": "That is correct! Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate. Return to Send Results to continue.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -221,7 +221,7 @@
                     "unit": "Hz",
                     "tooltipId": 9,
                     "answer": 200,
-                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum.",
+                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum. Return to Send Results to continue.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -265,76 +265,70 @@
         },
         {
             "id": 5,
-            "sender": "Fichard Reynman",
-            "subject": "We need modal damping ratios!",
-            "body": "Hello, I've heard big things about your modal testing expertise. Please can you produce a Nyquist plot and use it to estimate modal damping ratios?",
+            "sender": "Kisambard Bingdom Irunel",
+            "subject": "Mode shapes on my desk by this afternoon",
+            "body": "Hello, we've just had some new clients adopt the Flairbus wing design and they're encountering issues with large wing tip deflections. First, given that the engine is rotating at 9000 rpm, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP. I'd recommend starting by producing a Bode plot. Mode shapes can be found by the ratios of the gain peaks at different measurement locations. Good luck, we're depending on you here!",
             "results": [
                 {
                     "subtaskId": 1,
-                    "name": "Radius of the circle",
-                    "inputType": "number", 
+                    "name": "Mode of vibration",
+                    "inputType": "select",
+                    "options": [1, 2, 3],
                     "unit": "",
-                    "tooltipId": 8,
-                    "answer": 20,
-                    "praise": "That is correct! Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate.",
+                    "tooltipId": 10,
+                    "answer": "2",
+                    "praise": "Perfect! The engine is rotating at 9000 rpm = 150 Hz which is approximately the second natural frequency. Return to Send Results to continue.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Not quite, maybe try a different excitation method to produce a higher resolution Nyquist plot."
+                            "message": "Double check that you're converting your units of rotational speed to Hz."
                         },
                         {
                             "stage": 2,
-                            "message": "Unfortunately that is not correct. Try using Sine sweep with maximum sampling frequency."
-                        },
-                        {
-                            "stage": 3,
-                            "message": "Our finite element simulations give a radius of 20."
+                            "message": "The correct mode is 2 as the second natural frequency is 9000 rpm = 150 Hz."
                         }
                     ]
                 },
                 {
                     "subtaskId": 2,
-                    "name": "Third natural frequency",
-                    "inputType": "number",
-                    "unit": "Hz",
-                    "tooltipId": 9,
-                    "answer": 200,
-                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum.",
+                    "name": "Second mode shape",
+                    "inputType": "select",
+                    "options": ["[1,0,1]", "[1,-1,0]", "[-1,1,1]", "[1,1,1]"],
+                    "unit": "",
+                    "tooltipId": 11,
+                    "answer": "[1,0,1]",
+                    "praise": "Perfect! Our finite element models agree with this observation. Return to Send Results to continue.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Not quite, look for the frequency where the sweep rate is at its maximum."
+                            "message": "View the tooltip to make sure your accelerometers are placed at the correct points."
                         },
                         {
                             "stage": 2,
-                            "message": "Try reading off the frequency where the circle crosses the real axis."
+                            "message": "Try a few different excitation methods and see which produces the least noisy Bode plot."
                         },
                         {
                             "stage": 3,
-                            "message": "The third natural frequency should be roughly 200 Hz."
+                            "message": "Remember to consider phase changes. If two locations are pi radians out of phase, their signs will be opposite."
                         }
                     ]
                 },
                 {
                     "subtaskId": 3,
-                    "name": "Third modal damping ratio",
+                    "name": "Second modal damping ratio",
                     "inputType": "number",
                     "unit": "%",
-                    "tooltipId": 9,
-                    "answer": 20,
-                    "praise": "Spot on! This is the most accurate estimate of zeta from the plot.",
+                    "tooltipId": 12,
+                    "answer": 10,
+                    "praise": "Perfect! Our finite element models agree with this observation. Return to Send Results to continue.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "It might be easier to find the angle subtended from the origin to the point of interest and use angle identities."
+                            "message": "Remember there are two different methods to obtain modal damping ratios. If you are struggling with half power, maybe try circle fitting."
                         },
                         {
                             "stage": 2,
-                            "message": "Use the pair of points closest to the resonance point for more accurate estimate of damping."
-                        },
-                        {
-                            "stage": 3,
-                            "message": "The third modal damping ratio is expected to be around 20%."
+                            "message": "Try a few different excitation methods and see which produces the least noisy Bode plot."
                         }
                     ]
                 }

@@ -24,7 +24,7 @@ def check_if_file_exists(options: dict, plot_type: str):
 
     """Check if file exists before generating a new one."""
 
-    if plot_type in ['accel', 'dft', 'anim', 'nyquist']:
+    if plot_type in ['accel', 'dft', 'anim', 'nyquist', 'bode']:
         filename = format_accel_plot_name(options, plot_type)
     else:
         filename = format_filename(options) + '_'  + plot_type + '.png'
@@ -71,7 +71,6 @@ def accel_to_disp(data: pd.DataFrame, options: dict):
         disp_dict[col] = s
 
     displacement_df = pd.DataFrame(data=disp_dict)
-    print(displacement_df)
 
     return displacement_df
 

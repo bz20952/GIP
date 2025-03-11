@@ -53,6 +53,7 @@ export interface Tool {
     available: boolean;
     type: string;
     description: string;
+    endpoint?: string;
 }
 
 /////////////////////////////////////////////////////////////////////////////

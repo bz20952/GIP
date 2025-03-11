@@ -79,9 +79,9 @@
   });
 </script>
 
-<!-- {#if showNotification}
+{#if showNotification}
   <Noti />
-{/if} -->
+{/if}
 <div class="feedback-container">
   <p style="color: {feedbackText.colour}">{feedbackText.message}</p>
   <button class="back-btn" on:click={() => $showFeedback = removeItemAll($showFeedback, emailId)}>Back</button>

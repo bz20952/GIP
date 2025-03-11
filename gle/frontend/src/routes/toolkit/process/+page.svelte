@@ -9,18 +9,15 @@
         ['forcing', ''],
         ['animate', '']
     ]);
+    // plotPaths.keys().forEach(async (endpoint: string) => {
+    //     plotPaths = plotPaths.set(endpoint, await getPath(endpoint, $testOptions));
+    // });
 
-    onMount(async () => {
+    onMount(() => {
         plotPaths.keys().forEach(async (endpoint: string) => {
             plotPaths = plotPaths.set(endpoint, await getPath(endpoint, $testOptions));
         });
     });
-
-    // onMount(async () => {
-    //     plotPaths.keys().forEach((plotType: string) => {
-    //         plotPaths.set(plotType, getPath($testOptions, plotType));
-    //     });
-    // });
 </script>
 
 <svelte:head>
@@ -51,7 +48,7 @@
 </div>
 
 <section>
-    <div class="filter">
+    <!-- <div class="filter">
         <label for="filter-type">Filter type: </label>
         <select name="filter-type" bind:value={$testOptions.filterType}>
             <option value="none">None</option>
@@ -73,7 +70,7 @@
                 <input type="number" name="upperCutoff" bind:value={$testOptions.upperCutoff}/>
             {/if}
         </div>
-    </div>
+    </div> -->
 
     <div>
         <button class="analyse" on:click={() => goto('/toolkit/analyse')}>Analyse</button>
@@ -114,7 +111,7 @@
         border-radius: 10px;
     }
 
-    .filter {
+    /* .filter {
         width: 100%;
     }
 
@@ -132,7 +129,7 @@
 
     .freq input {
         width: 20%;
-    }
+    } */
 
     .analyse {
         margin: 1rem;

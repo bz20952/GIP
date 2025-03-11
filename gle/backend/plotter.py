@@ -84,7 +84,7 @@ async def plot_forcing(data: pd.DataFrame, options: dict):
     return plot_path
 
 
-def plot_dft(data: pd.DataFrame, options: dict):
+async def plot_dft(data: pd.DataFrame, options: dict):
 
     """
     Plot the Discrete Fourier Transform of the acceleration data.
@@ -132,7 +132,7 @@ def plot_dft(data: pd.DataFrame, options: dict):
     return plot_path
 
 
-def plot_nyquist(data: pd.DataFrame, options: dict):
+async def plot_nyquist(data: pd.DataFrame, options: dict):
 
     """
     Plot the Nyquist plot of the acceleration.
@@ -186,13 +186,13 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
     plt.title('Inertance Nyquist plot') #2d plot
     plt.legend()
     plt.grid(True)
-    plt.show()
+    plt.savefig(plot_path)
     plt.close()
 
     return plot_path
 
 
-def plot_bode(data: pd.DataFrame, options: dict):
+async def plot_bode(data: pd.DataFrame, options: dict):
 
     """Plot the bode plot of the data."""
 
@@ -233,12 +233,11 @@ def plot_bode(data: pd.DataFrame, options: dict):
     plt.legend()
     plt.title('Bode Plot (Frequency Response)')
 
-    plt.subplot(2, 1, 2)
-    plt.legend()
+    # plt.subplot(2, 1, 2)
+    # plt.legend()
 
     plot_path = f'./images/{u.format_accel_plot_name(options, "bode")}'
     plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
-    plt.show()
     plt.close()
 
     return plot_path

@@ -5,31 +5,40 @@
     import { testOptions, tools } from '$lib/stores';
     import Highchart from '../../../components/Highchart.svelte';
 
-    let plotPaths = new Map([
-        ['dft', ''],
-        ['frf-gain', ''],
-        ['frf-phase', '']
-    ]);
+    let plotPaths = new Map()
 
-    onMount(async () => {
-        await sendApiRequest('filter', 'POST', $testOptions);
-        plotPaths.keys().forEach(async (endpoint: string) => {
-            plotPaths.set(endpoint, await getPath(endpoint, $testOptions));
-        });
+    onMount(() => {
+        $tools.filter(tool => tool.type === 'analysis').forEach(async (analysisTool) => {
+            plotPaths = plotPaths.set(analysisTool.endpoint, await getPath((analysisTool.endpoint as string), $testOptions))
+        })
     });
 </script>
 
 <h1>Modal Parameter Identification</h1>
 
 <div class="plot-container">
-    {#if $tools.find(tool => tool.name === 'Discrete Fourier transform' && tool.available)}
-        <img src={plotPaths.get('dft')} alt='Discrete Fourier transform' class="dft plot" />
-    {/if}
-    {#if $tools.find(tool => tool.name === 'Frequency response function' && tool.available)}
-        <img src={plotPaths.get('frf-gain')} alt='Frequency response function (gain)' class="frf-gain plot" />
-        <img src={plotPaths.get('frf-phase')} alt='Frequency response function (phase)' class="frf-phase plot" />
-    {/if}
-    <Highchart />
+    {#each plotPaths.keys() as toolEndpoint}
+        {#if $tools.find(tool => tool.endpoint == toolEndpoint)?.available}
+            {#if plotPaths.get(toolEndpoint)}
+                <a href="http://localhost:8000/images/{plotPaths.get(toolEndpoint)}">Open fullscreen</a>
+                <img src={plotPaths.get(toolEndpoint)} alt={toolEndpoint} class="plot" />
+                <!-- <img src={plotPaths.get(toolEndpoint)} alt={toolEndpoint} class="plot" /> -->
+            {:else}
+                <i class="fa fa-spinner fa-pulse"></i>
+            {/if}
+        {/if}
+        <!-- {#if $tools.find(tool => tool.name === 'Bode' && tool.available)}
+            <img src={plotPaths.get('bode')} alt='Bode' class="bode plot" />
+        {:else}
+            <i class="fa fa-spinner fa-pulse"></i>
+        {/if}
+        {#if $tools.find(tool => tool.name === 'Nyquist' && tool.available)}
+            <img src={plotPaths.get('nyquist')} alt='Nyquist' class="nyquist plot" />
+        {:else}
+            <i class="fa fa-spinner fa-pulse"></i>
+        {/if} -->
+        <!-- <Highchart /> -->
+    {/each}
 </div>
 
 <section>
@@ -49,10 +58,17 @@
         align-items: center;
     }
 
-	.plot {
+    .plot {
         width: 40%;
         height: auto;
         margin: 0 1rem;
+        box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+
+    .fa-spinner {
+        font-size: 2rem;
+        padding: 0 2rem;
     }
 
 	section {

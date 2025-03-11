@@ -8,9 +8,9 @@
   <div class="inbox-panel">
       <h1 class="inbox-header">Messages</h1>
       <div class="message-container">
-        {#each emails.emails as email}
+        {#each emails.emails.reverse() as email}
           {#if email.id <= $progress.current + 1}
-              <div class:email class:read={email.read}>
+              <div class:email>
                 {#if !$showResultsForm.includes(email.id) && !$showFeedback.includes(email.id)}
                   <div class="sender">{email.sender}</div>
                   <div class="subject">{email.subject}</div>
@@ -57,14 +57,6 @@
     border-radius: 10px;
     border: 2px solid #b2c3d3;
     margin: 1rem;
-  }
-
-  /* .email:hover {
-    background-color: rgb(236, 241, 241);
-  } */
-
-  .email.read {
-    background-color: #b4dc8d;
   }
 
   .sender {

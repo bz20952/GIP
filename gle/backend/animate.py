@@ -70,14 +70,14 @@ async def animate_beam(data: pd.DataFrame, options: dict):
     data = accel_to_disp(data, options)
 
     # Plot at every nth interval
-    n = len(data)//100
+    n = len(data)//10
 
     frames = round(len(data['t'])/n)
     fps = round(frames/max(data['t']))
     speed = 1
     true_fps = speed*fps
 
-    print('Target animation duration: ', frames/true_fps, 's')
+    # print('Target animation duration: ', frames/true_fps, 's')
 
     ani = animation.FuncAnimation(fig, animate, fargs=(data, n, options['shakerPosition']), frames=frames, init_func=init)
         
