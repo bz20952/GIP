@@ -50,9 +50,7 @@
     <img class="beam" src={beam} alt="Free-free beam" />
 
     <div class="shaker-slider">
-        <input type="range" min=0 max={locations.length - 1} step=1 value=2 on:change={(event: Event) => {
-            $testOptions['shakerPosition'] = (event.target as HTMLInputElement).valueAsNumber;
-        }}/>
+        <input type="range" min=0 max={locations.length - 1} step=1 bind:value={$testOptions['shakerPosition']}/>
     </div>
 
     <div class="extra-params">
@@ -65,6 +63,13 @@
                     {/if}
                 {/each}
             </select>
+            {#if $testOptions['excitationType'] === 'Hammer testing'}
+                <label for="tip-hardness">Tip hardness:</label>
+                <select name="tip-hardness" id="tip-hardness" bind:value={$testOptions['tipHardness']}>
+                    <option value='Soft'>Soft</option>
+                    <option value='Hard'>Hard</option>
+                </select>
+            {/if}
         </div>
 
         <div class="sampling-slider">

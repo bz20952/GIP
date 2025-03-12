@@ -2,18 +2,22 @@
     import { showResultsForm, progress } from "$lib/stores";
     import { removeItemAll } from "$lib/utils";
     import { emails } from "$lib/emails.json";
+    import { tooltips } from "$lib/tooltips.json"
     import type { Email, Result } from "$lib/types";
+    import Tooltip from "./Tooltip.svelte";
 
     export let emailId: number;
     const currentEmail = emails.find((email) => email.id === emailId) as Email;   
     const requiredResults = currentEmail?.results;
     const currentResult = requiredResults.find((result) => $progress.currentTask.currentSubtask.subtaskId === result.subtaskId) as Result;
+    const currentTooltip = tooltips.find(tooltip => tooltip.id === currentResult.tooltipId);
 
     let submitted: boolean = false;
 
     function handleSubmit(event: Event) {
         submitted = true;
         $progress.currentTask.currentSubtask.feedbackStage = Math.min($progress.currentTask.currentSubtask.feedbackStage + 1, currentResult.feedback.length);
+        $progress.currentTask.currentSubtask.attempts += 1;
         const formData = new FormData(event.target as HTMLFormElement);
         $progress.currentTask.currentSubtask.answer = formData.get(currentResult.name);
     }
@@ -35,7 +39,7 @@
         {:else if currentResult.inputType === 'none'}
             <i>This answer is read automatically.</i>
         {/if}
-        <span>{currentResult.unit}</span>
+        <span>{currentResult.unit}<Tooltip displayImage={true} tooltipText={currentTooltip?.tooltipText} tooltipImage={currentTooltip?.tooltipImage}/></span>
     </div>
     <div class='btns'>
         <button class="back-btn" on:click={() => $showResultsForm = removeItemAll($showResultsForm, emailId)}>Back</button>

@@ -111,7 +111,7 @@
                     ]
                 }
             ],
-            "unlocks": ["Bode", "Stepped sweep"]
+            "unlocks": ["Stepped sweep"]
         },
         {
             "id": 3,
@@ -261,13 +261,13 @@
                     ]
                 }
             ],
-            "unlocks": []
+            "unlocks": ["Bode"]
         },
         {
             "id": 5,
             "sender": "Kisambard Bingdom Irunel",
             "subject": "Mode shapes on my desk by this afternoon",
-            "body": "Hello, we've just had some new clients adopt the Flairbus wing design and they're encountering issues with large wing tip deflections. First, given that the engine is rotating at 9000 rpm, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP. I'd recommend starting by producing a Bode plot. Mode shapes can be found by the ratios of the gain peaks at different measurement locations. Good luck, we're depending on you here!",
+            "body": "Hello, we've just had some new clients adopt the Flairbus wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 9000 rpm, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP. I'd recommend starting by producing a Bode plot. Mode shapes can be found by the ratios of the gain peaks at different measurement locations. Good luck, we're depending on you here!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -285,36 +285,61 @@
                         },
                         {
                             "stage": 2,
-                            "message": "The correct mode is 2 as the second natural frequency is 9000 rpm = 150 Hz."
+                            "message": "Try a different excitation method when estimating natural frequency."
                         }
                     ]
                 },
                 {
                     "subtaskId": 2,
-                    "name": "Second mode shape",
-                    "inputType": "select",
-                    "options": ["[1,0,1]", "[1,-1,0]", "[-1,1,1]", "[1,1,1]"],
+                    "name": "Experimental setup",
+                    "inputType": "none",
                     "unit": "",
-                    "tooltipId": 11,
-                    "answer": "[1,0,1]",
-                    "praise": "Perfect! Our finite element models agree with this observation.",
+                    "tooltipId": 10,
+                    "answer": {
+                        "accelerometers": {
+                            "A0": true,
+                            "A1": false,
+                            "A2": true,    
+                            "A3": false,
+                            "A4": true
+                        },
+                        "shakerPosition": 2,
+                        "excitationType": "Sine sweep"
+                    },
+                    "praise": "Correct! You have setup the test correctly to measure accelerations in the second mode of vibration.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "View the tooltip to make sure your accelerometers are placed at the correct points."
+                            "message": "Pick an excitation method which can best isolate the second mode."
                         },
                         {
                             "stage": 2,
-                            "message": "Try a few different excitation methods and see which produces the least noisy Bode plot."
-                        },
-                        {
-                            "stage": 3,
-                            "message": "Remember to consider phase changes. If two locations are pi radians out of phase, their signs will be opposite."
+                            "message": "Double check the placement of your accelerometers."
                         }
                     ]
                 },
                 {
                     "subtaskId": 3,
+                    "name": "Second mode shape",
+                    "inputType": "select",
+                    "options": ["[1,0,-1]", "[1,-1,0]", "[-1,1,1]", "[1,1,1]"],
+                    "unit": "",
+                    "tooltipId": 11,
+                    "answer": "[1,0,-1]",
+                    "praise": "Perfect! Our finite element models agree with this observation.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Try a few different excitation methods and see which produces the least noisy Bode plot."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Remember to consider phase changes. If two locations are pi radians out of phase, their signs will be opposite."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 4,
                     "name": "Second modal damping ratio",
                     "inputType": "number",
                     "unit": "%",
@@ -324,13 +349,24 @@
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Remember there are two different methods to obtain modal damping ratios. If you are struggling with half power, maybe try circle fitting."
+                            "message": "Try a few different excitation methods and see which produces the least noisy Bode plot."
                         },
                         {
                             "stage": 2,
-                            "message": "Try a few different excitation methods and see which produces the least noisy Bode plot."
+                            "message": "Remember there are two different methods to obtain modal damping ratios. If you are struggling with half power, maybe try circle fitting."
                         }
                     ]
+                },
+                {
+                    "subtaskId": 5,
+                    "name": "You may have noticed signifcant noise in the DFT. What might be causing this problem?",
+                    "inputType": "select",
+                    "options": ["The recorded time-domain signals are not periodic over the DFT window.", "The damping model is incorrect.", "The application of a digital filter has removed useful frequency components as well as noise."],
+                    "unit": "",
+                    "tooltipId": 12,
+                    "answer": "The recorded time-domain signals are not periodic over the DFT window.",
+                    "praise": "Correct! Leakage occurs when the time-domain signal is not periodic over the DFT window. This can result in the appearance of frequency peaks which, in reality, are not present in the measured time-domain signal.",
+                    "feedback": []
                 }
             ],
             "unlocks": []

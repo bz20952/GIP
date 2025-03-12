@@ -10,7 +10,9 @@ def read_csv(options: dict):
 
     # Make sure that free vibration reads hammer testing data
     if options['excitationType'] == 'Free vibration':
-        options['excitationType'] = 'Hammer testing'
+        options['excitationType'] = 'Soft'
+    elif options['excitationType'] == 'Hammer testing':
+        options['excitationType'] = options['tipHardness']
 
     filename = u.format_filename(options)
     df = pd.read_csv(f'./data/{filename}.csv', header=0)

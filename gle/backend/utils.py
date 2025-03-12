@@ -55,17 +55,17 @@ def accel_to_disp(data: pd.DataFrame, options: dict):
     t = data["t"].values
 
     # Set dict to transfer to disp df
-    disp_dict = {"t": t[:-2]}  # Last two values must be removed due to double integration
+    disp_dict = {"t": t}  # Last two values must be removed due to double integration
 
     # Perform double integration for each acceleration column
     for col in ["A0", "A1", "A2", "A3", "A4"]:
         a = data[col].values/9.81  # Acceleration data (convert from g to m/s^2)
         
         # First integration: acceleration to velocity (assuming initial velocity = 0)
-        v = cumulative_trapezoid(a, t)
+        v = cumulative_trapezoid(a, t, initial=0)
         
         # Second integration: velocity to displacement (assuming initial displacement = 0)
-        s = cumulative_trapezoid(v, t[:-1])
+        s = cumulative_trapezoid(v, t, initial=0)
         
         # Store displacement
         disp_dict[col] = s

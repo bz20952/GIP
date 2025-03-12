@@ -240,7 +240,8 @@ async def start_tracking(request: Request):
         with open(f'./templates/tracking.json', 'r') as f:
             tracking_data = json.load(f)
     
-    tracking_data[str(options["subtaskId"])]["endTime"] = options["timestamp"]  # Check if subtask is already being tracked
+    tracking_data[str(options["subtaskId"])]["endTime"] = options["timestamp"]  
+    tracking_data[str(options["subtaskId"])]["attempts"] = options["attempts"]
 
     with open(f'./tracking/{options["serialNumber"]}.json', 'w') as f:
         json.dump(tracking_data, f)

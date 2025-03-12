@@ -7,6 +7,7 @@ export interface Result {
     inputType: string;
     options: Array<string>;
     unit: string;
+    tooltipId: number;
     answer: number | Object | string;
     praise: string;
     feedback: Feedback[];
@@ -32,6 +33,7 @@ export interface Progress {
     total: number;
     current: number;
     currentTask: Task;
+    displayMessage: DisplayMessage[];
 }
 
 export interface Task {
@@ -43,7 +45,14 @@ export interface Subtask {
     subtaskId: number;
     answer: any;
     feedbackStage: number;
+    attempts: number;
     correct: boolean;
+}
+
+export interface DisplayMessage {
+    emailId: number;
+    message: string;
+    colour: string;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -69,6 +78,7 @@ export interface TestOptions {
     };
     shakerPosition: number;
     excitationType: string;
+    tipHardness: string;
     samplingFreq: number;
     filterType: string;
     lowerCutoff: number;

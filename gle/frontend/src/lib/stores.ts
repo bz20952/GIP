@@ -89,9 +89,11 @@ export const progress: Writable<Progress> = writable({
             subtaskId: 1,
             answer: undefined,
             feedbackStage: 0,
+            attempts: 0,
             correct: false
         }
-    }
+    },
+    displayMessage: emails.map(email => ({ emailId: email.id, message: 'There is no feedback yet for this task.', colour: '#333' }))
 });
 
 export const testOptions: Writable<TestOptions> = writable({
@@ -105,6 +107,7 @@ export const testOptions: Writable<TestOptions> = writable({
     },
     "shakerPosition": 0,
     "excitationType": "Free vibration",
+    "tipHardness": "Soft",
     "samplingFreq": 512,
     "filterType": "none",
     "lowerCutoff": 0,

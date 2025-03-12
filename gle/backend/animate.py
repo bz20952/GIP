@@ -8,11 +8,11 @@ from utils import accel_to_disp, format_accel_plot_name
 plt.rcParams.update({
     'font.size': 18,
     'figure.figsize': (8, 5),
-    'figure.dpi': 120
+    'figure.dpi': 300
 })
 
 
-fig, ax = plt.subplots(figsize=(8, 5), dpi=120)
+fig, ax = plt.subplots()
 fig.tight_layout(pad=2.5)
 line, = ax.plot([], [])
 

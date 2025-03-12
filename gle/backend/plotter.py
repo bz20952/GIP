@@ -7,7 +7,7 @@ from mpl_toolkits.mplot3d import Axes3D  # Import 3D plotting module
 plt.rcParams.update({
     'font.size': 18,
     'figure.figsize': (8, 5),
-    'figure.dpi': 120
+    'figure.dpi': 300
 })
 
 locations = ['0', 'l/4', 'l/2', '3l/4', 'l']
@@ -115,7 +115,7 @@ async def plot_dft(data: pd.DataFrame, options: dict):
             f = f[:n//2]
             fft = np.abs(np.fft.fft(data[acc]))[:n//2]
 
-            plt.scatter(f, fft, s=10, label=acc)
+            plt.scatter(f, fft/max(fft), s=10, label=acc)
 
     plot_path = f'./images/{u.format_accel_plot_name(options, "dft")}'
 
@@ -124,9 +124,9 @@ async def plot_dft(data: pd.DataFrame, options: dict):
     plt.title('Discrete Fourier Transform of Acceleration')
     plt.legend()
     plt.grid(True)
-    plt.xlim(0, (max(f)))  # Set limits for the x-axis (frequency)
-    plt.ylim(0, (max(fft[100:])*1.2))  # Set limits for the y-axis (frequency)
-    plt.savefig(plot_path) 
+    plt.xlim(50, max(f))  # Set limits for the x-axis (frequency)
+    plt.ylim(0, 1.1)  # Set limits for the y-axis (frequency)
+    plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5) 
     plt.close()          
 
     return plot_path
@@ -186,7 +186,7 @@ async def plot_nyquist(data: pd.DataFrame, options: dict):
     plt.title('Inertance Nyquist plot') #2d plot
     plt.legend()
     plt.grid(True)
-    plt.savefig(plot_path)
+    plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
     plt.close()
 
     return plot_path
@@ -218,12 +218,14 @@ async def plot_bode(data: pd.DataFrame, options: dict):
             # Magnitude Plot
             plt.subplot(2, 1, 1)
             plt.semilogx(f, magnitude, label=acc)
+            plt.xlim(1, max(f))
             plt.ylabel('Magnitude [dB]')
             plt.grid(True, which="both")
 
             # Phase Plot
             plt.subplot(2, 1, 2)
             plt.semilogx(f, phase, label=acc)
+            plt.xlim(1, max(f))
             plt.xlabel('Frequency [Hz]')
             plt.ylabel('Phase [°]')
             plt.grid(True, which="both")
