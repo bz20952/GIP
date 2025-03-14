@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 #high band cutoff
 
 # Read the CSV file
-filename = 'gle/backend/data/FREE_400_5.csv'  # Replace with the actual filename
+filename = 'gle/backend/data/FREE_400_4.csv'  # Replace with the actual filename
 
 # Assuming the file has two columns: 'Time' and 'Acceleration'
 data = pd.read_csv(filename)  # Reads the CSV file into a DataFrame

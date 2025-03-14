@@ -37,8 +37,8 @@ if __name__ == "__main__":
     sample_rate = 1000
 
     # wave = generate_sine_wave(2, 50, 0, 5, sample_rate)
-    # wave = generate_sine_sweep(0.5, 1.5, 50, 5, sample_rate)
-    wave=generate_random_signal(5,10,sample_rate)
+    # wave = generate_sine_sweep(0.5, 1000, 1, 20, sample_rate)
+    wave=generate_random_signal(10,30,sample_rate)
     # wave = generate_stepped_sweep(0.5, 2, 50, 10, sample_rate)
    
 
