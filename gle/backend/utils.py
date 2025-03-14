@@ -1,6 +1,7 @@
 import pandas as pd
 from scipy.integrate import cumulative_trapezoid
 import os
+import numpy as np
 
 
 def format_filename(options: dict):
@@ -60,6 +61,9 @@ def accel_to_disp(data: pd.DataFrame, options: dict):
     # Perform double integration for each acceleration column
     for col in ["A0", "A1", "A2", "A3", "A4"]:
         a = data[col].values/9.81  # Acceleration data (convert from g to m/s^2)
+
+        # Normalise accelerations to have zero mean (i.e. zero steady state)
+        a -= np.mean(a)
         
         # First integration: acceleration to velocity (assuming initial velocity = 0)
         v = cumulative_trapezoid(a, t, initial=0)

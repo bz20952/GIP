@@ -12,9 +12,9 @@
 		<br><br>
 		That's where you come in.
 		You are about to be given 5 challenges to demonstrate your expertise, impress clients and save the company.
-		Navigate to the <a href="/help"><strong>Help</strong></a> tab for guidance on getting started.
+		Navigate to the <a href="/help">Help</a> tab for guidance on getting started.
 		<br><br>
-		Are you ready?
+		<strong>Are you ready?</strong>
 	</p>
 	<input class='serial-num' type="text" placeholder="Enter your Serial Number" bind:value={$testOptions['serialNumber']}>
 	{#if $testOptions['serialNumber']}

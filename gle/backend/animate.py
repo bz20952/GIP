@@ -13,7 +13,7 @@ plt.rcParams.update({
 
 
 fig, ax = plt.subplots()
-fig.tight_layout(pad=2.5)
+fig.tight_layout(pad=3)
 line, = ax.plot([], [])
 
 
@@ -70,7 +70,7 @@ async def animate_beam(data: pd.DataFrame, options: dict):
     data = accel_to_disp(data, options)
 
     # Plot at every nth interval
-    n = len(data)//20
+    n = len(data)//15
 
     frames = round(len(data['t'])/n)
     fps = round(frames/max(data['t']))
@@ -90,8 +90,11 @@ async def animate_beam(data: pd.DataFrame, options: dict):
 
 if __name__ == '__main__':
     import json
+    import asyncio
     import reader as r
     with open('./templates/requestFormat.json') as f:
         options = json.load(f)
     data = r.read_csv(options)
-    plot_path = animate_beam(data, options)
+    plot_path = asyncio.run(animate_beam(data, options))
+    # data = accel_to_disp(data, options)
+    # print(data)

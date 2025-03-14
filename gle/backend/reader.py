@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import utils as u
 import math
 
@@ -21,6 +22,14 @@ def read_csv(options: dict):
     if options['samplingFreq'] != 2048:
         sample_interval = math.floor(2048/options['samplingFreq'])
         df = df.iloc[::sample_interval,:]
+
+    print(df)
+
+    for accel_index in range(5):
+        df[f'A{accel_index}'] = df[f'A{accel_index}'] - np.mean(df[f'A{accel_index}'])
+        df[f'F{accel_index}'] = df[f'F{accel_index}'] - np.mean(df[f'F{accel_index}'])
+
+    print(df)
 
     return df
 

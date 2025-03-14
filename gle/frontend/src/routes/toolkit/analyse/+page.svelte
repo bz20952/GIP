@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { getPath, sendApiRequest } from '$lib/utils';
+	import { getPath } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
     import { testOptions, tools } from '$lib/stores';
-    import Highchart from '../../../components/Highchart.svelte';
 
     let plotPaths = new Map()
 

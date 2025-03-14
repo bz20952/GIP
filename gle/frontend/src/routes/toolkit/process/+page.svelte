@@ -7,7 +7,7 @@
     let plotPaths = new Map([
         ['time-domain', ''],
         ['forcing', ''],
-        ['animate', '']
+        // ['animate', '']
     ]);
 
     onMount(() => {
@@ -44,14 +44,14 @@
                 <i class="fa fa-spinner fa-pulse"></i>
             {/if}
         {/if}
-        {#if plotPaths.get('animate')}
+        <!-- {#if plotPaths.get('animate')}
             <div class="plot-container">
                 <img src={plotPaths.get('animate')} alt='Animation' class="animation plot" />
                 <a class="fullscreen-link" href={plotPaths.get('animate')} target="_blank" rel="noopener noreferrer">Open fullscreen</a>
             </div>
         {:else}
             <i class="fa fa-spinner fa-pulse"></i>
-        {/if}
+        {/if} -->
     </div>
 
     <!-- <div class="filter">

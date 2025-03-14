@@ -36,63 +36,40 @@
             "id": 2,
             "sender": "Tikola Nesla",
             "subject": "Modal test data needed",
-            "body": "I need a quick and rough estimate of the natural frequencies of the wing before my next stakeholder meeting. Please setup a test and choose an appropriate excitation method (NOTE: the wing is too stiff to execute free vibration testing in this case). Time is of the essence!",
+            "body": "I need a quick and rough estimate of the first three natural frequencies of the wing before my next stakeholder meeting. Please setup a test (NOTE: the wing is too stiff to execute free vibration testing in this case) and measure the second natural frequency. Time is of the essence!",
             "results": [
                 {
                     "subtaskId": 1,
-                    "name": "Excitation type",
+                    "name": "Experimental setup",
                     "inputType": "none",
                     "unit": "",
                     "tooltipId": 2,
                     "answer": {
-                        "excitationType": "Hammer testing"
+                        "excitationType": "Hammer testing",
+                        "tipHardness": "Hard"
                     },
-                    "praise": "Great! A hammer test provides a quick and simple test considering the constraints of the task.",
+                    "praise": "Great! A hammer test provides a quick and simple test considering the constraints of the task. You also correctly selected the tip hardness which enabled excitation of the all required modes.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "The method you've chosen would take too long. Try another."
+                            "message": "One or more of the parameters in your test setup is incorrect. Focus on the excitation method."
                         },
                         {
                             "stage": 2,
-                            "message": "Since we are not too concerned with accuracy at the moment, a much simpler and excitation method can be used."
+                            "message": "Given that Hammer testing should be used, which tip hardness enables excitation of the greatest number of modes?"
                         },
                         {
                             "stage": 3,
-                            "message": "Hammer testing is the correct method."
+                            "message": "Hard tip hammer testing is ideal as it is quick to execute (does not require a shaker) and excites all required modes."
                         }
                     ]
                 },
                 {
                     "subtaskId": 2,
-                    "name": "Tip hardness",
-                    "inputType": "select",
-                    "options": ["Tip 1", "Tip 2"],
-                    "unit": "",
-                    "tooltipId": 3,
-                    "answer": "Tip 2",
-                    "praise": "Yes, well done! Tip 2 has a bandwidth of x-y Hz enabling all three expected modes to be excited.",
-                    "feedback": [
-                        {
-                            "stage": 1,
-                            "message": "A harder tip is able to excite a wider range of natural frequencies."
-                        },
-                        {
-                            "stage": 2,
-                            "message": "Check the excitation bandwidth of the tip."
-                        },
-                        {
-                            "stage": 3,
-                            "message": "Tip 2 is correct as it enables excitation of all three modes."
-                        }
-                    ]
-                },
-                {
-                    "subtaskId": 3,
                     "name": "Second natural frequency",
                     "inputType": "number",
                     "unit": "Hz",
-                    "tooltipId": 4,
+                    "tooltipId": 3,
                     "answer": 150,
                     "praise": "Correct! You successfully setup an appropriate test and employed the discrete Fourier transform.",
                     "feedback": [
@@ -106,7 +83,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Our in-house testing gives a second natural frequency of 100 Hz."
+                            "message": "Our in-house testing gives a second natural frequency of 150 Hz. This is approximately the position of the second peak in the DFT."
                         }
                     ]
                 }
@@ -117,7 +94,7 @@
             "id": 3,
             "sender": "Fichael Maraday",
             "subject": "Modelling vibration caused by engine",
-            "body": "In an aircraft wing, the engine (which vibrates a lot!) is usually located at the middle of the wing. Conduct a modal test to simulate the dynamics. Click 'Send Results' for a list of required data.",
+            "body": "In an aircraft wing, the engine (which vibrates a lot!) is usually located at the middle of the wing. We need you to conduct a modal test to simulate the dynamics.",
             "results": [
                 {
                     "subtaskId": 1,
@@ -126,41 +103,24 @@
                     "unit": "",
                     "tooltipId": 5,
                     "answer": {
-                        "accelerometers": {
-                            "A0": true,
-                            "A1": false,
-                            "A2": true,    
-                            "A3": false,
-                            "A4": true
-                        },
-                        "shakerPosition": 2
+                        "shakerPosition": 2,
+                        "samplingFrequency": 516
                     },
                     "praise": "Nice one! You have setup the test correctly.",
                     "feedback": [
                         {
                             "stage": 1,
                             "message": "Not quite, make sure you are exciting the structure from where the engine would be located."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "The correct excitation location is at l/2."
                         }
                     ]
                 },
                 {
                     "subtaskId": 2,
-                    "name": "Response frequency",
-                    "inputType": "number",
-                    "unit": "Hz",
-                    "tooltipId": 6,
-                    "answer": 5,
-                    "praise": "Oh no, you got it wrong. However, it seems that it is not your fault, there is something wrong with the measured data!",
-                    "feedback": [
-                        {
-                            "stage": 1,
-                            "message": "Not quite, make sure you are exciting the structure from where the engine would be located."
-                        }
-                    ]
-                },
-                {
-                    "subtaskId": 3,
-                    "name": "What error can cause the frequency of the response to be measured incorrectly?",
+                    "name": "What error is likely to occur when sampling at low frequency?",
                     "inputType": "select",
                     "options": ["Aliasing", "Leakage", "Hysteretic damping"],
                     "unit": "",
@@ -210,7 +170,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Our finite element simulations give a radius of 20."
+                            "message": "Our finite element simulations give a radius of 20. Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate."
                         }
                     ]
                 },
@@ -219,7 +179,7 @@
                     "name": "Third natural frequency",
                     "inputType": "number",
                     "unit": "Hz",
-                    "tooltipId": 9,
+                    "tooltipId": 8,
                     "answer": 200,
                     "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum.",
                     "feedback": [
@@ -233,7 +193,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "The third natural frequency should be roughly 200 Hz."
+                            "message": "The third natural frequency should be roughly 200 Hz. The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum."
                         }
                     ]
                 },
@@ -256,7 +216,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "The third modal damping ratio is expected to be around 20%."
+                            "message": "The third modal damping ratio is expected to be around 20% using the half-power method."
                         }
                     ]
                 }
@@ -275,7 +235,7 @@
                     "inputType": "select",
                     "options": [1, 2, 3],
                     "unit": "",
-                    "tooltipId": 10,
+                    "tooltipId": 7,
                     "answer": "2",
                     "praise": "Perfect! The engine is rotating at 9000 rpm = 150 Hz which is approximately the second natural frequency.",
                     "feedback": [
@@ -322,10 +282,10 @@
                     "subtaskId": 3,
                     "name": "Second mode shape",
                     "inputType": "select",
-                    "options": ["[1,0,-1]", "[1,-1,0]", "[-1,1,1]", "[1,1,1]"],
+                    "options": ["[1,-0.6,0,0.6,-1]", "[1,0.6,0.6,-1,0]", "[-1,1,1,0.6,-0.6]", "[1,0.6,0,-0.6,1]"],
                     "unit": "",
                     "tooltipId": 11,
-                    "answer": "[1,0,-1]",
+                    "answer": "[1,-0.6,0,0.6,-1]",
                     "praise": "Perfect! Our finite element models agree with this observation.",
                     "feedback": [
                         {
