@@ -252,7 +252,8 @@ if __name__ == '__main__':
         options = json.load(f)
     data = r.read_csv(options)
     plot_acceleration(data, options)
-    plot_forcing(data, options)
-    plot_dft(data, options)
-    plot_nyquist(data, options)
-    plot_bode(data, options)
+    # plot_forcing(data, options)
+    # plot_dft(data, options)
+    # plot_nyquist(data, options)
+    # plot_bode(data, options)
+
