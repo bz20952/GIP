@@ -65,7 +65,7 @@ async def time_domain(request: Request):
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
-        plot_path = await p.plot_acceleration(data, options)
+        plot_path = p.plot_acceleration(data, options)
     else:
         plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
 
@@ -85,7 +85,7 @@ async def forcing(request: Request):
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
-        plot_path = await p.plot_forcing(data, options)
+        plot_path = p.plot_forcing(data, options)
     else:
         plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
 
@@ -181,17 +181,17 @@ async def nyquist():
 @app.get('/filter')
 async def filter(request: Request):
     options = await request.json()
+    file_ext = ''
 
-    if options['filterType'] == 'bandpass':
-        b, a = f.bandpass(options['lowerCutoff'], options['upperCutoff'], options['samplingFreq'])
-    elif options['filterType'] == 'lowpass':
-        b, a = f.lowpass(options['lowerCutoff'], options['samplingFreq'])
-    elif options['filterType'] == 'highpass':
-        b, a = f.highpass(options['upperCutoff'], options['samplingFreq'])
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        plot_path = f.filter(data, options)
+    else:
+        plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
 
     return {
         "details": "This should return a filtered graph.",
-        "message": "",
+        "message": os.path.join(root_url, plot_path),
         "success": True,
         "error": False,
         "code": 200
