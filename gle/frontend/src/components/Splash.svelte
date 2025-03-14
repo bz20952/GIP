@@ -1,5 +1,6 @@
 <script>
 	import { splash } from '$lib/stores';
+	import { testOptions } from '$lib/stores';
 </script>
 
 <div class="splash">
@@ -15,7 +16,10 @@
 		<br><br>
 		Are you ready?
 	</p>
-	<button class="close-btn" on:click={() => $splash=false}>Let's go.</button>
+	<input class='serial-num' type="text" placeholder="Enter your Serial Number" bind:value={$testOptions['serialNumber']}>
+	{#if $testOptions['serialNumber']}
+		<button class="close-btn" on:click={() => $splash=false}>Let's go.</button>
+	{/if}
 </div>
 
 <style>
@@ -36,6 +40,10 @@
 
 	.welcome {
 		padding: 0 0 1rem 0;
+	}
+
+	.serial-num {
+		margin: 1rem;
 	}
 
 	.close-btn {

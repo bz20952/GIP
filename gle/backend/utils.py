@@ -9,19 +9,42 @@ def format_filename(options: dict):
 
     excitation = options['excitationType'].split(' ')[0].upper()
 
-    locations = ['0', 'l/4', 'l/2', '3l/4', 'l']
-    shaker_position = locations.index(options['shakerPosition'])
+    # locations = ['0', 'l/4', 'l/2', '3l/4', 'l']
+    # shaker_position = locations.index(options['shakerPosition'])
 
-    return f"{excitation}_{options['samplingFreq']}_{shaker_position}"
+    # Because recorded data is symetric we can use data recorded at 0 as l and l/4 and 3l/4
+    shaker_position = options['shakerPosition']
+    if options['shakerPosition'] > 2:
+        shaker_position = 5-shaker_position-1
+
+    return f"{excitation}_{shaker_position}"
 
 
 def check_if_file_exists(options: dict, plot_type: str):
 
     """Check if file exists before generating a new one."""
 
-    filename = format_filename(options) + '_'  + plot_type
+    if plot_type in ['accel', 'dft', 'anim', 'nyquist', 'bode']:
+        filename = format_accel_plot_name(options, plot_type)
+    else:
+        filename = format_filename(options) + '_'  + plot_type + '.png'
 
     return os.path.isfile(f"./images/{filename}")
+
+
+def format_accel_plot_name(options: dict, plot_type: str):
+
+    """Format filename to standard schema."""
+
+    accelerometers = options['accelerometers']
+    file_suffix = ''
+    for index, acc in enumerate(accelerometers.keys()):
+        if accelerometers[acc]:
+            file_suffix += f'_{index}'
+
+    filename = format_filename(options) + '_' + str(options['samplingFreq']) + '_' + plot_type + file_suffix + '.png'
+
+    return filename
 
 
 def accel_to_disp(data: pd.DataFrame, options: dict):
@@ -31,12 +54,12 @@ def accel_to_disp(data: pd.DataFrame, options: dict):
     # Time intervals (assuming uniform spacing)
     t = data["t"].values
 
-    # Initialize displacement DataFrame
-    displacement_df = pd.DataFrame({"t": t})
+    # Set dict to transfer to disp df
+    disp_dict = {"t": t}  # Last two values must be removed due to double integration
 
     # Perform double integration for each acceleration column
-    for col in ["0", "l/4", "l/2", "3l/4", "l"]:
-        a = data[col].values  # Acceleration data
+    for col in ["A0", "A1", "A2", "A3", "A4"]:
+        a = data[col].values/9.81  # Acceleration data (convert from g to m/s^2)
         
         # First integration: acceleration to velocity (assuming initial velocity = 0)
         v = cumulative_trapezoid(a, t, initial=0)
@@ -45,7 +68,9 @@ def accel_to_disp(data: pd.DataFrame, options: dict):
         s = cumulative_trapezoid(v, t, initial=0)
         
         # Store displacement
-        displacement_df[col] = s
+        disp_dict[col] = s
+
+    displacement_df = pd.DataFrame(data=disp_dict)
 
     return displacement_df
 

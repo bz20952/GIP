@@ -1,9 +1,6 @@
 import { writable, type Writable } from 'svelte/store';
-import type { Tool, Progress } from './types';
-
-export const sessionId: Writable<string> = writable(
-    Math.random().toString(36).substring(2, 14)
-);
+import type { Tool, Progress, TestOptions } from './types';
+import { emails } from '$lib/emails.json';
 
 export const splash: Writable<boolean> = writable(true);
 
@@ -40,76 +37,79 @@ export const tools: Writable<Tool[]> = writable([
         name: 'Stepped sweep',
         available: false,
         type: 'excitation',
-        description: 'Displace and release a beam with no external forcing. Typically used to determine natural frequencies.'
+        description: 'Generate a stepped signal which gradually changes frequency. Typically used to determine natural frequencies.'
     },
     {
         name: 'Discrete Fourier transform',
-        available: true,
-        type: 'signalProcessing',
-        description: 'A mathematical tool used to convert discrete time-domain data to the frequency-domain.'
+        available: false,
+        type: 'analysis',
+        description: 'A mathematical tool used to convert discrete time-domain data to the frequency-domain.',
+        endpoint: 'dft'
     },
     {
         name: 'Bode',
         available: false,
-        type: 'signalProcessing',
-        description: 'Visualise the gain and phase of the frequency response. May be used to estimate natural frequencies and modal damping ratios.'
+        type: 'analysis',
+        description: 'Visualise the gain and phase of the frequency response. May be used to estimate natural frequencies and modal damping ratios.',
+        endpoint: 'bode'
     },
     {
         name: 'Nyquist',
         available: false,
-        type: 'signalProcessing',
-        description: 'Visualise the gain and phase of the frequency response. May be used to estimate natural frequencies and modal damping ratios.'
-    },
-    {
-        name: 'Frequency response function',
-        available: false,
         type: 'analysis',
-        description: 'Visualise the gain and phase of the frequency response across a range of forcing frequencies. May be used to estimate natural frequencies and modal damping ratios.'
-    },
-    {
-        name: 'Circle fitting',
-        available: false,
-        type: 'analysis',
-        description: 'Use the Nyquist plot to estimate modal damping ratios.'
-    },
-    {
-        name: 'Half power',
-        available: false,
-        type: 'analysis',
-        description: 'Use the Bode plot to estimate modal damping ratios.'
+        description: 'Visualise the gain and phase of the frequency response. May be used to estimate natural frequencies and modal damping ratios.',
+        endpoint: 'nyquist'
     }
+    // {
+    //     name: 'Frequency response function',
+    //     available: false,
+    //     type: 'analysis',
+    //     description: 'Visualise the gain and phase of the frequency response across a range of forcing frequencies. May be used to estimate natural frequencies and modal damping ratios.'
+    // },
+    // {
+    //     name: 'Circle fitting',
+    //     available: false,
+    //     type: 'analysis',
+    //     description: 'Use the Nyquist plot to estimate modal damping ratios.'
+    // },
+    // {
+    //     name: 'Half power',
+    //     available: false,
+    //     type: 'analysis',
+    //     description: 'Use the Bode plot to estimate modal damping ratios.'
+    // }
 ]);
 
 export const progress: Writable<Progress> = writable({
-    total: 5,
+    total: emails.length,
     current: 0,
-    tasks: [
-        {
-            emailId: 1,
-            answers: [],
+    currentTask: {
+        emailId: 1,
+        currentSubtask: {
+            subtaskId: 1,
+            answer: undefined,
             feedbackStage: 0,
-        },
-        {
-            emailId: 2,
-            answers: [],
-            feedbackStage: 0,
-        },
-        {
-            emailId: 3,
-            answers: [],
-            feedbackStage: 0,
-        },
-        {
-            emailId: 4,
-            answers: [],
-            feedbackStage: 0,
-        },
-        {
-            emailId: 5,
-            answers: [],
-            feedbackStage: 0,
-        },
-    ]
+            attempts: 0,
+            correct: false
+        }
+    },
+    displayMessage: emails.map(email => ({ emailId: email.id, message: 'There is no feedback yet for this task.', colour: '#333' }))
 });
 
-export const testOptions: Writable<any> = writable({});
+export const testOptions: Writable<TestOptions> = writable({
+    "serialNumber": undefined,
+    "accelerometers": {
+        "A0": true,
+        "A1": false,
+        "A2": false,    
+        "A3": false,
+        "A4": false
+    },
+    "shakerPosition": 0,
+    "excitationType": "Free vibration",
+    "tipHardness": "Soft",
+    "samplingFreq": 512,
+    "filterType": "none",
+    "lowerCutoff": 0,
+    "upperCutoff": 0
+});

@@ -19,4 +19,6 @@ services:
     environment:
       - PUBLIC_HOSTNAME=$PUBLIC_HOSTNAME
       - PUBLIC_BACKEND_PORT=$PUBLIC_BACKEND_PORT
-      - FRONTEND_PORT=$FRONTEND_PORT
+      - PORT=$FRONTEND_PORT
+    depends_on:
+      - app
