@@ -42,6 +42,7 @@ async def plot_acceleration(data: pd.DataFrame, options: dict):
     plot_path = f'./images/{u.format_accel_plot_name(options, "accel")}'
     
     plt.xlabel('Time [s]')
+    plt.xlim(0.1, 0.4)
     plt.ylabel(r'Acceleration [g]')
     plt.title('Raw Acceleration Data')
     plt.legend()
@@ -300,9 +301,9 @@ if __name__ == '__main__':
     with open('./templates/requestFormat.json') as f:
         options = json.load(f)
     data = r.read_csv(options)
-    # plot_acceleration(data, options)
+    asyncio.run(plot_acceleration(data, options))
     # plot_forcing(data, options)
     # plot_dft(data, options)
     # plot_nyquist(data, options)
     # asyncio.run(plot_bode(data, options))
-    frf_matrix(data, options)
+    # frf_matrix(data, options)

@@ -2,8 +2,8 @@
     "tooltips": [
         {
             "id": 1,
-            "tooltipText": "The first natural frequency can be identified by observation of the free time-domain response.",
-            "tooltipImage": ""
+            "tooltipText": "",
+            "tooltipImage": "http://localhost:8000/images/Tooltip1.png"
         },
         {
             "id": 2,
@@ -47,7 +47,7 @@
         },
         {
             "id": 10,
-            "tooltipText": "",
+            "tooltipText": "We want mode shape to be a three-dimensional vector. The three measurement locations should be equally spaced along the beam.",
             "tooltipImage": ""
         },
         {

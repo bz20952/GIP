@@ -3,9 +3,9 @@
     "accelerometers": {
         "A0": true,
         "A1": false,
-        "A2": true,    
+        "A2": false,    
         "A3": false,
-        "A4": true
+        "A4": false
     },
     "shakerPosition": 4,
     "excitationType": "Hammer testing",

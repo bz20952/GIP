@@ -12,7 +12,7 @@
                     "inputType": "number",
                     "unit": "Hz",
                     "tooltipId": 1,
-                    "answer": 100,
+                    "answer": 150,
                     "praise": "Nice one! The client will be pleased with such a quick turnaround.",
                     "feedback": [
                         {
@@ -21,11 +21,11 @@
                         },
                         {
                             "stage": 2,
-                            "message": "Try again, making sure to maximise your sampling frequency to get the highest possible measurement resolution."
+                            "message": "Not quite. Remember that period is the time between two peaks in the time domain."
                         },
                         {
                             "stage": 3,
-                            "message": "Our in-house testing gives a first natural frequency of 100 Hz."
+                            "message": "Our in-house testing gives a first natural frequency of 150 Hz. This corresponds to a period of 0.01 seconds."
                         }
                     ]
                 }
@@ -79,7 +79,7 @@
                         },
                         {
                             "stage": 2,
-                            "message": "Not quite, read carefully off the DFT graph."
+                            "message": "Not quite, make sure you are reading the correct peak off the DFT graph."
                         },
                         {
                             "stage": 3,
@@ -114,23 +114,27 @@
                         },
                         {
                             "stage": 2,
-                            "message": "The correct excitation location is at l/2."
+                            "message": "Check the tooltip. There are some constraints on sampling frequency."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "The correct excitation location is at l/2. Sampling is limited to 512 Hz in this case."
                         }
                     ]
                 },
                 {
                     "subtaskId": 2,
-                    "name": "What error is likely to occur when sampling at low frequency?",
+                    "name": "Run a few tests with this setup. What error might you be introducing by limiting sampling to 512 Hz?",
                     "inputType": "select",
                     "options": ["Aliasing", "Leakage", "Hysteretic damping"],
                     "unit": "",
                     "tooltipId": 7,
                     "answer": "Aliasing",
-                    "praise": "Correct! Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency. This is why the response frequency is measured incorrectly.",
+                    "praise": "Correct! Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Unfortunately that is not correct."
+                            "message": "Unfortunately that is not correct. Remember that your sampling frequency should always more than twice the Nyquist frequency."
                         },
                         {
                             "stage": 2,
@@ -227,7 +231,7 @@
             "id": 5,
             "sender": "Kisambard Bingdom Irunel",
             "subject": "Mode shapes on my desk by this afternoon",
-            "body": "Hello, we've just had some new clients adopt the Flairbus wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 9000 rpm, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP. I'd recommend starting by producing a Bode plot. Mode shapes can be found by the ratios of the gain peaks at different measurement locations. Good luck, we're depending on you here!",
+            "body": "Hello, we've just had some new clients adopt the Flairbus wing design and they're encountering issues with large wing tip deflections when the engine is at 3l/4. Given that the engine is rotating at 9000 rpm, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP. I'd recommend starting by producing a Bode plot. Mode shapes can be found by the ratios of the gain peaks at different measurement locations. Good luck, we're depending on you here!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -263,7 +267,7 @@
                             "A3": false,
                             "A4": true
                         },
-                        "shakerPosition": 2,
+                        "shakerPosition": 3,
                         "excitationType": "Sine sweep"
                     },
                     "praise": "Correct! You have setup the test correctly to measure accelerations in the second mode of vibration.",
@@ -290,7 +294,7 @@
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Try a few different excitation methods and see which produces the least noisy Bode plot."
+                            "message": "Try a few different excitation methods and see which produces the least noisy mode shape plot."
                         },
                         {
                             "stage": 2,
