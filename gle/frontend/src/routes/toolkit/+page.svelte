@@ -18,7 +18,7 @@
 
 <div class="instructions">
 	Here you can see all of your available tools and start new experiments.<br>
-	Every experiment consists of three stages; <strong>test setup</strong>, <strong>signal processing</strong> and <strong>modal analysis</strong>.<br>
+	Every experiment consists of three stages; <a href="/toolkit/test">test setup</a>, <a href="/toolkit/process">signal processing</a> and <a href="/toolkit/analyse">modal parameter identification</a>.<br>
 	By clicking the button below, you can use your available tools to gather results.<br>
 </div>
 

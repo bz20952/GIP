@@ -25,7 +25,7 @@
         top: -100px;
         right: 10px;
         max-width: 200px;
-        color: #2c6392;
+        color: black;
         display: flex;
         justify-content: center;
         align-items: center;

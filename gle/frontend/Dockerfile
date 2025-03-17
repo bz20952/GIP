@@ -16,5 +16,5 @@ COPY . .
 # Build the Svelte application
 RUN npm run build
 
-# Start Nginx server
-CMD [ "npm", "run", "preview" ]
+# Start Node server
+CMD [ "node", "build" ]

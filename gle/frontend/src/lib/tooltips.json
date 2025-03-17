@@ -1,0 +1,59 @@
+{
+    "tooltips": [
+        {
+            "id": 1,
+            "tooltipText": "The first natural frequency can be identified by observation of the free time-domain response.",
+            "tooltipImage": ""
+        },
+        {
+            "id": 2,
+            "tooltipText": "Hammer tip datasheet",
+            "tooltipImage": "/src/lib/images/hammer-table.png"
+        },
+        {
+            "id": 3,
+            "tooltipText": "You will need to produce a discrete Fourier transform of the recorded acceleration data.",
+            "tooltipImage": ""
+        },
+        {
+            "id": 4,
+            "tooltipText": "",
+            "tooltipImage": ""
+        },
+        {
+            "id": 5,
+            "tooltipText": "Our data acquisition system can only sample at 512 Hz. Make sure you take this into account when setting up your test.",
+            "tooltipImage": ""
+        },
+        {
+            "id": 6,
+            "tooltipText": "",
+            "tooltipImage": ""
+        },
+        {
+            "id": 7,
+            "tooltipText": "Sorry, no clues for this one.",
+            "tooltipImage": ""
+        },
+        {
+            "id": 8,
+            "tooltipText": "",
+            "tooltipImage": ""
+        },
+        {
+            "id": 9,
+            "tooltipText": "The circle-fitting equation.",
+            "tooltipImage": "/src/lib/images/circle-fitting-eq.png"
+        },
+        {
+            "id": 10,
+            "tooltipText": "",
+            "tooltipImage": ""
+        },
+        {
+            "id": 11,
+            "tooltipText": "You will need to run multiple tests as only three accelerometers can be used at once. This was a real challenge that we faced in data collection!",
+            "tooltipImage": ""
+        }
+    ]
+}

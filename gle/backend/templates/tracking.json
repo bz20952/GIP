@@ -1,0 +1,41 @@
+{
+    "1": {
+        "measure": [],
+        "startTime": 0,
+        "endTime": 0,
+        "attempts": 0
+    },
+    "2": {
+        "measure": [
+            "Experimental setup",
+            "Excitation type"
+        ],
+        "startTime": 0,
+        "endTime": 0,
+        "attempts": 0
+    },
+    "3": {
+        "measure": [
+            "Discrete Fourier transform"
+        ],
+        "startTime": 0,
+        "endTime": 0,
+        "attempts": 0
+    },
+    "4": {
+        "measure": [
+            "Modal parameter identification"
+        ],
+        "startTime": 0,
+        "endTime": 0,
+        "attempts": 0
+    },
+    "5": {
+        "measure": [
+            "Experimental error"
+        ],
+        "startTime": 0,
+        "endTime": 0,
+        "attempts": 0
+    }
+}

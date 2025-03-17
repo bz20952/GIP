@@ -1,11 +1,30 @@
 <script lang="ts">
-    export let displayText;
-    export let tooltipText;
+    import { tooltips } from "$lib/tooltips.json"
+
+    export let displayText: string = '';
+    export let displayImage: boolean = false;
+    export let tooltipId: number = 0;
+    export let tooltipText: string | undefined = '';
+
+    const tooltipContent = tooltips.find(tooltip => tooltip.id === tooltipId);
+
+    if (tooltipContent?.tooltipText) {
+        tooltipText = tooltipContent.tooltipText;
+    }
 </script>
 
-<li class="tooltip">{displayText}
-    <span class="tooltiptext">{tooltipText}</span>
-</li>
+<div class="tooltip">
+    {#if displayImage}
+        <img class='display-img' src="$lib/images/info.png" alt="Info" />
+    {/if}
+    {displayText}
+    <span class="content">
+        {#if tooltipContent?.tooltipImage}
+            <img class='tooltip-img' src={tooltipContent.tooltipImage} alt="Tooltip" />
+        {/if}
+        {tooltipText}
+    </span>
+</div>
 
 <style>
     /* Tooltip container */
@@ -13,11 +32,11 @@
         position: relative;
         display: inline-block;
         border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-        margin: 0.2rem 0rem;
+        margin: 0.2rem 0.5rem;
     }
 
     /* Tooltip text */
-    .tooltip .tooltiptext {
+    .content {
         visibility: hidden;
         width: 30rem;
         background-color: azure;
@@ -30,7 +49,7 @@
         /* Position the tooltip text */
         position: absolute;
         z-index: 1;
-        bottom: 125%;
+        bottom: -300%;
         left: 50%;
         margin-left: -15rem;
 
@@ -40,20 +59,25 @@
     }
 
     /* Tooltip arrow */
-    .tooltip .tooltiptext::after {
+    .tooltip .content::after {
         content: "";
         position: absolute;
-        top: 100%;
+        top: -10%;
         left: 50%;
         margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: #2c6392 transparent transparent transparent;
+        /* border-width: 5px; */
+        /* border-style: solid; */
+        /* border-color: transparent transparent #2c6392 transparent; */
     }
 
     /* Show the tooltip text when you mouse over the tooltip container */
-    .tooltip:hover .tooltiptext {
+    .tooltip:hover .content {
         visibility: visible;
         opacity: 1;
+    }
+
+    .display-img {
+        display: inline;
+        width: 1.5rem;
     }
 </style>
