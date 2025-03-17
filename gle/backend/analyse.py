@@ -60,7 +60,7 @@ def get_natural_freqs(data: pd.DataFrame, options: dict) -> None:
 
     # Find peaks in FRF to get natural frequencies, choose which measurement location to use
     # Can also use FFT to get natural frequencies
-    peaks, _ = find_peaks(FRF_1, height=45)  # For Trial Merged Random F1 10sec1, 45 height is acceptable
+    peaks, _ = find_peaks(FRF_1, height=50)  # For Trial Merged Random F1 10sec1, 45 height is acceptable
     natural_frequencies = freqs[peaks]
     #print(type(natural_frequencies))
     
@@ -111,7 +111,7 @@ def get_mode_shapes(data= pd.DataFrame, options= dict)-> None:
     FRF_4 = np.abs(F_resp_4 / F_force)
 
     # Find peaks in FRF to get natural frequencies, choose which measurement location to use
-    peaks, _ = find_peaks(FRF_1, height=45)  # Adjust threshold as needed
+    peaks, _ = find_peaks(FRF_1, height=50)  # Adjust threshold as needed
     natural_frequencies = freqs[peaks]
     #print(natural_frequencies)
 
