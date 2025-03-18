@@ -14,12 +14,12 @@ def plot_acceleration(data: pd.DataFrame, options: dict):
 
     """Plot raw acceleration data."""
 
-    accelerometers = options['accelerometers']
     file_suffix = ''
+    accelerometers = options['accelerometers']
 
-    for acc in accelerometers.keys():
+    for index, acc in enumerate(accelerometers.keys()):
         if accelerometers[acc]:
-            file_suffix += f'_{acc}'
+            file_suffix += f'_{index}'
             plt.plot(data['t'], data[acc], label=acc)
 
     plot_path = f'./images/{u.format_filename(options)}_{options['samplingFreq']}_accel{file_suffix}.png'
@@ -196,19 +196,10 @@ def plot_bode(data: pd.DataFrame, options: dict):
     return plot_path
 
 if __name__ == '__main__':
+    import json
     import reader as r
-    options = {
-        'excitationType': 'SINE_SWEEP',
-        'accelerometers': {
-            'A_0': True,
-            'A_1': True,
-            'A_2': True,
-            'A_3': True,
-            'A_4': True
-        },
-        'samplingFreq': 2048,
-        'shakerPosition': '0',
-    }
+    with open('./templates/requestFormat.json') as f:
+        options = json.load(f)
     data = r.read_csv(options)
     # plot_acceleration(data, options)
     # plot_forcing(data, options)

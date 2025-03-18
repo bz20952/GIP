@@ -63,7 +63,7 @@ def animate(i, u, step, shaker_position):
     return line,
 
 
-def animate_beam(data: pd.DataFrame, options: dict):
+async def animate_beam(data: pd.DataFrame, options: dict):
 
     """Animate beam using displacement data."""
 

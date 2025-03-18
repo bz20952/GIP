@@ -67,7 +67,7 @@ async def time_domain(request: Request):
         data = r.read_csv(options)
         plot_path = await p.plot_acceleration(data, options)
     else:
-        plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
+        plot_path = f'./images/{u.format_accel_plot_name(options)}' 
 
     return {
         "details": "This should return either a graph of acceleration data.",
@@ -105,7 +105,7 @@ async def animate(request: Request):
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
-        plot_path = a.animate_beam(data, options)
+        plot_path = await a.animate_beam(data, options)
     else:
         plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
 
@@ -118,7 +118,7 @@ async def animate(request: Request):
     }
 
 
-@app.get('/dft')
+@app.post('/dft')
 async def dft():
     return {
         "details": "This should return the path to the DFT plot.",
@@ -129,7 +129,7 @@ async def dft():
     }
 
 
-@app.get('/frf-gain')
+@app.post('/frf-gain')
 async def frf_gain():
     return {
         "details": "This should return the path to the FRF gain plot.",
@@ -140,7 +140,7 @@ async def frf_gain():
     }
 
 
-@app.get('/frf-phase')
+@app.post('/frf-phase')
 async def frf_phase():
     return {
         "details": "This should return the path to the FRF phase plot.",
@@ -151,7 +151,7 @@ async def frf_phase():
     }
 
 
-@app.get('/bode')
+@app.post('/bode')
 async def bode():
     return {
         "details": "This should return the path to the Bode plot.",
@@ -162,7 +162,7 @@ async def bode():
     }
 
 
-@app.get('/nyquist')
+@app.post('/nyquist')
 async def nyquist():
     return {
         "details": "This should return the path to the Nyquist plot.",
@@ -178,20 +178,20 @@ async def nyquist():
 #     return {"message": "This should return raw data."}
 
 
-@app.get('/filter')
+@app.post('/filter')
 async def filter(request: Request):
     options = await request.json()
+    file_ext = 'filtered.png'
 
-    if options['filterType'] == 'bandpass':
-        b, a = f.bandpass(options['lowerCutoff'], options['upperCutoff'], options['samplingFreq'])
-    elif options['filterType'] == 'lowpass':
-        b, a = f.lowpass(options['lowerCutoff'], options['samplingFreq'])
-    elif options['filterType'] == 'highpass':
-        b, a = f.highpass(options['upperCutoff'], options['samplingFreq'])
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        data_path = f.filter(data, options)
+    else:
+        data_path = f'./images/{u.format_filename(options)}_{file_ext}'
 
     return {
-        "details": "This should return a filtered graph.",
-        "message": "",
+        "details": "This should return the path to a filtered data file.",
+        "message": os.path.join(root_url, data_path),
         "success": True,
         "error": False,
         "code": 200

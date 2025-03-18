@@ -4,8 +4,6 @@
 	import { goto } from '$app/navigation';
     import { testOptions } from '$lib/stores';
 
-    let filterType: string = 'none';
-
     let plotPaths = new Map([
         ['time-domain', ''],
         ['forcing', ''],
@@ -38,10 +36,12 @@
     {:else}
         <i class="fa fa-spinner fa-pulse"></i>
     {/if}
-    {#if plotPaths.get('forcing')}
-        <img src={plotPaths.get('forcing')} alt='Forcing signal' class="forcing plot" />
-    {:else}
-        <i class="fa fa-spinner fa-pulse"></i>
+    {#if $testOptions.excitationType !== 'Free vibration'}
+        {#if plotPaths.get('forcing')}
+            <img src={plotPaths.get('forcing')} alt='Forcing signal' class="forcing plot" />
+        {:else}
+            <i class="fa fa-spinner fa-pulse"></i>
+        {/if}
     {/if}
     {#if plotPaths.get('animate')}
         <img src={plotPaths.get('animate')} alt='Animation' class="animation plot" />
@@ -53,21 +53,24 @@
 <section>
     <div class="filter">
         <label for="filter-type">Filter type: </label>
-        <select name="filter-type" bind:value={filterType}>
+        <select name="filter-type" bind:value={$testOptions.filterType}>
             <option value="none">None</option>
-            <option value="low-pass">Low-pass</option>
-            <option value="high-pass">High-pass</option>
-            <option value="band-pass">Band-pass</option>
+            <option value="lowPass">Low-pass</option>
+            <option value="highPass">High-Pass</option>
+            <option value="bandPass">Band-Pass</option>
         </select>
-        <div class="cutoff-freq">
-            {#if filterType === 'low-pass' || filterType === 'high-pass'}
+        <div class="freq">
+            {#if $testOptions.filterType === 'lowPass'}
+                <label for="cutoffFreq">Cutoff frequency (Hz): </label>
+                <input type="number" name="cutoffFreq" bind:value={$testOptions.upperCutoff} />
+            {:else if $testOptions.filterType === 'highPass'}
                 <label for="cutoff-freq">Cutoff frequency (Hz): </label>
-                <input type="number" name="cutoff-freq" />
-            {:else if filterType === 'band-pass'}
-                    <label for="lower-cutoff">Lower cutoff frequency (Hz): </label>
-                    <input type="number" name="lower-cutoff" />
-                    <label for="upper-cutoff">Upper cutoff frequency (Hz): </label>
-                    <input type="number" name="upper-cutoff" />
+                <input type="number" name="cutoffFreq" bind:value={$testOptions.lowerCutoff} />
+            {:else if $testOptions.filterType === 'bandPass'}
+                <label for="lowerCutoff">Lower cutoff frequency (Hz): </label>
+                <input type="number" name="lowerCutoff" bind:value={$testOptions.lowerCutoff}/>
+                <label for="upperCutoff">Upper cutoff frequency (Hz): </label>
+                <input type="number" name="upperCutoff" bind:value={$testOptions.upperCutoff}/>
             {/if}
         </div>
     </div>
@@ -123,11 +126,11 @@
         margin: 0 1rem;
     }
 
-    .cutoff-freq {
+    .freq {
         margin: 1rem 0;
     }
 
-    .cutoff-freq input {
+    .freq input {
         width: 20%;
     }
 
