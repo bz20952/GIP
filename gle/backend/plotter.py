@@ -101,8 +101,8 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
     sample_rate = options['samplingFreq']
     file_suffix = ''    
 
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111, projection='3d')  # Create a 3D subplot
+    fig = plt.figure()  # Create a 3D subplot
+    ax = fig.add_subplot(111, projection='3d')  # Create a 3D subplot
 
     for acc in accelerometers.keys():
         if accelerometers[acc]:
@@ -116,8 +116,9 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
             frfReal = np.real(frf)
             frfImag = np.imag(frf)
 
-            # ax.plot(f, frfReal, frfImag, label=acc) #3d plot
-            plt.plot(frfReal, frfImag, label=acc) #2d plot
+            ax.plot(f, frfReal, frfImag, label=acc) #3d plot
+            # plt.figure()
+            # plt.plot(frfReal, frfImag, label=acc) #2d plot
 
 
     # ax.set_xlim(150, 200)  # Set limits for the z-axis (Frequency) #3d plot
@@ -126,14 +127,14 @@ def plot_nyquist(data: pd.DataFrame, options: dict):
 
     plot_path = f'./images/{u.format_filename(options)}_{options['samplingFreq']}_nyquist{file_suffix}.png'
 
-    # ax.set_ylabel('Re') #3d plot
-    # ax.set_zlabel('Im') #3d plot
-    # ax.set_xlabel('Frequency [Hz]') #3d plot
-    # ax.set_title('Inertance Nyquist plot') #3d plot
+    ax.set_ylabel('Re') #3d plot
+    ax.set_zlabel('Im') #3d plot
+    ax.set_xlabel('Frequency [Hz]') #3d plot
+    ax.set_title('Inertance Nyquist plot') #3d plot
 
-    plt.xlabel('Re') #2d plot
-    plt.ylabel('Im') #2d plot
-    plt.title('Inertance Nyquist plot') #2d plot
+    # plt.xlabel('Re') #2d plot
+    # plt.ylabel('Im') #2d plot
+    # plt.title('Inertance Nyquist plot') #2d plot
     plt.legend()
     plt.grid(True)
     plt.show()
@@ -181,7 +182,7 @@ def plot_bode(data: pd.DataFrame, options: dict):
 
     # Add legends
     plt.subplot(2, 1, 1)
-    plt.legend()
+    # plt.legend()
     plt.title('Bode Plot (Frequency Response)')
 
     plt.subplot(2, 1, 2)
@@ -197,13 +198,13 @@ def plot_bode(data: pd.DataFrame, options: dict):
 if __name__ == '__main__':
     import reader as r
     options = {
-        'excitationType': 'STEPPED_SWEEP',
+        'excitationType': 'SINE_SWEEP',
         'accelerometers': {
             'A_0': True,
-            'A_1': False,
-            'A_2': False,
-            'A_3': False,
-            'A_4': False
+            'A_1': True,
+            'A_2': True,
+            'A_3': True,
+            'A_4': True
         },
         'samplingFreq': 2048,
         'shakerPosition': '0',
