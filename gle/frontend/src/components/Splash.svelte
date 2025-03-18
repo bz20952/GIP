@@ -1,5 +1,6 @@
 <script>
 	import { splash } from '$lib/stores';
+	import { testOptions } from '$lib/stores';
 </script>
 
 <div class="splash">
@@ -11,11 +12,14 @@
 		<br><br>
 		That's where you come in.
 		You are about to be given 5 challenges to demonstrate your expertise, impress clients and save the company.
-		Navigate to the <a href="/help"><strong>Help</strong></a> tab for guidance on getting started.
+		Navigate to the <a href="/help">Help</a> tab for guidance on getting started.
 		<br><br>
-		Are you ready?
+		<strong>Are you ready?</strong>
 	</p>
-	<button class="close-btn" on:click={() => $splash=false}>Let's go.</button>
+	<input class='serial-num' type="text" placeholder="Enter your Serial Number" bind:value={$testOptions['serialNumber']}>
+	{#if $testOptions['serialNumber']}
+		<button class="close-btn" on:click={() => $splash=false}>Let's go.</button>
+	{/if}
 </div>
 
 <style>
@@ -36,6 +40,10 @@
 
 	.welcome {
 		padding: 0 0 1rem 0;
+	}
+
+	.serial-num {
+		margin: 1rem;
 	}
 
 	.close-btn {

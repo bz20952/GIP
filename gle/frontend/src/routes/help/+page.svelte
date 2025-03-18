@@ -14,6 +14,7 @@
 	<div class='written-guide'>
 		<!-- <i><strong>TL;DR</strong></i> -->
 		<ul>
+			<li>Try to avoid refreshing the page as this will reset the game and your progress.</li>
 			<li>View your current tasks on your <a href="/">Dashboard</a>. There are five tasks in total.</li>
 			<li>View your progress at the bottom of any page at any time.</li>
 			<li>To start a task, navigate to the <a href="/toolkit">Toolkit</a>. Hovering over a tool will reveal a short description.</li>

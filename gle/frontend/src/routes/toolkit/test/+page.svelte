@@ -1,7 +1,5 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
-    import beam from '$lib/images/beam.png';
-    import speaker from '$lib/images/speaker.png';
     import { tools } from '$lib/stores';
     import { testOptions } from '$lib/stores';
     // import { sendApiRequest } from '$lib/utils';
@@ -35,24 +33,22 @@
 <h1>Test Setup</h1>
 
 <div class="instructions">
-    You can position up to 3 accelerometers on the beam. The excitation location can be selected by moving the shaker icon <img class='demo-icon' src={speaker} alt="Shaker" />.
+    You can position up to 3 accelerometers on the beam. The excitation location can be selected by moving the shaker icon <img class='demo-icon' src="$lib/images/speaker.png" alt="Shaker" />.
 </div>
 
 <section class="experiment">
     <div class="checkbox-row">
-        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['0']} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['l/4']} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['l/2']} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['3l/4']} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['l']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A0']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A1']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A2']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A3']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A4']} on:change={limitAccelSelection} />
     </div>
 
-    <img class="beam" src={beam} alt="Free-free beam" />
+    <img class="beam" src="$lib/images/beam.png" alt="Free-free beam" />
 
     <div class="shaker-slider">
-        <input type="range" min=0 max={locations.length - 1} step=1 value=2 on:change={(event: Event) => {
-            $testOptions['shakerPosition'] = locations[(event.target as HTMLInputElement).valueAsNumber];
-        }}/>
+        <input type="range" min=0 max={locations.length - 1} step=1 bind:value={$testOptions['shakerPosition']}/>
     </div>
 
     <div class="extra-params">
@@ -65,6 +61,13 @@
                     {/if}
                 {/each}
             </select>
+            {#if $testOptions['excitationType'] === 'Hammer testing'}
+                <label for="tip-hardness">Tip hardness:</label>
+                <select name="tip-hardness" id="tip-hardness" bind:value={$testOptions['tipHardness']}>
+                    <option value='Soft'>Soft</option>
+                    <option value='Hard'>Hard</option>
+                </select>
+            {/if}
         </div>
 
         <div class="sampling-slider">

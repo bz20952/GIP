@@ -7,20 +7,14 @@
     let plotPaths = new Map([
         ['time-domain', ''],
         ['forcing', ''],
-        ['animate', '']
+        // ['animate', '']
     ]);
 
-    onMount(async () => {
+    onMount(() => {
         plotPaths.keys().forEach(async (endpoint: string) => {
             plotPaths = plotPaths.set(endpoint, await getPath(endpoint, $testOptions));
         });
     });
-
-    // onMount(async () => {
-    //     plotPaths.keys().forEach((plotType: string) => {
-    //         plotPaths.set(plotType, getPath($testOptions, plotType));
-    //     });
-    // });
 </script>
 
 <svelte:head>
@@ -30,28 +24,37 @@
 
 <h1>Signal Processing</h1>
 
-<div class="plot-container"> 
-    {#if plotPaths.get('time-domain')}
-        <img src={plotPaths.get('time-domain')} alt='Time-domain response' class="time-domain plot" />
-    {:else}
-        <i class="fa fa-spinner fa-pulse"></i>
-    {/if}
-    {#if $testOptions.excitationType !== 'Free vibration'}
-        {#if plotPaths.get('forcing')}
-            <img src={plotPaths.get('forcing')} alt='Forcing signal' class="forcing plot" />
+<section>
+    <div class="plots-container"> 
+        {#if plotPaths.get('time-domain')}
+            <div class="plot-container">
+                <img src={plotPaths.get('time-domain')} alt='Time-domain response' class="time-domain plot" />
+                <a class="fullscreen-link" href={plotPaths.get('time-domain')} target="_blank" rel="noopener noreferrer">Open fullscreen</a>
+            </div>
         {:else}
             <i class="fa fa-spinner fa-pulse"></i>
         {/if}
-    {/if}
-    {#if plotPaths.get('animate')}
-        <img src={plotPaths.get('animate')} alt='Animation' class="animation plot" />
-    {:else}
-        <i class="fa fa-spinner fa-pulse"></i>
-    {/if}
-</div>
+        {#if $testOptions.excitationType !== 'Free vibration'}
+            {#if plotPaths.get('forcing')}
+                <div class="plot-container">
+                    <img src={plotPaths.get('forcing')} alt='Forcing signal' class="forcing plot" />
+                    <a class="fullscreen-link" href={plotPaths.get('forcing')} target="_blank" rel="noopener noreferrer">Open fullscreen</a>
+                </div>
+            {:else}
+                <i class="fa fa-spinner fa-pulse"></i>
+            {/if}
+        {/if}
+        <!-- {#if plotPaths.get('animate')}
+            <div class="plot-container">
+                <img src={plotPaths.get('animate')} alt='Animation' class="animation plot" />
+                <a class="fullscreen-link" href={plotPaths.get('animate')} target="_blank" rel="noopener noreferrer">Open fullscreen</a>
+            </div>
+        {:else}
+            <i class="fa fa-spinner fa-pulse"></i>
+        {/if} -->
+    </div>
 
-<section>
-    <div class="filter">
+    <!-- <div class="filter">
         <label for="filter-type">Filter type: </label>
         <select name="filter-type" bind:value={$testOptions.filterType}>
             <option value="none">None</option>
@@ -73,11 +76,9 @@
                 <input type="number" name="upperCutoff" bind:value={$testOptions.upperCutoff}/>
             {/if}
         </div>
-    </div>
+    </div> -->
 
-    <div>
-        <button class="analyse" on:click={() => goto('/toolkit/analyse')}>Analyse</button>
-    </div>
+    <button class="analyse" on:click={() => goto('/toolkit/analyse')}>Analyse</button>
 </section>
 
 <style>
@@ -99,22 +100,35 @@
         padding: 0 2rem;
     }
 
-    .plot-container {
+    .plots-container {
         display: flex;
-        /* flex-direction: row; */
+        flex-direction: row;
         justify-content: center;
         align-items: center;
+        width: 150%;
+    }
+
+    .plot-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0 2rem;
+        width: 40rem;
+    }
+
+    .fullscreen-link {
+        margin: 1rem;
     }
 
     .plot {
-        width: 40%;
+        width: 100%;
         height: auto;
-        margin: 0 1rem;
         box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
         border-radius: 10px;
     }
 
-    .filter {
+    /* .filter {
         width: 100%;
     }
 
@@ -132,9 +146,9 @@
 
     .freq input {
         width: 20%;
-    }
+    } */
 
     .analyse {
-        margin: 1rem;
+        margin: 4rem;
     }
 </style>

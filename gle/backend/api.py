@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 from dotenv import load_dotenv
 import os
+import json
 import filter as f
 import reader as r
 import plotter as p
@@ -61,13 +62,13 @@ async def run_test(request: Request):
 @app.post('/time-domain')
 async def time_domain(request: Request):
     options = await request.json()
-    file_ext = 'accel.png'
+    file_ext = 'accel'
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
         plot_path = await p.plot_acceleration(data, options)
     else:
-        plot_path = f'./images/{u.format_accel_plot_name(options)}' 
+        plot_path = f'./images/{u.format_accel_plot_name(options, file_ext)}' 
 
     return {
         "details": "This should return either a graph of acceleration data.",
@@ -81,13 +82,13 @@ async def time_domain(request: Request):
 @app.post('/forcing')
 async def forcing(request: Request):
     options = await request.json()
-    file_ext = 'force.png'
+    file_ext = 'force'
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
         plot_path = await p.plot_forcing(data, options)
     else:
-        plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
+        plot_path = f'./images/{u.format_filename(options)}_{file_ext}.png'
 
     return {
         "details": "This gives the path to a forcing signal plot.",
@@ -101,13 +102,13 @@ async def forcing(request: Request):
 @app.post('/animate')
 async def animate(request: Request):
     options = await request.json()
-    file_ext = 'anim.gif'
+    file_ext = 'anim'
 
     if u.check_if_file_exists(options, file_ext) is False:
         data = r.read_csv(options)
         plot_path = await a.animate_beam(data, options)
     else:
-        plot_path = f'./images/{u.format_filename(options)}_{file_ext}'
+        plot_path = f'./images/{u.format_accel_plot_name(options, file_ext)}'
 
     return {
         "details": "This should the path to a forcing signal gif/plot.",
@@ -119,32 +120,19 @@ async def animate(request: Request):
 
 
 @app.post('/dft')
-async def dft():
+async def dft(request: Request):
+    options = await request.json()
+    file_ext = 'dft'
+
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        plot_path = await p.plot_dft(data, options)
+    else:
+        plot_path = f'./images/{u.format_accel_plot_name(options, file_ext)}' 
+
     return {
         "details": "This should return the path to the DFT plot.",
-        "message": "",
-        "success": True,
-        "error": False,
-        "code": 200
-    }
-
-
-@app.post('/frf-gain')
-async def frf_gain():
-    return {
-        "details": "This should return the path to the FRF gain plot.",
-        "message": "",
-        "success": True,
-        "error": False,
-        "code": 200
-    }
-
-
-@app.post('/frf-phase')
-async def frf_phase():
-    return {
-        "details": "This should return the path to the FRF phase plot.",
-        "message": "",
+        "message": os.path.join(root_url, plot_path),
         "success": True,
         "error": False,
         "code": 200
@@ -152,10 +140,19 @@ async def frf_phase():
 
 
 @app.post('/bode')
-async def bode():
+async def bode(request: Request):
+    options = await request.json()
+    file_ext = 'bode'
+
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        plot_path = await p.plot_bode(data, options)
+    else:
+        plot_path = f'./images/{u.format_accel_plot_name(options, file_ext)}' 
+
     return {
         "details": "This should return the path to the Bode plot.",
-        "message": "",
+        "message": os.path.join(root_url, plot_path),
         "success": True,
         "error": False,
         "code": 200
@@ -163,10 +160,19 @@ async def bode():
 
 
 @app.post('/nyquist')
-async def nyquist():
+async def nyquist(request: Request):
+    options = await request.json()
+    file_ext = 'nyquist'
+
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        plot_path = await p.plot_nyquist(data, options)
+    else:
+        plot_path = f'./images/{u.format_accel_plot_name(options, file_ext)}' 
+
     return {
         "details": "This should return the path to the Nyquist plot.",
-        "message": "",
+        "message": os.path.join(root_url, plot_path),
         "success": True,
         "error": False,
         "code": 200
@@ -192,6 +198,57 @@ async def filter(request: Request):
     return {
         "details": "This should return the path to a filtered data file.",
         "message": os.path.join(root_url, data_path),
+        "success": True,
+        "error": False,
+        "code": 200
+    }
+
+
+@app.post('/start-tracking')
+async def start_tracking(request: Request):
+    options = await request.json()
+    
+    try:
+        with open(f'./tracking/{options["serialNumber"]}.json', 'r') as f:
+            tracking_data = json.load(f)
+    except FileNotFoundError:
+        with open(f'./templates/tracking.json', 'r') as f:
+            tracking_data = json.load(f)
+    
+    tracking_data[str(options["subtaskId"])]["startTime"] = options["timestamp"]
+
+    with open(f'./tracking/{options["serialNumber"]}.json', 'w') as f:
+        json.dump(tracking_data, f)
+
+    return {
+        "detail": "Starts tracking of subtask.",
+        "message": "Tracking of subtask {options['subtaskId']} started.",
+        "success": True,
+        "error": False,
+        "code": 200
+    }
+
+
+@app.post('/stop-tracking')
+async def start_tracking(request: Request):
+    options = await request.json()
+    
+    try:
+        with open(f'./tracking/{options["serialNumber"]}.json', 'r') as f:
+            tracking_data = json.load(f)
+    except FileNotFoundError:
+        with open(f'./templates/tracking.json', 'r') as f:
+            tracking_data = json.load(f)
+    
+    tracking_data[str(options["subtaskId"])]["endTime"] = options["timestamp"]  
+    tracking_data[str(options["subtaskId"])]["attempts"] = options["attempts"]
+
+    with open(f'./tracking/{options["serialNumber"]}.json', 'w') as f:
+        json.dump(tracking_data, f)
+
+    return {
+        "detail": "Stops tracking of subtask.",
+        "message": f"Tracking of subtask {options['subtaskId']} stopped.",
         "success": True,
         "error": False,
         "code": 200
