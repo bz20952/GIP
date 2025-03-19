@@ -181,7 +181,7 @@
                     "unit": "Hz",
                     "tooltipId": 8,
                     "answer": 200,
-                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum. For flawed data, the natural frequencies sometimes are not located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies."
+                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum. For flawed data, the natural frequencies sometimes are not located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -204,7 +204,7 @@
                     "unit": "%",
                     "tooltipId": 9,
                     "answer": 20,
-                    "praise": "Spot on! This is the most accurate estimate of zeta from the plot. A simpler method of using the circle-fitting equation for damping is to take the points 90 degrees from the natural frequency point."
+                    "praise": "Spot on! This is the most accurate estimate of zeta from the plot. A simpler method of using the circle-fitting equation for damping is to take the points 90 degrees from the natural frequency point.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -286,7 +286,7 @@
                     "unit": "",
                     "tooltipId": 11,
                     "answer": "[1,-0.6,0,0.6,-1]",
-                    "praise": "Perfect! Our finite element models agree with this observation. There are many methods to estimate mode shapes, but the ratio of imaginary peaks is a good starting point for receptance FRF plots. For mobility, real peaks are commonly used while for inertance, imaginary peaks can be used provided that necessary scaling are done."
+                    "praise": "Perfect! Our finite element models agree with this observation. There are many methods to estimate mode shapes, but the ratio of imaginary peaks is a good starting point for receptance FRF plots. For mobility, real peaks are commonly used while for inertance, imaginary peaks can be used provided that necessary scaling are done.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -305,7 +305,7 @@
                     "unit": "%",
                     "tooltipId": 12,
                     "answer": 10,
-                    "praise": "Perfect! Our finite element models agree with this observation. Remember there are two different methods to obtain modal damping ratios: half-power method on Bode plot and circle-fitting method on mobility Nyquist plot. Circle-fitting method is used more widely as effects of noises are compensated through fitting a circle through data points"
+                    "praise": "Perfect! Our finite element models agree with this observation. Remember there are two different methods to obtain modal damping ratios: half-power method on Bode plot and circle-fitting method on mobility Nyquist plot. Circle-fitting method is used more widely as effects of noises are compensated through fitting a circle through data points",
                     "feedback": [
                         {
                             "stage": 1,
