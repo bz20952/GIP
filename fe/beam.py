@@ -1,0 +1,228 @@
+import numpy as np
+from scipy import linalg
+import vals
+from matplotlib import pyplot as plt
+import smoa
+import pandas as pd
+from scipy.integrate import odeint, solve_ivp
+from scipy.signal import chirp
+import plot as p
+
+
+plt.rcParams.update({'font.size': 18})
+
+
+def mass_mat(L):
+
+    return np.array([
+        [ 156, 22*L, 54, -13*L],
+        [ 22*L, 4*L**2, 13*L, -3*L**2],
+        [ 54, 13*L, 156, -22*L],
+        [-13*L, -3*L**2, -22*L, 4*L**2]
+    ])
+
+
+def stiffness_mat(L):
+
+    return np.array([
+        [12, 6*L, -12 , 6*L],
+        [6*L, 4*L**2, -6*L, 2*L**2],
+        [-12, -6*L, 12, -6*L],
+        [6*L, 2*L**2, -6*L, 4*L**2]
+    ])
+
+
+def fe(n_nodes: int):
+
+    n_dofs = 2*n_nodes
+     
+    # Element 1
+    L_1 = vals.L/(n_nodes-1)
+    I_1, A_1 = smoa.hollow_rect_beam(vals.b, vals.h, vals.b_inner, vals.h_inner)
+    M_1 = ((vals.density * A_1 * L_1)/420) * mass_mat(L_1)
+    K_1 = ((vals.E*I_1)/(L_1**3)) * stiffness_mat(L_1)
+
+    # Assemble matrices
+    M = np.zeros((n_dofs,n_dofs))
+    K = np.zeros((n_dofs,n_dofs))
+    for i in range(0, n_dofs-2, 2):
+        M[i:i+4,i:i+4] += M_1
+        K[i:i+4,i:i+4] += K_1
+
+    # print("Mass matrix:\n", M)
+    # print("Stiffness matrix:\n", K)
+
+    # # Apply simply-supported BCs
+    # M = np.delete(M, 0, axis=0)
+    # M = np.delete(M, 0, axis=1)
+    # M = np.delete(M, -2, axis=0)
+    # M = np.delete(M, -2, axis=1)
+
+    # K = np.delete(K, 0, axis=0)
+    # K = np.delete(K, 0, axis=1)
+    # K = np.delete(K, -2, axis=0)
+    # K = np.delete(K, -2, axis=1)
+
+    # # Damping (assumes Rayleigh damping)
+    # a1 = np.array([[w[0]**2, w[0]],
+    #                [w[1]**2, w[1]]])
+    # a2 = np.array([1E-10, 1E-10]).reshape(2,1)
+    # alpha_beta = 2*(np.linalg.inv(a1) @ a2)
+    # C = alpha_beta[0,0]*M + alpha_beta[1,0]*K
+    C = np.zeros((n_dofs,n_dofs))
+
+    # Solve for eigenvalues
+    eigenvalues, eigenvectors = linalg.eig(K, M)
+    sorted_index = eigenvalues.argsort()
+    w_squared = eigenvalues[sorted_index][2:]  # The first two natural freqs are negligible
+    w = np.sqrt(w_squared)
+    f = w / (2*np.pi)
+    print(f)
+
+    # mode_shapes = eigenvectors[:,sorted_index][:,2:]
+    # mode_shapes /= np.max(np.abs(mode_shapes))  # Normalise mode shapes
+    # p.plot_mode_shapes(mode_shapes[::2,:3], 3)
+
+    # f_damped = f[0] * (1 - (zeta**2))
+    # print(f_damped)
+
+    return M, K, C
+
+def simulate(sim_params: dict, M: np.ndarray, K: np.ndarray, C: np.ndarray, n_free_dofs: int, plot: bool = True):
+
+    """Calculate transient time domain response. Displacements, velocities and accelerations are calculated relative to the ground."""
+
+    # Define period of simulation
+    T = sim_params['period']
+    # Specify minimum number of calculation intervals (odeint may require more)
+    n_intervals = sim_params['num_intervals']
+    # Specify array of time values at which to simulate
+    time_steps = np.linspace(0, T, n_intervals)
+    # Define initial conditions
+    IC = sim_params['initial_conditions']
+    # Invert mass matrix
+    inverse_mass_matrix = np.linalg.inv(M)
+        
+    def model(t, z):
+
+        """Second-order ODE model. Returns z_dot."""
+        
+        # Define the force vector
+        f = np.zeros((n_free_dofs, 1))
+        f[sim_params['forcing']['location'], 0] += sim_params['forcing']['signal'](t) * sim_params['forcing']['amplitude']
+
+        # Use array slicing to extract displacement and velocity matrices returned from previous time step
+        displacements = np.array([z[1::2]]).transpose()
+        # velocities = np.array([z[::2]]).transpose()
+
+        # Stiffness matrix * displacement matrix
+        stiffness_component = K @ displacements
+
+        # # Damping matrix * velocity matrix
+        # damping_component = C @ velocities
+
+        # Calculate acceleration
+        # x_ddot = inverse_mass_matrix @ np.subtract(np.subtract(f, stiffness_component), damping_component)
+        x_ddot = inverse_mass_matrix @ np.subtract(f, stiffness_component)
+
+        # Record displacement and velocity of every node
+        z_dot = np.zeros(n_free_dofs*2)
+        for i in range(0, n_free_dofs*2, 2):
+            z_dot[i] = x_ddot[i//2, 0]
+            z_dot[i+1] = z[i]
+
+        return z_dot
+
+    # Call solver
+    u = solve_ivp(model, t_span=(time_steps[0], time_steps[-1]), y0=IC, method='LSODA', t_eval=time_steps).y.T
+    y = u[:,1::4]  # Displacements
+    v = u[:,0::4]  # Velocities
+
+    num_accelerometers = n_free_dofs//2
+
+    # Numerically differentiating velocity to obtain acceleration
+    a = np.zeros((n_intervals-1, num_accelerometers))
+    for i in range(n_intervals-1):
+        for j in range(num_accelerometers):
+            a[i,j] = ((v[i+1,j] - v[i,j])/(time_steps[i+1] - time_steps[i]))/9.81  # Convert units to g
+    a = pd.DataFrame(a, columns=[f'A{i}' for i in range(num_accelerometers)])  # Accelerations
+
+    for i in range(num_accelerometers):
+        a[f'F{i}'] = [sim_params['forcing']['signal'](t) for t in time_steps[:-1]]
+    a['t'] = time_steps[:-1]
+    a = a[['t'] + [f'F{i}' for i in range(num_accelerometers)] + [f'A{i}' for i in range(num_accelerometers)]]
+    a.to_csv(f'./sim_data/{sim_params["forcing"]["type"].split(" ")[0].upper()}_{sim_params["forcing"]["location"]}.csv', index=False)
+
+    if plot:
+        p.plot_motion(y, v, a, time_steps, num_accelerometers)
+
+
+def get_frequency_response(M, K, w, frequencies):
+
+    """Analyse response amplitude over a range of frequencies using the FRF formula."""
+
+    gains = []
+    for w in frequencies:
+        s = complex(0, w)
+
+        # Gives response to impulse (delta function)
+        frf = np.linalg.inv(K - (w**2)*M)
+
+        tf_gain = abs(frf)
+        gains.append(tf_gain)
+
+    return gains
+
+
+def linear_to_db(gains):
+    return 20*np.log10(gains)
+
+
+if __name__ == '__main__':
+    n_nodes = 5
+    M, K, C = fe(n_nodes)
+
+    IC = np.zeros(n_nodes*2*2)  # Number of nodes * number of DOFs at each node * 2 (displacement and velocity)
+    IC[1] = 0.001  # Displace node zero
+    T = 10
+    num_intervals = 1000
+    for forcing_type in ['sine sweep', 'soft hammer', 'hard hammer']:
+        for location in [0]:
+            if forcing_type == 'random':
+                freq_range = np.linspace(50, 200, 100)
+                random_amplitude = np.random.random(len(freq_range))
+                random_phase = np.random.uniform(-np.pi, np.pi, len(freq_range))
+                forcing_fnc = lambda t: sum([np.sin(2*np.pi*freq*t + phi) * amp for freq, phi, amp in zip(freq_range, random_phase, random_amplitude)])
+            elif forcing_type == 'sine':
+                freq = 30
+                forcing_fnc = lambda t: np.sin(2*np.pi*freq*t)
+            elif forcing_type == 'sine sweep':  # WIP
+                freq_low = 0
+                freq_high = 10
+                hz_per_second = (freq_high - freq_low) / T
+                print(hz_per_second)
+                forcing_fnc = lambda t: np.sin(2*np.pi*(freq_low+(hz_per_second*t))*t)
+            elif forcing_type == 'soft hammer':
+                forcing_fnc = lambda t: -20*t**2+5*t if t <= 0.5 else 0
+            elif forcing_type == 'hard hammer':
+                forcing_fnc = lambda t: -50*t**2+10*t if t <= 0.2 else 0
+            else:
+                forcing_fnc = lambda t: 0
+
+            times = np.linspace(0, T, num_intervals)
+            plt.plot(times, [forcing_fnc(t) for t in times])
+            plt.title('Forcing Function')
+            plt.show()
+
+            sim_params = {
+                'period': T,
+                'num_intervals': num_intervals,
+                'initial_conditions': IC,
+                'forcing': {
+                    'location': location,
+                    'amplitude': 1,
+                    'signal': forcing_fnc,
+                    'type': forcing_type
+                }
+            }
+            simulate(sim_params, M, K, C, n_free_dofs=10, plot=True)

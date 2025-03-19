@@ -83,8 +83,8 @@ if __name__ == "__main__":
     sample_rate = 44100
 
     # wave = generate_sine_wave(300, 1, 0, 60, sample_rate)
-    # wave = generate_sine_sweep(0.5, 1000, 1, 20, sample_rate)
-    wave = generate_stepped_sweep(50, 1000, 50, 0.1, sample_rate)
+    wave = generate_sine_sweep(0.5, 10, 1, 20, sample_rate)
+    # wave = generate_stepped_sweep(50, 1000, 50, 0.1, sample_rate)
     # wave = generate_stepped_sweep(0.5, 1000, 1, 20, sample_rate)
 
     # # Play the wave in a separate thread

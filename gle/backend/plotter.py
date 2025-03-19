@@ -42,7 +42,6 @@ async def plot_acceleration(data: pd.DataFrame, options: dict):
     plot_path = f'./images/{u.format_accel_plot_name(options, "accel")}'
     
     plt.xlabel('Time [s]')
-    plt.xlim(0.1, 0.4)
     plt.ylabel(r'Acceleration [g]')
     plt.title('Raw Acceleration Data')
     plt.legend()
@@ -241,7 +240,6 @@ async def plot_bode(data: pd.DataFrame, options: dict):
 
     plot_path = f'./images/{u.format_accel_plot_name(options, "bode")}'
     plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
-    plt.show()
     plt.close()
 
     return plot_path
