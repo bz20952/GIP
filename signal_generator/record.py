@@ -5,26 +5,26 @@ import threading
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import deque
-from gen import define_signal, play_wave
-from post_process import post_process
+# from gen import define_signal, play_wave
+#from post_process import post_process
 
 # Define the signal to be sent to the Teensy
-wave = define_signal()
+# wave = define_signal()
 
 # Play the wave in a separate thread
-sound_thread = threading.Thread(target=play_wave, args=(wave,))
-sound_thread.start()
+#sound_thread = threading.Thread(target=play_wave, args=(wave,))
+#sound_thread.start()
 # # Keep the script running while the sound plays
 # sound_thread.join()
 
 # Set the correct serial port and baud rate
-ser = serial.Serial('/dev/cu.usbmodem82679401', 115200) # Change to your Teensy's port
+ser = serial.Serial('COM5', 115200) # Change to your Teensy's port
 time.sleep(2)  # Allow serial connection to initialize
 
 filename = "teensy_data.csv"
 recording = False  # Flag to control recording
 
-# Data buffer for plotting
+# # Data buffer for plotting
 window_size = 200  # Number of points to display
 time_vals = deque(maxlen=window_size)
 a0_vals = deque(maxlen=window_size)
@@ -48,17 +48,17 @@ thread.start()
 # Initialize live plotting
 plt.ion()
 fig, ax = plt.subplots()
-line, = ax.plot([], [], label="Acceleration (A0)")
+plot_line, = ax.plot([], [], label="Acceleration (A0)")
 ax.set_xlabel("Time (ms)")
 ax.set_ylabel("Acceleration (A0)")
 ax.set_title("Live Accelerometer Data")
 ax.legend()
 
-# Function to update plot
+# # Function to update plot
 def update_plot():
     if time_vals:  # Only update if there's data
-        line.set_xdata(time_vals)
-        line.set_ydata(a0_vals)
+        plot_line.set_xdata(time_vals)
+        plot_line.set_ydata(a0_vals)
         ax.relim()
         ax.autoscale_view()
         plt.draw()
@@ -72,8 +72,8 @@ with open(filename, "w", newline="") as file:
 
     try:
         while True:
-            line = ser.readline().decode('utf-8').strip()  # Read serial data
-            data = line.split(",")  # Split values
+            serial_line = ser.readline().decode('utf-8').strip()  # Read serial data
+            data = serial_line.split(",")  # Split values
 
             if recording and len(data) == 2:  # Ensure correct number of values
                 writer.writerow(data)
@@ -81,19 +81,30 @@ with open(filename, "w", newline="") as file:
 
 
                 # Store data for plotting (Convert to float/int)
-                time_vals.append(float(data[0]))  # Time (ms)
-                a0_vals.append(int(data[1]))  # Acceleration (A0)
+                # time_vals.append(float(data[0]))  # Time (ms)
+                a0_vals.append(float(data[1]))  # Acceleration (A0)
 
-                update_plot()  # Update the plot
+                # Initialize start time
+            if len(time_vals) == 0:
+                start_time = int(data[0])  # Store the first timestamp
+
+            # Convert timestamp to seconds relative to the start time
+            time_in_seconds = int(data[0]) - start_time  # Get elapsed time in seconds
+            time_vals.append(time_in_seconds)
+
+            update_plot()  # Update the plot 
 
             # else:
             #     print("\nData collection stopped.")
             #     ser.close()
             #     break
+            
 
     except KeyboardInterrupt:
         print("\nData collection stopped.")
         ser.close()
+        plt.ioff()  # Turn off interactive mode
+        # plt.show()  # Show the final plot before closing
         post_process()
 
 
