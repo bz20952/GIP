@@ -25,7 +25,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Our in-house testing gives a first natural frequency of 100 Hz. Free testing is usually dominated by the first mode, which means the first natural frequency can be simply measured by calculating the inverse of a period of a single oscillation."
+                            "message": "Our in-house testing gives a first natural frequency of 100 Hz. Free testing is usually dominated by the first mode, which means the first natural frequency can be simply measured by calculating the inverse of a period of a single oscillation. Finding the higher modes is usually not possible using free testing"
                         }
                     ]
                 }
@@ -83,7 +83,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Our in-house testing gives a second natural frequency of 150 Hz. This is approximately the position of the second peak in the DFT."
+                            "message": "Our in-house testing gives a second natural frequency of 150 Hz. This is approximately the position of the second peak in the DFT. The DFT is suffcient in identifying modal frequencies. However, in real world an FRF plot is used more commonly as it provides more information on the amplitude of the response and the structure behaviour in operation."
                         }
                     ]
                 }
@@ -138,7 +138,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Aliasing is the correct answer. Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency."
+                            "message": "Aliasing is the correct answer. Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency (half the sampling frequency is called Nyquist frequency)."
                         }
                     ]
                 }
@@ -170,7 +170,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Our finite element simulations give a radius of 20. Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate."
+                            "message": "Our finite element simulations give a radius of 20. Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate. The radius provides information on the value of a/m of the structure, obtained from the equation of motion."
                         }
                     ]
                 },
@@ -181,7 +181,7 @@
                     "unit": "Hz",
                     "tooltipId": 8,
                     "answer": 200,
-                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum. For flawed data, the natural frequencies sometimes are not located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies.",
+                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum. For flawed data, the natural frequencies may sometimes not located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -193,7 +193,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "The third natural frequency should be roughly 200 Hz. The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum."
+                            "message": "The third natural frequency should be roughly 200 Hz. The natural frequency is where the sweep rate of mobility Nyquist plot is at its maximum. For clean data like this one, it is where the plot crosses the real axis. For flawed data, the natural frequencies may sometimes not located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies."
                         }
                     ]
                 },
@@ -216,7 +216,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "The third modal damping ratio is expected to be around 20% using the half-power method."
+                            "message": "The third modal damping ratio is expected to be around 20% using the half-power method. You can choose whichever lower and higher frequencies to calculate the damping ratio, but a simpler method is to utilise the points 90 degrees from the natural frequency point."
                         }
                     ]
                 }
