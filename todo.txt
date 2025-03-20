@@ -1,9 +1,7 @@
 FRONTEND
 - Create 'Getting started' youtube video.
-- Task 5 tracking.
 - Tooltips.
 - Add 'No tools available' to Modal Param page.
 
 BACKEND
-- Standard plot formatting.
-- Fix animation
+

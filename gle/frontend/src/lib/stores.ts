@@ -25,7 +25,7 @@ export const tools: Writable<Tool[]> = writable([
         name: 'Hammer testing',
         available: false,
         type: 'excitation',
-        description: 'Tap a beam with a hammer and record the applied force and acceleration. Typically used to determine natural frequencies and frequency response.'
+        description: 'Tap a beam with a hammer and record the applied force and acceleration. Typically used as a quick test to obtain natural frequencies.'
     },
     {
         name: 'Sine sweep',
@@ -105,7 +105,7 @@ export const testOptions: Writable<TestOptions> = writable({
         "A3": false,
         "A4": false
     },
-    "shakerPosition": 0,
+    "shakerPosition": 2,
     "excitationType": "Free vibration",
     "tipHardness": "Soft",
     "samplingFreq": 512,

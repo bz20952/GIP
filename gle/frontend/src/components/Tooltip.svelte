@@ -1,19 +1,26 @@
 <script lang="ts">
-    import info from "$lib/images/info.png";
+    import { tooltips } from "$lib/tooltips.json"
+
     export let displayText: string = '';
     export let displayImage: boolean = false;
-    export let tooltipText: string = '';
-    export let tooltipImage: string = '';
+    export let tooltipId: number = 0;
+    export let tooltipText: string | undefined = '';
+
+    const tooltipContent = tooltips.find(tooltip => tooltip.id === tooltipId);
+
+    if (tooltipContent?.tooltipText) {
+        tooltipText = tooltipContent.tooltipText;
+    }
 </script>
 
 <div class="tooltip">
     {#if displayImage}
-        <img class='display-img' src={info} alt="Info" />
+        <img class='display-img' src="$lib/images/info.png" alt="Info" />
     {/if}
     {displayText}
     <span class="content">
-        {#if tooltipImage}
-            <img class='tooltip-img' src={tooltipImage} alt="Tooltip" />
+        {#if tooltipContent?.tooltipImage}
+            <img class='tooltip-img' src={tooltipContent.tooltipImage} alt="Tooltip" />
         {/if}
         {tooltipText}
     </span>

@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { getPath, sendApiRequest } from '$lib/utils';
+	import { getPath } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
     import { testOptions, tools } from '$lib/stores';
-    import Highchart from '../../../components/Highchart.svelte';
 
     let plotPaths = new Map()
 
@@ -23,18 +22,22 @@
 
 <section>
     <div class="plots-container">
-        {#each plotPaths.keys() as toolEndpoint}
-            {#if $tools.find(tool => tool.endpoint == toolEndpoint)?.available}
-                {#if plotPaths.get(toolEndpoint)}
-                    <div class="plot-container">
-                        <img src={plotPaths.get(toolEndpoint)} alt={toolEndpoint} class="plot" />
-                        <a class="fullscreen-link" href={plotPaths.get(toolEndpoint)} target="_blank" rel="noopener noreferrer">Open fullscreen</a>
-                    </div>
-                {:else}
-                    <i class="fa fa-spinner fa-pulse"></i>
+        {#if $tools.filter(tool => (tool.type === 'analysis' && tool.available)).length === 0}
+            <h2>No tools available yet.</h2>
+        {:else}
+            {#each plotPaths.keys() as toolEndpoint}
+                {#if $tools.find(tool => tool.endpoint == toolEndpoint)?.available}
+                    {#if plotPaths.get(toolEndpoint)}
+                        <div class="plot-container">
+                            <img src={plotPaths.get(toolEndpoint)} alt={toolEndpoint} class="plot" />
+                            <a class="fullscreen-link" href={plotPaths.get(toolEndpoint)} target="_blank" rel="noopener noreferrer">Open fullscreen</a>
+                        </div>
+                    {:else}
+                        <i class="fa fa-spinner fa-pulse"></i>
+                    {/if}
                 {/if}
-            {/if}
-        {/each}
+            {/each}
+        {/if}
     </div>
 	<button class='return' on:click={() => goto('/')}>Return to Dashboard</button>
 </section>

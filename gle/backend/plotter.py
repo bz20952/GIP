@@ -123,7 +123,7 @@ async def plot_dft(data: pd.DataFrame, options: dict):
     plot_path = f'./images/{u.format_accel_plot_name(options, "dft")}'
 
     plt.xlabel('Frequency [Hz]')
-    plt.ylabel('Amplitude')
+    plt.ylabel('Normalised amplitude')
     plt.title('Discrete Fourier Transform of Acceleration')
     plt.legend()
     plt.grid(True)
@@ -331,7 +331,7 @@ async def plot_bode(data: pd.DataFrame, options: dict):
     # Add legends
     plt.subplot(2, 1, 1)
     plt.legend()
-    plt.title('Bode Plot (Frequency Response)')
+    plt.title('Inertance Bode Plot')
 
     # plt.subplot(2, 1, 2)
     # plt.legend()
@@ -467,8 +467,56 @@ def plotcircfit(x,y,z):
                 # plt.show()
 # for plot circle function, the code labels 10 points to each side of the maximum sweep rate in the plot
 
+def frf_matrix(data: pd.DataFrame, options: dict):
+
+    """Plot the bode plot of the data."""
+
+    fig, axes = plt.subplots(3, 3)
+
+    for i, shaker_pos in enumerate([0, 2, 4]):
+        options['shakerPosition'] = shaker_pos
+        print(options)
+        data = r.read_csv(options)
+        for j, acc in enumerate(['A0', 'A2', 'A4']):
+            # Compute FFT and Frequency Response Function
+            n = len(data[acc])
+            f = np.fft.fftfreq(n, 1/options['samplingFreq'])[:n//2]  # Positive frequencies
+            fftacc = np.fft.fft(data[acc])[:n//2]
+            fftforce = np.fft.fft(data['F' + acc[1]])[:n//2]
+
+            # Avoid division by zero
+            fftforce[np.abs(fftforce) < 1e-10] = np.finfo(float).eps
+            frf = fftacc / fftforce  # Frequency Response Function)
+
+            ax = axes[j,i]
+            ax.plot(f, frf.imag)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.set_xlim(50, 1000)
+            ax.set_ylim(-100, 100)
+
+            if i == 0:
+                ax.set_ylabel(acc)
+
+            if j == 0:
+                ax.set_title(shaker_pos)
+
+            # # Magnitude Plot
+            # plt.subplot(2, 1, 1)
+            # plt.semilogx(f, magnitude, label=acc)
+            # plt.xlim(1, max(f))
+            # plt.ylabel('Magnitude [dB]')
+            # plt.grid(True, which="both")
+
+    # plt.subplot(2, 1, 2)
+    # plt.legend()
+
+    plt.show()
+
+
 if __name__ == '__main__':
     import json
+    import asyncio
     import reader as r
     with open('./templates/requestFormat.json') as f:
         options = json.load(f)

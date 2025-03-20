@@ -100,6 +100,7 @@
 
         $progress.currentTask.currentSubtask.subtaskId += 1;
         $progress.currentTask.currentSubtask.feedbackStage = 0;
+        $progress.currentTask.currentSubtask.attempts = 0;
         $progress.currentTask.currentSubtask.answer = undefined;
         $progress.currentTask.currentSubtask.correct = false;
 

@@ -1,7 +1,5 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
-    import beam from '$lib/images/beam.png';
-    import speaker from '$lib/images/speaker.png';
     import { tools } from '$lib/stores';
     import { testOptions } from '$lib/stores';
     // import { sendApiRequest } from '$lib/utils';
@@ -35,7 +33,7 @@
 <h1>Test Setup</h1>
 
 <div class="instructions">
-    You can position up to 3 accelerometers on the beam. The excitation location can be selected by moving the shaker icon <img class='demo-icon' src={speaker} alt="Shaker" />.
+    You can position up to 3 accelerometers on the beam. The excitation location can be selected by moving the shaker icon <img class='demo-icon' src="$lib/images/speaker.png" alt="Shaker" />.
 </div>
 
 <section class="experiment">
@@ -47,7 +45,7 @@
         <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A4']} on:change={limitAccelSelection} />
     </div>
 
-    <img class="beam" src={beam} alt="Free-free beam" />
+    <img class="beam" src="$lib/images/beam.png" alt="Free-free beam" />
 
     <div class="shaker-slider">
         <input type="range" min=0 max={locations.length - 1} step=1 bind:value={$testOptions['shakerPosition']}/>
