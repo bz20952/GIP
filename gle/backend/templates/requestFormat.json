@@ -7,9 +7,9 @@
         "A3": false,
         "A4": false
     },
-    "shakerPosition": 4,
+    "shakerPosition": 0,
     "excitationType": "Sine sweep",
-    "samplingFreq": 512,
+    "samplingFreq": 2048,
     "filterType": "bandPass",
     "lowerCutoff": 10,
     "upperCutoff": 20
