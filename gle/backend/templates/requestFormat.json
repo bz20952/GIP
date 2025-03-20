@@ -8,7 +8,7 @@
         "A4": false
     },
     "shakerPosition": 4,
-    "excitationType": "Hammer testing",
-    "tipHardness": "Soft",
+    "excitationType": "SINE",
+    "tipHardness": "",
     "samplingFreq": 2048
 }

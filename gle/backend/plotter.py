@@ -85,7 +85,7 @@ async def plot_forcing(data: pd.DataFrame, options: dict):
     return plot_path
 
 
-async def plot_dft(data: pd.DataFrame, options: dict):
+def plot_dft(data: pd.DataFrame, options: dict):
 
     """
     Plot the Discrete Fourier Transform of the acceleration data.
@@ -304,7 +304,7 @@ if __name__ == '__main__':
     data = r.read_csv(options)
     asyncio.run(plot_acceleration(data, options))
     # plot_forcing(data, options)
-    # plot_dft(data, options)
+    plot_dft(data, options)
     # plot_nyquist(data, options)
     # asyncio.run(plot_bode(data, options))
     # frf_matrix(data, options)
