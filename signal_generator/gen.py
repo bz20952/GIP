@@ -14,10 +14,11 @@ def generate_sine_sweep(start_freq, end_freq, amplitude, duration, sample_rate=4
     wave = amplitude * np.sin(2 * np.pi * freqs * t)
     return wave
 
-def generate_random_signal(amplitude, duration, sample_rate=44100):
+def generate_random_signal(lowcut, highcut, amplitude, duration, sample_rate=44100):
     t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
     wave = amplitude * np.random.uniform(-1, 1, size=t.shape)
-    return wave
+    filtered_wave = bandpass_filter(wave, lowcut, highcut, sample_rate)
+    return filtered_wave, t
 
 def generate_stepped_sweep(start_freq, end_freq, amplitude, duration, sample_rate=44100):
     t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
