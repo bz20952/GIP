@@ -172,3 +172,9 @@ cython_debug/
 
 test.xlsx
 .*
+
+/gle/certs/
+
+!.dockerignore
+
+**/tracking/*.json

@@ -21,7 +21,7 @@
                         },
                         {
                             "stage": 2,
-                            "message": "Try again, making sure to maximise your sampling frequency to get the highest possible measurement resolution."
+                            "message": "Not quite. Remember that period is the time between two peaks in the time domain."
                         },
                         {
                             "stage": 3,
@@ -79,7 +79,7 @@
                         },
                         {
                             "stage": 2,
-                            "message": "Not quite, read carefully off the DFT graph."
+                            "message": "Not quite, make sure you are reading the correct peak off the DFT graph."
                         },
                         {
                             "stage": 3,
@@ -104,7 +104,7 @@
                     "tooltipId": 5,
                     "answer": {
                         "shakerPosition": 2,
-                        "samplingFrequency": 516
+                        "samplingFrequency": 512
                     },
                     "praise": "Nice one! You have setup the test correctly.",
                     "feedback": [
@@ -114,13 +114,17 @@
                         },
                         {
                             "stage": 2,
-                            "message": "The correct excitation location is at l/2."
+                            "message": "Check the tooltip. There are some constraints on sampling frequency."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "The correct excitation location is at l/2. Sampling is limited to 512 Hz in this case."
                         }
                     ]
                 },
                 {
                     "subtaskId": 2,
-                    "name": "What error is likely to occur when sampling at low frequency?",
+                    "name": "Run a few tests with this setup. What error might you be introducing by limiting sampling to 512 Hz?",
                     "inputType": "select",
                     "options": ["Aliasing", "Leakage", "Hysteretic damping"],
                     "unit": "",
@@ -263,7 +267,7 @@
                             "A3": false,
                             "A4": true
                         },
-                        "shakerPosition": 2,
+                        "shakerPosition": 3,
                         "excitationType": "Sine sweep"
                     },
                     "praise": "Correct! You have setup the test correctly to measure accelerations in the second mode of vibration. It is possible to use other excitation methods, but sine sweep is suitable here as it is fast and can be set to include the expected operational frequencies.",

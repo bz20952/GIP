@@ -23,13 +23,11 @@ def read_csv(options: dict):
         sample_interval = math.floor(2048/options['samplingFreq'])
         df = df.iloc[::sample_interval,:]
 
-    print(df)
-
     for accel_index in range(5):
-        df[f'A{accel_index}'] = df[f'A{accel_index}'] - np.mean(df[f'A{accel_index}'])
-        df[f'F{accel_index}'] = df[f'F{accel_index}'] - np.mean(df[f'F{accel_index}'])
+        for prefix in ['A', 'F']:
+            df[f'{prefix}{accel_index}'] = df[f'{prefix}{accel_index}'] - np.mean(df[f'{prefix}{accel_index}'])
 
-    print(df)
+    # print(df)
 
     return df
 

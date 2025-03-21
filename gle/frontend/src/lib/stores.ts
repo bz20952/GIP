@@ -49,14 +49,14 @@ export const tools: Writable<Tool[]> = writable([
     {
         name: 'Bode',
         available: false,
-        type: 'analysis',
+        type: 'identification',
         description: 'Visualise the gain and phase of the frequency response. May be used to estimate natural frequencies and modal damping ratios.',
         endpoint: 'bode'
     },
     {
         name: 'Nyquist',
         available: false,
-        type: 'analysis',
+        type: 'identification',
         description: 'Visualise the gain and phase of the frequency response. May be used to estimate natural frequencies and modal damping ratios.',
         endpoint: 'nyquist'
     }
