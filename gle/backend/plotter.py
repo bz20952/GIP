@@ -513,6 +513,151 @@ def frf_matrix(data: pd.DataFrame, options: dict):
 
     plt.show()
 
+async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
+              #Extract data
+    for acc in accelerometers.keys():
+        if accelerometers[acc]:
+            # Compute FFT and Frequency Response Function
+            n = len(data[acc])
+            sample_rate = 1 / (data['t'][1] - data['t'][0])
+            f = np.fft.fftfreq(n, 1/sample_rate)[:n//2]  # Positive frequencies
+            fftacc = np.fft.fft(data[acc])[:n//2]
+            fftforce = np.fft.fft(data['F' + acc[1]])[:n//2]
+
+            # Avoid division by zero
+            fftforce[np.abs(fftforce) < 1e-10] = np.finfo(float).eps
+            frf = fftacc / fftforce  # Frequency Response Function
+    
+    freqs = f
+    # Convert inertance to receptance
+    omega = 2 * np.pi * freqs  # Convert frequency to angular frequency (rad/s)
+    frf_r = frf / (-omega**2)  # Convert inertance to receptance
+    
+    # Avoid division by zero at zero frequency
+    frf_r[omega == 0] = np.inf
+
+    abs_frf = np.abs(frf_r)
+
+    i_frf_r0 = np.imag(frf_r[0])
+    i_frf_r1 = np.imag(frf_r[1])
+    i_frf_r2 = np.imag(frf_r[2])
+
+    # Find peaks in the absolute FRF
+    peaks, _ = find_peaks(abs_frf, prominence=20)  # Adjust threshold as needed
+
+    im_values = [i_frf_r0[peaks], i_frf_r1[peaks], i_frf_r2[peaks]]
+    x_locations = [0, 0.5, 1]  # Normalized locations of the accelerometers
+
+    # Remove the line between points and plot only the points
+    plt.scatter(x_locations, im_values, color='red', s=100, label='Imaginary FRF at Natural Frequency')
+
+    # Add vertical lines from the x-axis to each point
+    for loc, val in zip(x_locations, im_values):
+        plt.plot([loc, loc], [0, val], color='blue', linestyle='--', linewidth=1.5)
+
+    # Center the graph around the x-axis
+    plt.axhline(0, color='black', linewidth=1)  # Add a horizontal line at y=0
+    plt.ylim(-1.1 * np.max(np.abs(im_values)), 1.1 * np.max(np.abs(im_values)))  # Symmetrical y-axis
+
+    # Add labels and title
+    plt.xlabel('Accelerometer Location (Normalized)')
+    plt.ylabel('Imaginary Part of FRF')
+    plt.title('Imaginary FRF at Natural Frequency for Three Accelerometers')
+    plt.xticks(x_locations, ['Start (0)', 'Middle (0.5)', 'End (1)'])  # Label x-axis with locations
+    plt.grid(True, linestyle='--', linewidth=0.5)
+    plt.legend()
+    plt.show()
+
+    plot_path = f'./images/{u.format_accel_plot_name(options, "imaginary")}'
+    plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
+
+    return plot_path
+
+async def plot_argand_r(data: pd.DataFrame, options: dict) -> None:
+          #Extract data
+    for acc in accelerometers.keys():
+        if accelerometers[acc]:
+            # Compute FFT and Frequency Response Function
+            n = len(data[acc])
+            sample_rate = 1 / (data['t'][1] - data['t'][0])
+            f = np.fft.fftfreq(n, 1/sample_rate)[:n//2]  # Positive frequencies
+            fftacc = np.fft.fft(data[acc])[:n//2]
+            fftforce = np.fft.fft(data['F' + acc[1]])[:n//2]
+
+            # Avoid division by zero
+            fftforce[np.abs(fftforce) < 1e-10] = np.finfo(float).eps
+            frf = fftacc / fftforce  # Frequency Response Function
+    
+    freqs = f
+    # Convert inertance to receptance
+    omega = 2 * np.pi * freqs  # Convert frequency to angular frequency (rad/s)
+    frf_r = frf / (-omega**2)  # Convert inertance to receptance
+    
+    # Avoid division by zero at zero frequency
+    frf_r[omega == 0] = np.inf
+
+    abs_frf = np.abs(frf_r)
+
+    frf_r0 = frf_r[0]
+    frf_r1 = frf_r[1]
+    frf_r2 = frf_r[2]
+    
+    fig, ax = plt.subplots(nrows=3, ncols=1, figsize=(6, 9), sharex=True)
+
+    # Find peaks in the absolute FRF
+    peaks, _ = find_peaks(abs_frf, prominence=20)  # Adjust threshold as needed
+
+    # Extract values at peaks
+    arg = []
+    for i in range(len(peaks)):  # Loop through all peaks
+        arg_i = np.array([frf_r0[peaks[i]], frf_r1[peaks[i]], frf_r2[peaks[i]]])
+        arg.append(arg_i)
+
+    # Convert list of arrays into a single NumPy array for easier processing
+    arg = np.array(arg)
+
+    # Determine the number of rows in arg
+    num_rows = arg.shape[0]
+
+    # Create a vertical subplot based on the number of rows in arg
+    fig, axs = plt.subplots(nrows=num_rows, ncols=1, figsize=(6, 4 * num_rows), sharex=True, sharey=True)
+
+    # If there's only one row, axs will not be an array, so we convert it to a list for consistency
+    if num_rows == 1:
+        axs = [axs]
+
+    # Plot each row of arg in a separate subplot
+    for i, ax in enumerate(axs):
+        point = arg[i]  # Get the i-th row of arg
+    
+    colors = ['r', 'g', 'b']  # Colors for each point in the row
+
+    # Plot the Argand diagram for this row
+    ax.axhline(0, color='black', linewidth=1)
+    ax.axvline(0, color='black', linewidth=1)
+    ax.grid(True, linestyle='--', linewidth=0.5)
+    ax.set_xlabel('Real')
+    ax.set_ylabel('Imaginary')
+    ax.set_title(f'Argand Diagram - Peak {i+1}')
+
+    for j, p in enumerate(point):
+        color = colors[j % len(colors)]  # Cycle through colors
+        # Plot the point
+        ax.scatter(p.real, p.imag, color=color, s=50, label=f'Point {j+1}')
+        # Draw a line from the origin to the point
+        ax.plot([0, p.real], [0, p.imag], color=color, linestyle='-', linewidth=2)
+        # Add text label for the point
+        ax.text(p.real, p.imag, f' ({p.real:.2f}, {p.imag:.2f})', fontsize=10, color=color)
+
+    ax.legend()
+
+    plt.tight_layout()
+    plt.legend()
+    plt.show()
+    plot_path = f'./images/{u.format_accel_plot_name(options, "argand")}'
+    plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
+    
+    return plot_path
 
 if __name__ == '__main__':
     import json
@@ -521,14 +666,6 @@ if __name__ == '__main__':
     with open('./templates/requestFormat.json') as f:
         options = json.load(f)
     data = r.read_csv(options)
-    
-
-    import asyncio
-    result = asyncio.run(plot_nyquist(data, options))  # Correct usage
-
-    # async def main():
-    #     result = await plot_acceleration(data, options)  
-    # asyncio.run (main())
 
     # plot_forcing(data, options)
 
@@ -536,4 +673,3 @@ if __name__ == '__main__':
     asyncio.run(plot_nyquist(data, options))
     asyncio.run(plot_bode(data, options))
     # frf_matrix(data, options)
-
