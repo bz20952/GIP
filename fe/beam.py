@@ -7,6 +7,7 @@ import pandas as pd
 from scipy.integrate import odeint, solve_ivp
 from scipy.signal import chirp
 import plot as p
+import sympy as sp
 
 
 plt.rcParams.update({'font.size': 18})
@@ -63,14 +64,6 @@ def fe(n_nodes: int):
     # K = np.delete(K, -2, axis=0)
     # K = np.delete(K, -2, axis=1)
 
-    # # Damping (assumes Rayleigh damping)
-    # a1 = np.array([[w[0]**2, w[0]],
-    #                [w[1]**2, w[1]]])
-    # a2 = np.array([1E-10, 1E-10]).reshape(2,1)
-    # alpha_beta = 2*(np.linalg.inv(a1) @ a2)
-    # C = alpha_beta[0,0]*M + alpha_beta[1,0]*K
-    C = np.zeros((n_dofs,n_dofs))
-
     # Solve for eigenvalues
     eigenvalues, eigenvectors = linalg.eig(K, M)
     sorted_index = eigenvalues.argsort()
@@ -83,10 +76,15 @@ def fe(n_nodes: int):
     # mode_shapes /= np.max(np.abs(mode_shapes))  # Normalise mode shapes
     # p.plot_mode_shapes(mode_shapes[::2,:3], 3)
 
-    # f_damped = f[0] * (1 - (zeta**2))
-    # print(f_damped)
+    # Damping (assumes Rayleigh damping)
+    a1 = np.array([[w[0]**2, w[0]],
+                   [w[1]**2, w[1]]])
+    a2 = np.array([0.0, 0.0]).reshape(2,1)
+    alpha_beta = 2*(np.linalg.inv(a1) @ a2)
+    C = alpha_beta[0,0]*M + alpha_beta[1,0]*K
 
     return M, K, C
+
 
 def simulate(sim_params: dict, M: np.ndarray, K: np.ndarray, C: np.ndarray, n_free_dofs: int, plot: bool = True):
 
@@ -113,17 +111,16 @@ def simulate(sim_params: dict, M: np.ndarray, K: np.ndarray, C: np.ndarray, n_fr
 
         # Use array slicing to extract displacement and velocity matrices returned from previous time step
         displacements = np.array([z[1::2]]).transpose()
-        # velocities = np.array([z[::2]]).transpose()
+        velocities = np.array([z[::2]]).transpose()
 
         # Stiffness matrix * displacement matrix
         stiffness_component = K @ displacements
 
-        # # Damping matrix * velocity matrix
-        # damping_component = C @ velocities
+        # Damping matrix * velocity matrix
+        damping_component = C @ velocities
 
         # Calculate acceleration
-        # x_ddot = inverse_mass_matrix @ np.subtract(np.subtract(f, stiffness_component), damping_component)
-        x_ddot = inverse_mass_matrix @ np.subtract(f, stiffness_component)
+        x_ddot = inverse_mass_matrix @ np.subtract(np.subtract(f, stiffness_component), damping_component)
 
         # Record displacement and velocity of every node
         z_dot = np.zeros(n_free_dofs*2)
@@ -141,15 +138,15 @@ def simulate(sim_params: dict, M: np.ndarray, K: np.ndarray, C: np.ndarray, n_fr
     num_accelerometers = n_free_dofs//2
 
     # Numerically differentiating velocity to obtain acceleration
-    a = np.zeros((n_intervals-1, num_accelerometers))
+    a = np.zeros((n_intervals, num_accelerometers))
     for i in range(n_intervals-1):
         for j in range(num_accelerometers):
-            a[i,j] = ((v[i+1,j] - v[i,j])/(time_steps[i+1] - time_steps[i]))/9.81  # Convert units to g
+            a[i+1,j] = ((v[i+1,j] - v[i,j])/(time_steps[i+1] - time_steps[i]))/9.81  # Convert units to g
     a = pd.DataFrame(a, columns=[f'A{i}' for i in range(num_accelerometers)])  # Accelerations
+    a['t'] = time_steps
 
     for i in range(num_accelerometers):
-        a[f'F{i}'] = [sim_params['forcing']['signal'](t) for t in time_steps[:-1]]
-    a['t'] = time_steps[:-1]
+        a[f'F{i}'] = [sim_params['forcing']['signal'](t) for t in time_steps]
     a = a[['t'] + [f'F{i}' for i in range(num_accelerometers)] + [f'A{i}' for i in range(num_accelerometers)]]
     a.to_csv(f'./sim_data/{sim_params["forcing"]["type"].split(" ")[0].upper()}_{sim_params["forcing"]["location"]}.csv', index=False)
 
@@ -157,25 +154,79 @@ def simulate(sim_params: dict, M: np.ndarray, K: np.ndarray, C: np.ndarray, n_fr
         p.plot_motion(y, v, a, time_steps, num_accelerometers)
 
 
-def get_frequency_response(M, K, w, frequencies):
+def get_frequency_response(M, K, C, frequencies):
 
     """Analyse response amplitude over a range of frequencies using the FRF formula."""
 
     gains = []
+    phases = []
     for w in frequencies:
         s = complex(0, w)
 
         # Gives response to impulse (delta function)
-        frf = np.linalg.inv(K - (w**2)*M)
+        frf = np.linalg.inv(np.add(np.subtract(K, (w**2)*M), s*C))
 
         tf_gain = abs(frf)
+        tf_phase = np.arctan2(np.imag(frf), np.real(frf))
         gains.append(tf_gain)
+        phases.append(tf_phase)
 
-    return gains
+    return gains, phases
 
 
-def linear_to_db(gains):
-    return 20*np.log10(gains)
+def find_step(t: float, cumulative_periods: np.ndarray):
+    index = np.searchsorted(cumulative_periods, t)
+    if index >= len(cumulative_periods):
+        index = 0
+    return index
+
+
+def solve_ode_analytically(t, m, c, k, f, ics: list):
+
+    """Use sympy for analytical solve.""" 
+
+    # Define function
+    u = sp.Function('u')(t)
+
+    # Define EOM LHS
+    eom_lhs = m*u.diff(t, t) + c*u.diff(t) + k*u
+
+    # Define EOM RHS
+    eom_rhs = f
+
+    # Define differential equation
+    diff_eq = sp.Eq(eom_lhs, eom_rhs)
+
+    # # Classify ode
+    # print(sp.classify_ode(diff_eq))
+
+    # Solve
+    sol = sp.dsolve(diff_eq, u)
+    print(sol.rhs)
+
+    # Name constants
+    # exp = sol.rhs
+    # print(exp.free_symbols)
+    # C2 = tuple(exp.free_symbols)[0]
+    # C1 = tuple(exp.free_symbols)[2]
+
+    # Define ICs
+    ics_dict = {}
+    for index, ic in enumerate(ics):
+        # If even index...
+        if index%2 == 0:
+            ics_dict[u.diff(t).subs([(t, 0)])] = ic
+        # If odd index...
+        else:
+            ics_dict[u.subs([(t, 0)])] = ic
+
+    # Solve IC problem
+    ivp = sp.dsolve(diff_eq, ics=ics_dict).rhs
+
+    # # Check that solution satisfies ODE
+    # print((m*ivp.diff(t, t) + c*ivp.diff(t) + k*ivp).simplify())
+
+    return ivp, ivp.diff(t), ivp.diff(t, t)
 
 
 if __name__ == '__main__':
@@ -183,46 +234,53 @@ if __name__ == '__main__':
     M, K, C = fe(n_nodes)
 
     IC = np.zeros(n_nodes*2*2)  # Number of nodes * number of DOFs at each node * 2 (displacement and velocity)
-    IC[1] = 0.001  # Displace node zero
+    # IC[1] = 0.001  # Displace node zero
     T = 10
     num_intervals = 1000
-    for forcing_type in ['sine sweep', 'soft hammer', 'hard hammer']:
-        for location in [0]:
-            if forcing_type == 'random':
-                freq_range = np.linspace(50, 200, 100)
-                random_amplitude = np.random.random(len(freq_range))
-                random_phase = np.random.uniform(-np.pi, np.pi, len(freq_range))
-                forcing_fnc = lambda t: sum([np.sin(2*np.pi*freq*t + phi) * amp for freq, phi, amp in zip(freq_range, random_phase, random_amplitude)])
-            elif forcing_type == 'sine':
-                freq = 30
-                forcing_fnc = lambda t: np.sin(2*np.pi*freq*t)
-            elif forcing_type == 'sine sweep':  # WIP
-                freq_low = 0
-                freq_high = 10
-                hz_per_second = (freq_high - freq_low) / T
-                print(hz_per_second)
-                forcing_fnc = lambda t: np.sin(2*np.pi*(freq_low+(hz_per_second*t))*t)
-            elif forcing_type == 'soft hammer':
-                forcing_fnc = lambda t: -20*t**2+5*t if t <= 0.5 else 0
-            elif forcing_type == 'hard hammer':
-                forcing_fnc = lambda t: -50*t**2+10*t if t <= 0.2 else 0
-            else:
-                forcing_fnc = lambda t: 0
+    freq_range = np.linspace(50, 1000, 500)*2*np.pi
+    p.plot_frf(freq_range, get_frequency_response(M, K, C, freq_range)[0])
+    
+    # for forcing_type in ['random', 'stepped sweep']:
+    #     for location in range(3):
+    #         if forcing_type == 'random':
+    #             random_amplitude = np.random.random(len(freq_range))
+    #             random_phase = np.random.uniform(-np.pi, np.pi, len(freq_range))
+    #             forcing_fnc = lambda t: sum([np.sin(2*np.pi*freq*t + phi) * amp for freq, phi, amp in zip(freq_range, random_phase, random_amplitude)])
+    #         elif forcing_type == 'sine':
+    #             freq = 30
+    #             forcing_fnc = lambda t: np.sin(2*np.pi*freq*t)
+    #         elif forcing_type == 'sine sweep':  # WIP
+    #             freq_low = 100
+    #             freq_high = 150
+    #             hz_per_second = (freq_high - freq_low) / T
+    #             forcing_fnc = lambda t: np.sin(2*np.pi*(freq_low+(hz_per_second*t))*t)
+    #         elif forcing_type == 'stepped sweep':
+    #             freqs = np.linspace(100, 150, 49)
+    #             periods = 200*(1/freqs)
+    #             cumulative_periods = np.array([sum(periods[:i+1]) for i in range(len(periods))])
+    #             print(cumulative_periods)
+    #             forcing_fnc = lambda t: np.sin(2*np.pi*freqs[find_step(t, cumulative_periods)]*t)
+    #         elif forcing_type == 'soft hammer':
+    #             forcing_fnc = lambda t: -20*t**2+10*t if t <= 0.5 else 0
+    #         elif forcing_type == 'hard hammer':
+    #             forcing_fnc = lambda t: -50*(t-0.075)**2+10*(t-0.075)+1 if t <= 0.35 else 0
+    #         else:
+    #             forcing_fnc = lambda t: 0
 
-            times = np.linspace(0, T, num_intervals)
-            plt.plot(times, [forcing_fnc(t) for t in times])
-            plt.title('Forcing Function')
-            plt.show()
+    #         times = np.linspace(0, T, num_intervals)
+    #         plt.plot(times, [forcing_fnc(t) for t in times])
+    #         plt.title('Forcing Function')
+    #         plt.show()
 
-            sim_params = {
-                'period': T,
-                'num_intervals': num_intervals,
-                'initial_conditions': IC,
-                'forcing': {
-                    'location': location,
-                    'amplitude': 1,
-                    'signal': forcing_fnc,
-                    'type': forcing_type
-                }
-            }
-            simulate(sim_params, M, K, C, n_free_dofs=10, plot=True)
+    #         sim_params = {
+    #             'period': T,
+    #             'num_intervals': num_intervals,
+    #             'initial_conditions': IC,
+    #             'forcing': {
+    #                 'location': location,
+    #                 'amplitude': 1,
+    #                 'signal': forcing_fnc,
+    #                 'type': forcing_type
+    #             }
+    #         }
+    #         simulate(sim_params, M, K, C, n_free_dofs=10, plot=True)
