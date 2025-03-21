@@ -4,6 +4,6 @@ node_modules/
 build/
 
 # General
-# .env
+.env
 Dockerfile
 .dockerignore

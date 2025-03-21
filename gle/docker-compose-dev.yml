@@ -36,9 +36,6 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "80:80"
-    environment:
-      - BACKEND_PORT=8000
-      - FRONTEND_PORT=5173
     networks:
       - customnet
 
