@@ -59,6 +59,13 @@ export const tools: Writable<Tool[]> = writable([
         type: 'identification',
         description: 'Visualise the gain and phase of the frequency response. May be used to estimate natural frequencies and modal damping ratios.',
         endpoint: 'nyquist'
+    },
+    {
+        name: 'Mode shapes',
+        available: false,
+        type: 'identification',
+        description: 'Visualise the mode shape from the frequency response.',
+        endpoint: 'mode-shapes'
     }
     // {
     //     name: 'Frequency response function',

@@ -7,12 +7,15 @@ def linear_to_db(gains):
     return 20*np.log10(gains)
 
 
-def plot_frf(frequencies, gains):
+def plot_frf(frequencies, gains, excitation_location):
 
     """Generic FRF plotting."""
 
+    # Compute magnitude and phase
+    gains = linear_to_db(gains)
+
     for i in range(0, 5*2, 2):
-        plt.plot(frequencies / (2*np.pi), [gain[i, i] for gain in gains], label=f'N{(i/2):.0f}')
+        plt.plot(frequencies / (2*np.pi), [gain[excitation_location,i] for gain in gains], label=f'A{(i/2):.0f}')
 
     # ax[j].set_yscale('log')
     # ax[-1].set_xticks(fontsize=18)
@@ -21,7 +24,7 @@ def plot_frf(frequencies, gains):
     # plt.yscale('log')
 
     plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Gain (linear)')
+    plt.ylabel('Gain (dB)')
     plt.grid(True)
     plt.legend(fontsize=18)
     plt.show()

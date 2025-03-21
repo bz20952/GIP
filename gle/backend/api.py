@@ -13,7 +13,7 @@ import utils as u
 
 
 # Define root URL
-root_url = f"http://{os.environ.get('PUBLIC_HOSTNAME')}:{os.environ.get('PUBLIC_BACKEND_PORT')}"
+root_url = os.environ.get('PUBLIC_BACKEND_URL')
 
 # Initialise API
 app = FastAPI()
@@ -21,7 +21,7 @@ app = FastAPI()
 # Allow cross-origin requests from frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", f"http://{os.environ.get('PUBLIC_HOSTNAME')}:{os.environ.get('FRONTEND_PORT')}"],
+    allow_origins=[os.environ.get('FRONTEND_URL')],
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
@@ -257,7 +257,7 @@ async def start_tracking(request: Request):
 
 if __name__ == "__main__":
     if os.environ.get('ENV') == 'docker':
-        uvicorn.run("api:app", host='0.0.0.0', port=int(os.environ.get('PUBLIC_BACKEND_PORT')), workers=1)
+        uvicorn.run("api:app", host='0.0.0.0', port=int(os.environ.get('BACKEND_PORT')), workers=1)
     else:
         load_dotenv('../.env')
-        uvicorn.run("api:app", port=int(os.environ.get('PUBLIC_BACKEND_PORT')), reload=True)
+        uvicorn.run("api:app", port=int(os.environ.get('BACKEND_PORT')), reload=True)

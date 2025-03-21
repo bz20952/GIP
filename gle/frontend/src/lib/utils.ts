@@ -1,5 +1,4 @@
-import { PUBLIC_HOSTNAME } from '$env/static/public';
-import { PUBLIC_BACKEND_PORT } from '$env/static/public';
+import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
 export function removeItemAll(arr: Array<any>, value: any): Array<number> {
     var i = 0;
@@ -37,7 +36,7 @@ export async function sendApiRequest(endpoint: string, method: string, body: any
         };
       }
 
-      const response = await fetch(`http://${PUBLIC_HOSTNAME}:${PUBLIC_BACKEND_PORT}/${endpoint}`, options);
+      const response = await fetch(`${PUBLIC_BACKEND_URL}/${endpoint}`, options);
       
       if (response.ok) {
           result = await response.json();
