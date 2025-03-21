@@ -212,7 +212,7 @@
                         },
                         {
                             "stage": 2,
-                            "message": "The half-power method, which simplifies the damping ratio circle-fitting equation, can also be applied on Nyquist plot to find damping ratio. Use the frequency point at 90 degrees from the point corresponding to the natural frequency (maximum sweep rate)."
+                            "message": "The half-power method, which simplifies the damping ratio circle-fitting equation, can also be applied to find damping ratio on Nyquist plot. Use the frequency point at 90 degrees from the point corresponding to the natural frequency (maximum sweep rate)."
                         },
                         {
                             "stage": 3,
