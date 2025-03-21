@@ -104,7 +104,7 @@
                     "tooltipId": 5,
                     "answer": {
                         "shakerPosition": 2,
-                        "samplingFrequency": 516
+                        "samplingFrequency": 512
                     },
                     "praise": "Nice one! You have setup the test correctly.",
                     "feedback": [

@@ -57,6 +57,7 @@ def accel_to_disp(data: pd.DataFrame, options: dict):
 
     # Set dict to transfer to disp df
     disp_dict = {"t": t}  # Last two values must be removed due to double integration
+    vel_dict = {"t": t}
 
     # Perform double integration for each acceleration column
     for col in ["A0", "A1", "A2", "A3", "A4"]:
@@ -73,10 +74,12 @@ def accel_to_disp(data: pd.DataFrame, options: dict):
         
         # Store displacement
         disp_dict[col] = s
+        vel_dict[col] = v
 
     displacement_df = pd.DataFrame(data=disp_dict)
+    velocity_df = pd.DataFrame(data=velocity_df)
 
-    return displacement_df
+    return displacement_df, velocity_df
 
 
 if __name__ == '__main__':

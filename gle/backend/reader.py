@@ -16,7 +16,7 @@ def read_csv(options: dict):
         options['excitationType'] = options['tipHardness']
 
     filename = u.format_filename(options)
-    df = pd.read_csv(f'../../fe/sim_data/{filename}.csv', header=0)
+    df = pd.read_csv(f'./data/{filename}.csv', header=0)
 
     # Adjust the sampling frequency if necessary
     if options['samplingFreq'] != 2048:

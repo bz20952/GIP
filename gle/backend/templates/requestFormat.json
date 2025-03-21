@@ -3,14 +3,12 @@
     "accelerometers": {
         "A0": true,
         "A1": false,
-        "A2": false,    
+        "A2": true,    
         "A3": false,
-        "A4": false
+        "A4": true
     },
-    "shakerPosition": 0,
-    "excitationType": "Sine sweep",
-    "samplingFreq": 2048,
-    "filterType": "bandPass",
-    "lowerCutoff": 10,
-    "upperCutoff": 20
+    "shakerPosition": 4,
+    "excitationType": "Stepped sweep",
+    "tipHardness": "Hard",
+    "samplingFreq": 2048
 }
