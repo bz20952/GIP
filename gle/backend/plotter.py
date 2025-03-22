@@ -2,7 +2,9 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 import utils as u
-# from mpl_toolkits.mplot3d import Axes3D  # Import 3D plotting module
+from mpl_toolkits.mplot3d import Axes3D  # Import 3D plotting module
+from scipy.signal import find_peaks
+from scipy.fft import rfft,rfftfreq
 from adjustText import adjust_text
 from scipy.signal import find_peaks
  
@@ -447,70 +449,136 @@ async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
     """
 
     accelerometers = options['accelerometers']
+    sample_rate = options['samplingFreq']
 
-    frfs = []
-    peaks = []
+    frf_i = []
+    frf_abs = []
+
     for acc in accelerometers.keys():
         if accelerometers[acc]:
             # Compute FFT and Frequency Response Function
             n = len(data[acc])
-            f = np.fft.fftfreq(n, 1/options['samplingFreq'])[:n//2]  # Positive frequencies
+            f = np.fft.fftfreq(n, 1/sample_rate)[:n//2]  # Positive frequencies
             fftacc = np.fft.fft(data[acc])[:n//2]
             fftforce = np.fft.fft(data['F' + acc[1]])[:n//2]
 
             # Avoid division by zero
             fftforce[np.abs(fftforce) < 1e-10] = np.finfo(float).eps
             frf = fftacc / fftforce  # Frequency Response Function
-
+    
+            freqs = f
             # Convert inertance to receptance
-            omega = 2 * np.pi * f  # Convert frequency to angular frequency (rad/s)
+            omega = 2 * np.pi * freqs  # Convert frequency to angular frequency (rad/s)
+            omega[np.abs(omega) < 1e-10] = np.finfo(float).eps
             frf_r = frf / (-omega**2)  # Convert inertance to receptance
 
-            # Find peaks in the absolute FRF
-            gains = np.abs(frf_r)
-            plt.plot(f, gains)
-            plt.show()
-            peak, _ = find_peaks(gains, prominence=10)  # Adjust threshold as needed
-            print(peak)
-            peaks.append(peak)
+            abs_frf = np.abs(frf_r)
+            frf_img = np.imag(frf_r)
 
-            frfs.append(frf)
-
-    # Convert list to array
-    frfs = np.array(frfs)
-
-    # # Avoid division by zero at zero frequency
-    # frf_r[omega == 0] = np.inf
-
-    im_values = []
-    for accelerometer in range(np.shape(frfs)[0]):
-        im_values.append(frfs[accelerometer, peaks[accelerometer]].imag)
+            frf_i.append(frf_img)
+            frf_abs.append(abs_frf)
     
-    # Normalized locations of the accelerometers
-    x_locations = [0, 0.5, 1]
+    # Shape checker. Remove after testing
+    print("frf_i", frf_i)
+    print("frf_d", frf_abs)
+    print(len(frf_i))
+    print(len(frf_abs))
 
-    # Remove the line between points and plot only the points
-    plt.scatter(x_locations, im_values, color='red', s=100, label='Imaginary FRF at Natural Frequency')
+    # Convert to NumPy arrays for easier processing
+    frf_i = np.array(frf_i)
+    frf_abs = np.array(frf_abs)
 
-    # Add vertical lines from the x-axis to each point
-    for loc, val in zip(x_locations, im_values):
-        plt.plot([loc, loc], [0, val], color='blue', linestyle='--', linewidth=1.5)
+    # Find peaks in the absolute FRF
+    ## If find_peaks are not reliable, can hard code the value of peaks as replacement to the line below ##
+    prominence = 0.01
 
-    # Center the graph around the x-axis
-    plt.axhline(0, color='black', linewidth=1)  # Add a horizontal line at y=0
-    plt.ylim(-1.1 * np.max(np.abs(im_values)), 1.1 * np.max(np.abs(im_values)))  # Symmetrical y-axis
+    if frf_abs.ndim == 1:
+        peaks, _ = find_peaks(frf_abs, prominence=prominence)  # Use the array directly if it's 1D
+    else:
+        peaks, _ = find_peaks(frf_abs[0], prominence=prominence)  # Access the first row if it's 2D
 
-    # Add labels and title
-    plt.xlabel('Accelerometer Location')
-    plt.ylabel('Imaginary Component of FRF')
-    plt.title('Mode shapes')
-    plt.xticks(x_locations, ['Start (0)', 'Middle (l/2)', 'End (l)'])  # Label x-axis with locations
-    plt.grid(True, linestyle='--', linewidth=0.5)
-    plt.legend()
+    #remove after testing
+    print("peaks", peaks)
+    print(len(peaks))
+
+    # Handle 1D and 2D cases for frf_i
+    if frf_i.ndim == 1:
+        # If frf_i is 1D, treat it as a single row
+        im_values = [(frf_i[peaks])]
+    else:
+        # If frf_i is 2D, extract imaginary parts for each row
+        im_values = [(frf_i[i][peaks]) for i in range(frf_i.shape[0])]
+
+    # Fixed positions of the accelerometers from left to right (A0, A1, A2, A3, A4)
+    accelerometer_positions = {
+    'A0': 0.0,  # Left end
+    'A1': 0.25, # 25% from the left
+    'A2': 0.5,  # Middle
+    'A3': 0.75, # 75% from the left
+    'A4': 1.0   # Right end
+    }
+
+    active_x_locations = [accelerometer_positions[acc] for acc in accelerometers.keys() if accelerometers[acc]]
+
+    # Convert to a numpy array if needed
+    x_locations = np.array(active_x_locations)
+
+    # Number of peaks found
+    num_peaks = len(peaks)
+
+    # Dynamic sizing based on the number of subplots
+    base_figsize = 5  # Base size for each subplot
+    fig_height = base_figsize * num_peaks  # Total figure height
+
+     # Adjust plot size and font size based on the number of peaks
+    base_font_size = 8
+    base_fig_width = 6
+    base_fig_height_per_peak = 4
+
+    # Scale font size and figure size based on the number of peaks
+    font_size = base_font_size - max(0, num_peaks - 3)  # Decrease font size if there are many peaks
+    tick_label_size = font_size - 1
+    fig_width = base_fig_width
+    fig_height = base_fig_height_per_peak * num_peaks
+
+    # Create subplots
+    fig, axes = plt.subplots(num_peaks, 1, figsize=(fig_width, fig_height), squeeze=False)
+    axes = axes.flatten()  # Flatten to handle single peak case
+
+    for i, ax in enumerate(axes):
+        if i >= num_peaks:
+            break  # Break if there are fewer peaks than subplots
+
+        # Ensure x_locations and y-values have the same length
+        y_values = [im_val[i] if i < len(im_val) else np.nan for im_val in im_values]
+
+        # Plot the imaginary part of FRF for the current peak
+        ax.scatter(x_locations, y_values, color='red', s=10, label='Img Receptance at Mode {}'.format(i + 1))
+
+        # Add vertical lines from the x-axis to each point
+        for loc, val in zip(x_locations, y_values):
+            if not np.isnan(val):  # Skip NaN values
+                ax.plot([loc, loc], [0, val], color='blue', linestyle='--', linewidth=1)
+
+        # Center the graph around the x-axis
+        ax.axhline(0, color='black', linewidth=0.5)
+        ax.set_ylim(-1.1 * np.nanmax(np.abs(y_values)), 1.1 * np.nanmax(np.abs(y_values)))
+
+        # Add labels and title with scaled font sizes
+        ax.set_xlabel('Accelerometer Location', fontsize=font_size)
+        ax.set_ylabel('Img Receptance', fontsize=font_size)
+        ax.set_title('Mode {}'.format(i + 1), fontsize=font_size)  # Slightly larger title
+        ax.set_xticks(x_locations)
+        ax.set_xticklabels(['{:.1f}'.format(loc) for loc in x_locations], fontsize=tick_label_size)
+        ax.tick_params(axis='both', labelsize=tick_label_size)
+        ax.grid(True, linestyle='--', linewidth=0.5)
+        ax.legend(fontsize=tick_label_size)  # Scale legend font size
+
+        plot_path = f'./images/{u.format_accel_plot_name(options, "imaginary")}'
+        plt.tight_layout
+        #plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
+
     plt.show()
-
-    plot_path = f'./images/{u.format_accel_plot_name(options, "imaginary")}'
-    plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
 
     return plot_path
 
@@ -518,8 +586,11 @@ async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
 async def plot_argand_r(data: pd.DataFrame, options: dict) -> None:
 
     accelerometers = options['accelerometers']
-    
-    frfs = []
+    sample_rate = options['samplingFreq']
+
+    frf_ar = []
+    frf_abs = []
+
     for acc in accelerometers.keys():
         if accelerometers[acc]:
             # Compute FFT and Frequency Response Function
@@ -533,67 +604,119 @@ async def plot_argand_r(data: pd.DataFrame, options: dict) -> None:
             frf = fftacc / fftforce  # Frequency Response Function
             frfs.append(frf)
     
-    # Convert list to array
-    frfs = np.array(frfs)
-
-    # Convert inertance to receptance
-    omega = 2 * np.pi * freqs  # Convert frequency to angular frequency (rad/s)
-    receptance_frf = frfs / (-omega**2)  # Convert inertance to receptance
-    abs_frf = np.abs(receptance_frf)
-    num_rows = np.shape(abs_frf)[0]
+            freqs = f
+            # Convert inertance to receptance
+            omega = 2 * np.pi * freqs  # Convert frequency to angular frequency (rad/s)
+            frf_r = frf / (-omega**2)  # Convert inertance to receptance
     
-    # # Avoid division by zero at zero frequency
-    # frf_r[omega == 0] = np.inf
+            # Avoid division by zero at zero frequency
+            frf_r[omega == 0] = np.inf
 
+            abs_frf = np.abs(frf_r)
+
+            frf_ar.append(frf_r)
+            frf_abs.append(abs_frf)
+
+    active_accelerometers = [key for key, value in accelerometers.items() if value]
+
+
+    frf_ar = np.array(frf_ar)
+    frf_abs = np.array(frf_abs)
+    print(len(frf_ar))
+
+    if frf_ar.ndim == 1:
+        # If frf_ar is 1D, treat it as a single row
+        frf_rows = [frf_ar]
+    else:
+        # If frf_ar is 2D, extract the rows corresponding to active accelerometers
+        frf_rows = [frf_ar[i] for i in range(len(active_accelerometers))]
+
+    # Print the first row for debugging
+    print(len(frf_rows))
+
+    # Find peaks in the absolute FRF
+    prominence = 0.01
+
+    if frf_abs.ndim == 1:
+        peaks, _ = find_peaks(frf_abs, prominence=prominence)  # Use the array directly if it's 1D
+    else:
+        peaks, _ = find_peaks(frf_abs[0], prominence=prominence)  # Access the first row if it's 2D
+
+    print("peaks number", len(peaks))
     # Extract values at peaks
     arg = []
-    for i in range(num_rows):  # Loop through all peaks
-        # Find peaks in the absolute FRF
-        peaks, _ = find_peaks(abs_frf[i,:], prominence=1)  # Adjust threshold as needed
-        print(peaks)
-        arg_i = np.array([abs_frf[j,:][peaks[i]] for j in range(num_rows)])
+    for i in range(len(peaks)):  # Loop through all peaks
+        arg_i = np.array([frf_row[peaks[i]] for frf_row in frf_rows])
         arg.append(arg_i)
 
     # Convert list of arrays into a single NumPy array for easier processing
     arg = np.array(arg)
 
-    # Create a vertical subplot based on the number of rows in arg
-    fig, axs = plt.subplots(nrows=num_rows, ncols=1, figsize=(6, 4 * num_rows), sharex=True, sharey=True)
+    # Determine the number of rows in arg (number of peaks)
+    num_peaks = arg.shape[0]
 
-    # If there's only one row, axs will not be an array, so we convert it to a list for consistency
-    if num_rows == 1:
+    # Adjust plot size and font size based on the number of peaks
+    base_font_size = 8
+    base_fig_width = 6
+    base_fig_height_per_peak = 4
+
+    # Scale font size and figure size based on the number of peaks
+    font_size = base_font_size - max(0, num_peaks - 3)  # Decrease font size if there are many peaks
+    tick_label_size = font_size - 1
+    fig_width = base_fig_width
+    fig_height = base_fig_height_per_peak * num_peaks
+
+    # Create a vertical subplot based on the number of peaks
+    fig, axs = plt.subplots(nrows=num_peaks, ncols=1, figsize=(fig_width, fig_height), sharex=True, sharey=True)
+
+    # If there's only one peak, axs will not be an array, so we convert it to a list for consistency
+    if num_peaks == 1:
         axs = [axs]
 
     # Plot each row of arg in a separate subplot
     for i, ax in enumerate(axs):
-        point = arg[i,:]  # Get the i-th row of arg
-    
-    colors = ['r', 'g', 'b']  # Colors for each point in the row
 
-    # Plot the Argand diagram for this row
-    ax.axhline(0, color='black', linewidth=1)
-    ax.axvline(0, color='black', linewidth=1)
-    ax.grid(True, linestyle='--', linewidth=0.5)
-    ax.set_xlabel('Real')
-    ax.set_ylabel('Imaginary')
-    ax.set_title(f'Argand Diagram - Peak {i+1}')
+        point = arg[i]  # Get the i-th row of arg
 
-    for j, p in enumerate(point):
-        color = colors[j % len(colors)]  # Cycle through colors
-        # Plot the point
-        ax.scatter(p.real, p.imag, color=color, s=50, label=f'Point {j+1}')
-        # Draw a line from the origin to the point
-        ax.plot([0, p.real], [0, p.imag], color=color, linestyle='-', linewidth=2)
-        # Add text label for the point
-        ax.text(p.real, p.imag, f' ({p.real:.2f}, {p.imag:.2f})', fontsize=10, color=color)
+        colors = ['r', 'g', 'b', 'c', 'm']  # Colors for each point in the row
 
-    # ax.legend()
+        # Plot the Argand diagram for this row
+        ax.axhline(0, color='black', linewidth=1)
+        ax.axvline(0, color='black', linewidth=1)
+        ax.grid(True, linestyle='--', linewidth=0.5)
+        ax.set_xlabel('Real', fontsize=font_size)
+        ax.set_ylabel('Imaginary', fontsize=font_size)
+        ax.set_title(f'Argand Diagram - Mode {i+1}', fontsize=font_size)  # Slightly larger title
+
+        # Adjust tick & legend label size
+        ax.tick_params(axis='both', labelsize=tick_label_size)
+
+
+        for j, p in enumerate(point):
+            color = colors[j % len(colors)]  # Cycle through colors
+            # Plot the point
+            ax.scatter(p.real, p.imag, color=color, s=50, label=f'{active_accelerometers[j]}')
+            # Draw a line from the origin to the point
+            ax.plot([0, p.real], [0, p.imag], color=color, linestyle='-', linewidth=2)
+            # Add text label for the point
+            ax.text(p.real, p.imag, f' ({p.real:.2f}, {p.imag:.2f})', fontsize=font_size, color=color)
+
+        ax.legend(fontsize=tick_label_size)
+
+        # Add a common x-axis label for all subplots with a custom font size
+        fig.supxlabel('X-axis', fontsize=14)
+
+        # Add a common y-axis label for all subplots with a custom font size
+        fig.supylabel('Y-axis', fontsize=14)
+
+        # Add a common title for all subplots with a custom font size
+        fig.suptitle('Trigonometric Functions', fontsize=16)
 
     plt.tight_layout()
-    plt.legend()
     plt.show()
+
     plot_path = f'./images/{u.format_accel_plot_name(options, "argand")}'
-    plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
+    #plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
     
     return plot_path
 
@@ -608,5 +731,6 @@ if __name__ == '__main__':
     asyncio.run(plot_dft(data, options))
     asyncio.run(plot_nyquist(data, options))
     asyncio.run(plot_bode(data, options))
-    # asyncio.run(plot_imaginary_r(data, options))
-    # asyncio.run(plot_argand_r(data, options))
+    # frf_matrix(data, options)
+    asyncio.run(plot_imaginary_r(data, options))
+    asyncio.run(plot_argand_r(data, options))
