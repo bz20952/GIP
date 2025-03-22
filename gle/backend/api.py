@@ -257,7 +257,7 @@ async def start_tracking(request: Request):
 
 if __name__ == "__main__":
     if os.environ.get('ENV') == 'docker':
-        uvicorn.run("api:app", host='0.0.0.0', port=int(os.environ.get('BACKEND_PORT')), workers=1)
+        uvicorn.run("api:app", host='0.0.0.0', port=int(os.environ.get('BACKEND_PORT')), workers=3)
     else:
         load_dotenv('../.env.local')
         uvicorn.run("api:app", port=int(os.environ.get('BACKEND_PORT')), reload=True)

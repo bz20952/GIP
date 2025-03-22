@@ -36,7 +36,7 @@ export async function sendApiRequest(endpoint: string, method: string, body: any
         };
       }
 
-      console.log(`${PUBLIC_BACKEND_URL}/${endpoint}`);
+      // console.log(`${PUBLIC_BACKEND_URL}/${endpoint}`);
       const response = await fetch(`${PUBLIC_BACKEND_URL}/${endpoint}`, options);
       
       if (response.ok) {

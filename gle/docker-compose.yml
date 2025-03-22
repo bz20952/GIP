@@ -12,6 +12,8 @@ services:
       - BACKEND_PORT=$BACKEND_PORT
       - FRONTEND_URL=$FRONTEND_URL
       - ENV=docker
+    volumes:
+      - ./tracking:/app/tracking
     networks:
       - customnet
 
