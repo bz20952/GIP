@@ -13,6 +13,11 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+# Set environment variables
+ENV ENV=${ENV}
+ENV PUBLIC_BACKEND_PORT=${PUBLIC_BACKEND_PORT}
+ENV FRONTEND_PORT=${FRONTEND_PORT}
+
 # Build the Svelte application
 RUN npm run build
 

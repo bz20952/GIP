@@ -54,30 +54,6 @@
         {/if} -->
     </div>
 
-    <!-- <div class="filter">
-        <label for="filter-type">Filter type: </label>
-        <select name="filter-type" bind:value={$testOptions.filterType}>
-            <option value="none">None</option>
-            <option value="lowPass">Low-pass</option>
-            <option value="highPass">High-Pass</option>
-            <option value="bandPass">Band-Pass</option>
-        </select>
-        <div class="freq">
-            {#if $testOptions.filterType === 'lowPass'}
-                <label for="cutoffFreq">Cutoff frequency (Hz): </label>
-                <input type="number" name="cutoffFreq" bind:value={$testOptions.upperCutoff} />
-            {:else if $testOptions.filterType === 'highPass'}
-                <label for="cutoff-freq">Cutoff frequency (Hz): </label>
-                <input type="number" name="cutoffFreq" bind:value={$testOptions.lowerCutoff} />
-            {:else if $testOptions.filterType === 'bandPass'}
-                <label for="lowerCutoff">Lower cutoff frequency (Hz): </label>
-                <input type="number" name="lowerCutoff" bind:value={$testOptions.lowerCutoff}/>
-                <label for="upperCutoff">Upper cutoff frequency (Hz): </label>
-                <input type="number" name="upperCutoff" bind:value={$testOptions.upperCutoff}/>
-            {/if}
-        </div>
-    </div> -->
-
     <button class="analyse" on:click={() => goto('/toolkit/analyse')}>Analyse</button>
 </section>
 

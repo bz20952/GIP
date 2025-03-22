@@ -1,0 +1,9 @@
+# Python specific
+__pycache__/
+.venv/
+
+# General
+**/.*
+.env
+Dockerfile
+.dockerignore

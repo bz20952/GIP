@@ -43,12 +43,14 @@
     border-radius: 10px;
     box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
     background-color: transparent;
+    /* overflow-y: scroll; */
   }
 
   .message-container {
     /* padding: 10px; */
+    min-height: 10rem;
     max-height: 30rem;
-    overflow-y: auto;
+    /* overflow-y: auto; */
   }
 
   .email {
