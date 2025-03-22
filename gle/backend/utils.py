@@ -43,7 +43,7 @@ def format_accel_plot_name(options: dict, plot_type: str):
         if accelerometers[acc]:
             file_suffix += f'_{index}'
 
-    if plot_type in ['bode', 'nyquist', 'argand']:
+    if plot_type in ['bode', 'nyquist', 'mode-shapes']:
         filename = format_filename(options) + '_' + str(options['samplingFreq']) + '_' + plot_type + file_suffix + '_f' + str(options['lowerCutoff']) + '-' + str(options['upperCutoff']) + '.png'
     else:
         filename = format_filename(options) + '_' + str(options['samplingFreq']) + '_' + plot_type + file_suffix + '.png'

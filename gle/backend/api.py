@@ -179,29 +179,49 @@ async def nyquist(request: Request):
     }
 
 
+@app.post('/mode-shapes')
+async def mode_shapes(request: Request):
+    options = await request.json()
+    file_ext = 'mode-shapes'
+
+    if u.check_if_file_exists(options, file_ext) is False:
+        data = r.read_csv(options)
+        plot_path = await p.plot_imaginary_r(data, options)
+    else:
+        plot_path = f'./images/{u.format_accel_plot_name(options, file_ext)}' 
+
+    return {
+        "details": "This should return the path to the mode shapes plot.",
+        "message": os.path.join(root_url, plot_path),
+        "success": True,
+        "error": False,
+        "code": 200
+    }
+
+
 # @app.get('/raw-data')
 # async def raw_data():
 #     return {"message": "This should return raw data."}
 
 
-@app.post('/filter')
-async def filter(request: Request):
-    options = await request.json()
-    file_ext = 'filtered.png'
+# @app.post('/filter')
+# async def filter(request: Request):
+#     options = await request.json()
+#     file_ext = 'filtered.png'
 
-    if u.check_if_file_exists(options, file_ext) is False:
-        data = r.read_csv(options)
-        data_path = f.filter(data, options)
-    else:
-        data_path = f'./images/{u.format_filename(options)}_{file_ext}'
+#     if u.check_if_file_exists(options, file_ext) is False:
+#         data = r.read_csv(options)
+#         data_path = f.filter(data, options)
+#     else:
+#         data_path = f'./images/{u.format_filename(options)}_{file_ext}'
 
-    return {
-        "details": "This should return the path to a filtered data file.",
-        "message": os.path.join(root_url, data_path),
-        "success": True,
-        "error": False,
-        "code": 200
-    }
+#     return {
+#         "details": "This should return the path to a filtered data file.",
+#         "message": os.path.join(root_url, data_path),
+#         "success": True,
+#         "error": False,
+#         "code": 200
+#     }
 
 
 @app.post('/start-tracking')

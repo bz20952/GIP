@@ -166,14 +166,12 @@ async def plot_nyquist(data: pd.DataFrame, options: dict):
             n = len(data[acc])
             f = np.fft.fftfreq(n, 1/sample_rate)
             f = f[:n//2]
-            # u.accel_to_disp(data[acc], options)
-            # fftvel=(np.fft.fft(data[acc]))[:n//2]
             fftacc = (np.fft.fft(data[acc]))[:n//2]
             fftforce = (np.fft.fft(data['F' + acc[1]]))[:n//2]
             frf = fftacc/fftforce
             frf_mobility = frf/(1j*f*2*np.pi)
             frf = frf_mobility #uncomment this line if plotting inertance
-            frfReal = -np.real(frf)
+            frfReal = np.real(frf)
             frfImag = np.imag(frf)
 
             # Filter for desired frequency range (depends on question that we ask i.e. damping ratio at 2nd mode for e.g.)
@@ -182,11 +180,22 @@ async def plot_nyquist(data: pd.DataFrame, options: dict):
             frfReal_filtered = frfReal[valid_idx]
             frfImag_filtered = frfImag[valid_idx]
 
-            plotcircfit(frfReal_filtered, frfImag_filtered, f_filtered)  # Correct usage
-            plot_path = f'./images/{u.format_accel_plot_name(options, "nyquist")}'
-            plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
-            plt.close()
+            xc, yc, r = plotcircfit(frfReal_filtered, frfImag_filtered, f_filtered)  # Correct usage
             break  # Only plot for first accelerometer
+
+    # Labels & Title
+    plt.xlabel('Real')
+    plt.ylabel('Imaginary')
+    plt.title(f'Mobility Nyquist plot ({acc})')
+    plt.legend(loc='center left', bbox_to_anchor=(1.05, 0.5))
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.xlim((xc - r)*1.1, (xc + r)*1.1)
+    plt.ylim((yc - r)*1.1, (yc + r)*1.1)
+    plt.grid(True)
+
+    plot_path = f'./images/{u.format_accel_plot_name(options, "nyquist")}'
+    plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
+    plt.close()
 
     return plot_path
 
@@ -206,40 +215,40 @@ def plotcircfit(x,y,z):
     r, xc, yc, RMSE = u.circfit(x, y)
     
     # Find upper and lower indices for theta
-    theta_n_index = np.argmax(x)
+    theta_n_index = np.argmax(np.abs(x))
     theta_h_index = u.closest_index(yc+r, y)
     theta_l_index = u.closest_index(yc-r, y)
 
-    # Create figure
-    fig, ax = plt.subplots(figsize=(20, 6))
-    ax.set_aspect('equal')
+    # # Create figure
+    # fig, ax = plt.subplots(figsize=(20, 6))
+    # ax.set_aspect('equal')
 
     # Plot circle fit
     circle = plt.Circle((xc, yc), r, color='k', fill=False, linewidth=2, label='Fitted Circle')
-    ax.add_patch(circle)
+    plt.gca().add_artist(circle)
 
     # Plot original data
-    ax.plot(x, y, 'bo-', label='Data Points', markersize=5)
-    ax.plot(x[0], y[0], 'go', label='Start Point', markersize=5)  # First point (green)
-    ax.plot(x[-1], y[-1], 'ro', label='End Point', markersize=5)  # Last point (red)
+    plt.plot(x, y, 'bo-', label='Data Points', markersize=5)
+    plt.plot(x[0], y[0], 'go', label='Start Point', markersize=5)  # First point (green)
+    plt.plot(x[-1], y[-1], 'ro', label='End Point', markersize=5)  # Last point (red)
     # ax.plot(xc, yc, 'ko', label='Circle Center: 'f'Radius={r:.2f}, 'f'Coordinates=({xc:.2f}, {yc:.2f})', markersize=5)  # Circle center (black)
-    ax.plot(xc, yc, 'ko', label=f'Circle Center (Radius={r:.2f})', markersize=5)  # Circle center (black)
+    plt.plot(xc, yc, 'ko', label=f'Circle Center (Radius={r:.2f})', markersize=5)  # Circle center (black)
 
     # Annotate labels
     txts = []
     label_indices = np.array([theta_n_index, theta_l_index, theta_h_index])
     for i in label_indices:
-        txt = plt.text(x[i]*0.65, y[i]*0.65, f"f = {z[i]:.2f} Hz", color='k') # text for coordinates and frequency of data point
+        txt = plt.text(x[i], y[i]*0.65, f"f = {z[i]:.2f} Hz", color='k') # text for coordinates and frequency of data point
         txts.append(txt)
 
     adjust_text(txts, target_x=x[label_indices], target_y=y[label_indices], arrowprops=dict(arrowstyle="->", color='black', lw=3))
 
-    # Labels & Title
-    plt.xlabel('Real')
-    plt.ylabel('Imaginary')
-    plt.title(f'Mobility Nyquist plot')
-    plt.legend(bbox_to_anchor=(2, 1))
-    plt.grid(True)
+    # # Labels & Title
+    # plt.xlabel('Real')
+    # plt.ylabel('Imaginary')
+    # plt.title(f'Mobility Nyquist plot')
+    # plt.legend(loc='center left')
+    # plt.grid(True)
 
     # # Annotate radius
     # radiustexts=[]
@@ -282,6 +291,8 @@ def plotcircfit(x,y,z):
 
     # # Adjust text labels to prevent overlap
     # adjust_text(texts, arrowprops=dict(arrowstyle="->", color='gray', lw=1))
+
+    return xc, yc, r
 
     
 async def plot_bode(data: pd.DataFrame, options: dict):
@@ -346,7 +357,7 @@ async def plot_bode(data: pd.DataFrame, options: dict):
 
             # Magnitude Plot
             plt.subplot(2, 1, 1)
-            plt.title('Mobility Bode Plot')
+            plt.title('Mobility Bode plot')
             plt.plot(f_filtered, magnitude_filtered, label=acc)
             plt.ylabel('Magnitude [dB]')
             plt.grid(True, which="both")
@@ -377,7 +388,6 @@ async def plot_bode(data: pd.DataFrame, options: dict):
             plt.grid(True, which="both")
 
     plot_path = f'./images/{u.format_accel_plot_name(options, "bode")}'
-    plt.legend()
     plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
     plt.close()
 
@@ -434,7 +444,8 @@ def frf_matrix(data: pd.DataFrame, options: dict):
 async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
     
     """
-    Plot the imaginary part of the Frequency Response Function (FRF) at the natural frequency.
+    Plot the imaginary part of the Frequency Response Function (FRF) at the natural frequency. Mode shapes
+    can be extracted by the ratio of peaks for each accelerometer for a single forcing location.
 
     Parameters:
     data (pd.DataFrame): A DataFrame containing the acceleration data and corresponding force data.
@@ -451,8 +462,13 @@ async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
     accelerometers = options['accelerometers']
     sample_rate = options['samplingFreq']
 
-    frf_i = []
-    frf_abs = []
+    f_min = options['lowerCutoff']
+    f_max = options['upperCutoff']
+
+    # frf_i = []
+    # frf_abs = []
+
+    im_values = []
 
     for acc in accelerometers.keys():
         if accelerometers[acc]:
@@ -465,120 +481,126 @@ async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
             # Avoid division by zero
             fftforce[np.abs(fftforce) < 1e-10] = np.finfo(float).eps
             frf = fftacc / fftforce  # Frequency Response Function
+
+            # Remove frequencies outside the desired range
+            valid_idx = (f >= f_min) & (f <= f_max)
+            f = f[valid_idx]
+            frf = frf[valid_idx]
     
-            freqs = f
             # Convert inertance to receptance
-            omega = 2 * np.pi * freqs  # Convert frequency to angular frequency (rad/s)
+            omega = 2 * np.pi * f  # Convert frequency to angular frequency (rad/s)
             omega[np.abs(omega) < 1e-10] = np.finfo(float).eps
             frf_r = frf / (-omega**2)  # Convert inertance to receptance
 
-            abs_frf = np.abs(frf_r)
+            # Get gain and imag component
+            frf_abs = np.abs(frf_r)
             frf_img = np.imag(frf_r)
 
-            frf_i.append(frf_img)
-            frf_abs.append(abs_frf)
-    
-    # Shape checker. Remove after testing
-    print("frf_i", frf_i)
-    print("frf_d", frf_abs)
-    print(len(frf_i))
-    print(len(frf_abs))
+            # Find peak magnitude and corresponding frequency
+            idx_peak = np.argmax(frf_abs)
+            im_values.append(frf_img[idx_peak])
 
-    # Convert to NumPy arrays for easier processing
-    frf_i = np.array(frf_i)
-    frf_abs = np.array(frf_abs)
+            # frf_i.append(frf_img)
+            # frf_abs.append(abs_frf)
+
+    # # Convert to NumPy arrays for easier processing
+    # frf_i = np.array(frf_i)
+    # frf_abs = np.array(frf_abs)
 
     # Find peaks in the absolute FRF
     ## If find_peaks are not reliable, can hard code the value of peaks as replacement to the line below ##
-    prominence = 0.01
+    # prominence = 0.01
 
-    if frf_abs.ndim == 1:
-        peaks, _ = find_peaks(frf_abs, prominence=prominence)  # Use the array directly if it's 1D
-    else:
-        peaks, _ = find_peaks(frf_abs[0], prominence=prominence)  # Access the first row if it's 2D
+    # if frf_abs.ndim == 1:
+    #     peaks, _ = find_peaks(frf_abs, prominence=prominence)  # Use the array directly if it's 1D
+    #     # If frf_i is 1D, treat it as a single row
+    #     im_values = [(frf_i[peaks])]
+    # else:
+    #     peaks, _ = find_peaks(frf_abs[0], prominence=prominence)  # Access the first row if it's 2D (only uses first accelerometer)
+    #     # If frf_i is 2D, extract imaginary parts for each row
+    #     im_values = [(frf_i[i][peaks]) for i in range(frf_i.shape[0])]
 
-    #remove after testing
-    print("peaks", peaks)
-    print(len(peaks))
+    # im_values = []
+    # for accelerometer_index in range(frf_i.shape[0]):
+    #     # Find peak magnitude and corresponding frequency
+    #     idx_peak = np.argmax(frf_abs[accelerometer_index,:])
+    #     im_values.append(frf_i[accelerometer_index,idx_peak])
 
-    # Handle 1D and 2D cases for frf_i
-    if frf_i.ndim == 1:
-        # If frf_i is 1D, treat it as a single row
-        im_values = [(frf_i[peaks])]
-    else:
-        # If frf_i is 2D, extract imaginary parts for each row
-        im_values = [(frf_i[i][peaks]) for i in range(frf_i.shape[0])]
+    im_values /= np.max(np.abs(im_values))  # Normalise imaginary values
+    active_x_locations = [locations[i] for i, acc in enumerate(accelerometers.keys()) if accelerometers[acc]]
 
-    # Fixed positions of the accelerometers from left to right (A0, A1, A2, A3, A4)
-    accelerometer_positions = {
-    'A0': 0.0,  # Left end
-    'A1': 0.25, # 25% from the left
-    'A2': 0.5,  # Middle
-    'A3': 0.75, # 75% from the left
-    'A4': 1.0   # Right end
-    }
+    # # Number of peaks found
+    # num_peaks = len(peaks)
 
-    active_x_locations = [accelerometer_positions[acc] for acc in accelerometers.keys() if accelerometers[acc]]
+    # # Dynamic sizing based on the number of subplots
+    # base_figsize = 5  # Base size for each subplot
+    # fig_height = base_figsize * num_peaks  # Total figure height
 
-    # Convert to a numpy array if needed
-    x_locations = np.array(active_x_locations)
+    # # Adjust plot size and font size based on the number of peaks
+    # base_font_size = 8
+    # base_fig_width = 6
+    # base_fig_height_per_peak = 4
 
-    # Number of peaks found
-    num_peaks = len(peaks)
+    # # Scale font size and figure size based on the number of peaks
+    # font_size = base_font_size - max(0, num_peaks - 3)  # Decrease font size if there are many peaks
+    # tick_label_size = font_size - 1
+    # fig_width = base_fig_width
+    # fig_height = base_fig_height_per_peak * num_peaks
 
-    # Dynamic sizing based on the number of subplots
-    base_figsize = 5  # Base size for each subplot
-    fig_height = base_figsize * num_peaks  # Total figure height
+    # # Create subplots
+    # fig, axes = plt.subplots(num_peaks, 1, figsize=(fig_width, fig_height), squeeze=False, sharex=True)
+    # print(axes)
+    # axes = axes.flatten()  # Flatten to handle single peak case
+    # print(axes)
 
-     # Adjust plot size and font size based on the number of peaks
-    base_font_size = 8
-    base_fig_width = 6
-    base_fig_height_per_peak = 4
+    # for i, ax in enumerate(axes):
+    #     if i >= num_peaks:
+    #         break  # Break if there are fewer peaks than subplots
 
-    # Scale font size and figure size based on the number of peaks
-    font_size = base_font_size - max(0, num_peaks - 3)  # Decrease font size if there are many peaks
-    tick_label_size = font_size - 1
-    fig_width = base_fig_width
-    fig_height = base_fig_height_per_peak * num_peaks
+    #     # Ensure x_locations and y-values have the same length
+    #     y_values = [im_val[i] if i < len(im_val) else np.nan for im_val in im_values]
+    #     y_values /= max(np.abs(y_values))
 
-    # Create subplots
-    fig, axes = plt.subplots(num_peaks, 1, figsize=(fig_width, fig_height), squeeze=False)
-    axes = axes.flatten()  # Flatten to handle single peak case
+    #     # Plot the imaginary part of FRF for the current peak
+    #     ax.scatter(x_locations, y_values, color='red', s=10, label='Mode {}'.format(i + 1))
 
-    for i, ax in enumerate(axes):
-        if i >= num_peaks:
-            break  # Break if there are fewer peaks than subplots
+    #     # Add vertical lines from the x-axis to each point
+    #     for loc, val in zip(x_locations, y_values):
+    #         if not np.isnan(val):  # Skip NaN values
+    #             ax.plot([loc, loc], [0, val], color='blue', linestyle='--', linewidth=1)
 
-        # Ensure x_locations and y-values have the same length
-        y_values = [im_val[i] if i < len(im_val) else np.nan for im_val in im_values]
+    #     # Center the graph around the x-axis
+    #     ax.axhline(0, color='black', linewidth=0.5)
+    #     # ax.set_ylim(-1.1 * np.nanmax(np.abs(y_values)), 1.1 * np.nanmax(np.abs(y_values)))
 
-        # Plot the imaginary part of FRF for the current peak
-        ax.scatter(x_locations, y_values, color='red', s=10, label='Img Receptance at Mode {}'.format(i + 1))
+    #     # Add labels and title with scaled font sizes
+    #     # ax.set_xlabel('Accelerometer Location', fontsize=font_size)
+    #     # ax.set_ylabel('Img Receptance', fontsize=font_size)
+    #     # ax.set_title('Mode {}'.format(i + 1), fontsize=font_size)  # Slightly larger title
+    #     ax.set_xticks(x_locations)
+    #     # ax.set_xticklabels(['{:.2f}'.format(loc) for loc in x_locations], fontsize=tick_label_size)
+    #     ax.set_xticklabels(x_locations, fontsize=tick_label_size)
+    #     ax.tick_params(axis='both', labelsize=tick_label_size)
+    #     ax.grid(True, linestyle='--', linewidth=0.5)
+    #     # ax.legend(fontsize=tick_label_size)  # Scale legend font size
+    
+    # Plot the imaginary part of FRF for the current peak
+    plt.scatter(active_x_locations, im_values, color='red', s=10)
 
-        # Add vertical lines from the x-axis to each point
-        for loc, val in zip(x_locations, y_values):
-            if not np.isnan(val):  # Skip NaN values
-                ax.plot([loc, loc], [0, val], color='blue', linestyle='--', linewidth=1)
+    # Add vertical lines from the x-axis to each point
+    for loc, val in zip(active_x_locations, im_values):
+        if not np.isnan(val):  # Skip NaN values
+            plt.plot([loc, loc], [0, val], color='blue', linestyle='--', linewidth=1)
 
-        # Center the graph around the x-axis
-        ax.axhline(0, color='black', linewidth=0.5)
-        ax.set_ylim(-1.1 * np.nanmax(np.abs(y_values)), 1.1 * np.nanmax(np.abs(y_values)))
+    # Center the graph around the x-axis
+    plt.xticks(active_x_locations)
+    plt.axhline(0, color='black', linewidth=0.5)
+    plt.xlabel('Accelerometer location')
+    plt.ylabel('Normalised Im(Receptance FRF)')
 
-        # Add labels and title with scaled font sizes
-        ax.set_xlabel('Accelerometer Location', fontsize=font_size)
-        ax.set_ylabel('Img Receptance', fontsize=font_size)
-        ax.set_title('Mode {}'.format(i + 1), fontsize=font_size)  # Slightly larger title
-        ax.set_xticks(x_locations)
-        ax.set_xticklabels(['{:.1f}'.format(loc) for loc in x_locations], fontsize=tick_label_size)
-        ax.tick_params(axis='both', labelsize=tick_label_size)
-        ax.grid(True, linestyle='--', linewidth=0.5)
-        ax.legend(fontsize=tick_label_size)  # Scale legend font size
-
-        plot_path = f'./images/{u.format_accel_plot_name(options, "imaginary")}'
-        plt.tight_layout
-        #plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
-
-    plt.show()
+    plot_path = f'./images/{u.format_accel_plot_name(options, "mode-shapes")}'
+    plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
+    plt.close()
 
     return plot_path
 
@@ -586,7 +608,7 @@ async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
 async def plot_argand_r(data: pd.DataFrame, options: dict) -> None:
 
     accelerometers = options['accelerometers']
-    sample_rate = options['samplingFreq']
+    # sample_rate = options['samplingFreq']
 
     frf_ar = []
     frf_abs = []
@@ -602,7 +624,7 @@ async def plot_argand_r(data: pd.DataFrame, options: dict) -> None:
             # Avoid division by zero
             fftforce[np.abs(fftforce) < 1e-10] = np.finfo(float).eps
             frf = fftacc / fftforce  # Frequency Response Function
-            frfs.append(frf)
+            # frfs.append(frf)
     
             freqs = f
             # Convert inertance to receptance
@@ -716,7 +738,7 @@ async def plot_argand_r(data: pd.DataFrame, options: dict) -> None:
     plt.show()
 
     plot_path = f'./images/{u.format_accel_plot_name(options, "argand")}'
-    #plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
+    plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
     
     return plot_path
 
@@ -728,9 +750,9 @@ if __name__ == '__main__':
     with open('./templates/requestFormat.json') as f:
         options = json.load(f)
     data = r.read_csv(options)
-    asyncio.run(plot_dft(data, options))
-    asyncio.run(plot_nyquist(data, options))
-    asyncio.run(plot_bode(data, options))
+    # asyncio.run(plot_dft(data, options))
+    # asyncio.run(plot_nyquist(data, options))
+    # asyncio.run(plot_bode(data, options))
     # frf_matrix(data, options)
     asyncio.run(plot_imaginary_r(data, options))
-    asyncio.run(plot_argand_r(data, options))
+    # asyncio.run(plot_argand_r(data, options))

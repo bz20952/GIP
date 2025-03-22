@@ -38,14 +38,14 @@
                 {/if}
             {/each}
             <div class="freq">
+                <i class="info">Here you can specify a range of frequencies over which you want to identify modal parameters. The smaller the range, the clearer the plots will be.</i>
+                <br><br>
                 <label for="lowerCutoff">Lower cutoff frequency (Hz): </label>
                 <input type="number" name="lowerCutoff" bind:value={$testOptions.lowerCutoff}/>
-                <br>
-                <br>
+                <br><br>
                 <label for="upperCutoff">Upper cutoff frequency (Hz): </label>
                 <input type="number" name="upperCutoff" bind:value={$testOptions.upperCutoff}/>
-                <br>
-                <br>
+                <br><br>
                 <button class='bode-and-nyquist' on:click={() => goto('/toolkit/analyse/identify')}>Identify</button>
             </div>
         {/if}
@@ -98,5 +98,9 @@
         height: auto;
         box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
         border-radius: 10px;
+    }
+
+    .freq {
+        max-width: 40%;
     }
 </style>
