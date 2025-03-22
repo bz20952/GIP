@@ -13,7 +13,7 @@
                     "unit": "Hz",
                     "tooltipId": 1,
                     "answer": 100,
-                    "praise": "Nice one! The client will be pleased with such a quick turnaround. You are able to estimate the first natural frequency from the unforced (or free) testing as the first mode usually dominated the response of free testing. Finding the higher modes is usually not possible using free testing",
+                    "praise": "Nice one! The client will be pleased with such a quick turnaround. You are able to estimate the first natural frequency from the unforced (or free) testing as the first mode usually dominated the response of free testing. Finding the higher modes is usually not possible using free testing.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -25,7 +25,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Our in-house testing gives a first natural frequency of 100 Hz. Free testing is usually dominated by the first mode, which means the first natural frequency can be simply measured by calculating the inverse of a period of a single oscillation. Finding the higher modes is usually not possible using free testing"
+                            "message": "Our in-house testing gives a first natural frequency of 100 Hz. Free testing is usually dominated by the first mode, which means the first natural frequency can be simply measured by calculating the inverse of a period of a single oscillation. Finding the higher modes is usually not possible using free testing."
                         }
                     ]
                 }
@@ -36,7 +36,7 @@
             "id": 2,
             "sender": "Tikola Nesla",
             "subject": "Modal test data needed",
-            "body": "I need a quick and rough estimate of the first three natural frequencies of the wing before my next stakeholder meeting. Please setup a test (NOTE: the wing is too stiff to execute free vibration testing in this case) and measure the second natural frequency. Time is of the essence!",
+            "body": "I need a quick and rough estimate of the first three natural frequencies of the wing before my next stakeholder meeting. Please setup a test (NOTE: the wing is too stiff to execute free vibration testing in this case) to excite the first three modes. Time is of the essence!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -153,7 +153,7 @@
             "id": 4,
             "sender": "Fichard Reynman",
             "subject": "We need modal damping ratios!",
-            "body": "Hello, I've heard big things about your modal testing expertise. Please can you produce a Nyquist plot and use it to estimate modal damping ratios?",
+            "body": "Hello, I've heard big things about your modal testing expertise. Please can you produce a Nyquist plot and use it to extract the radius of the circle in the first mode, the first natural frequency and the first modal damping ratio?",
             "results": [
                 {
                     "subtaskId": 1,
@@ -166,7 +166,7 @@
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Not quite, try using Sine sweep with maximum sampling frequency for higher resolution."
+                            "message": "Not quite, try using Sine sweep with maximum sampling frequency for higher resolution. Also only use one accelerometer at a time for clearer plots and try to bound your frequency range as tightly as possible."
                         },
                         {
                             "stage": 2,
@@ -180,7 +180,7 @@
                 },
                 {
                     "subtaskId": 2,
-                    "name": "Third natural frequency",
+                    "name": "First natural frequency",
                     "inputType": "number",
                     "unit": "Hz",
                     "tooltipId": 8,
@@ -197,41 +197,41 @@
                         },
                         {
                             "stage": 3,
-                            "message": "The third natural frequency should be roughly 200 Hz. The natural frequency is where the sweep rate of mobility Nyquist plot is at its maximum. For clean data like this one, it is where the plot crosses the real axis. For flawed data, the natural frequencies may sometimes not located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies."
+                            "message": "The first natural frequency should be roughly 200 Hz. The natural frequency is where the sweep rate of mobility Nyquist plot is at its maximum. For clean data like this one, it is where the plot crosses the real axis. For flawed data, the natural frequencies may sometimes not located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies."
                         }
                     ]
                 },
                 {
                     "subtaskId": 3,
-                    "name": "Third modal damping ratio",
+                    "name": "First modal damping ratio",
                     "inputType": "number",
                     "unit": "%",
                     "tooltipId": 9,
                     "answer": 20,
-                    "praise": "Spot on! This is the most accurate estimate of zeta from the plot. A simpler method of using the circle-fitting equation for damping is to take the points 90 degrees from the natural frequency point.",
+                    "praise": "Spot on! This is the most accurate estimate of zeta from the plot. The points 90 degrees from the natural frequency point are the half-power points, allowing application of the half-power formula.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "It might be easier to find the angle subtended from the origin to the point of interest and use angle identities."
+                            "message": "Not quite, try using Sine sweep with maximum sampling frequency for higher resolution. Also only use one accelerometer at a time for clearer plots and try to bound your frequency range as tightly as possible."
                         },
                         {
                             "stage": 2,
-                            "message": "The half-power method, which simplifies the damping ratio circle-fitting equation, can also be applied to find damping ratio on Nyquist plot. Use the frequency point at 90 degrees from the point corresponding to the natural frequency (maximum sweep rate)."
+                            "message": "Try bounding the frequency between 105 and 115 Hz."
                         },
                         {
                             "stage": 3,
-                            "message": "The third modal damping ratio is expected to be around 20% using the half-power method. You can choose whichever lower and higher frequencies to calculate the damping ratio, but a simpler method is to utilise the points 90 degrees from the natural frequency point."
+                            "message": "The first modal damping ratio is expected to be around 20% using the half-power method. The points 90 degrees from the natural frequency point are the half-power points, allowing application of the half-power formula."
                         }
                     ]
                 }
             ],
-            "unlocks": ["Bode"]
+            "unlocks": ["Bode", "Mode shapes"]
         },
         {
             "id": 5,
             "sender": "Kisambard Bingdom Irunel",
             "subject": "Mode shapes on my desk by this afternoon",
-            "body": "Hello, we've just had some new clients adopt the Flairbus wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 9000 rpm, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP. I'd recommend starting by producing an imaginary FRF plot. Mode shapes can be found by the ratios of the imaginary peaks at different measurement locations. Good luck, we're depending on you here!",
+            "body": "Hello, we've just had some new clients adopt the Flairbus wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 9000 rpm, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP using exactly three accelerometers. I'd recommend starting by producing an imaginary FRF plot. Mode shapes can be found by the ratios of the imaginary peaks at different measurement locations. Good luck, we're depending on you here!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -278,7 +278,7 @@
                         },
                         {
                             "stage": 2,
-                            "message": "Double check the placement of your accelerometers. Mode shape is best estimated using accelerometers placed at equal distance from each other"
+                            "message": "Double check the placement of your accelerometers. Mode shape is best estimated using accelerometers placed at equal distance from one another."
                         }
                     ]
                 },
@@ -286,11 +286,11 @@
                     "subtaskId": 3,
                     "name": "Second mode shape",
                     "inputType": "select",
-                    "options": ["[1,-0.6,0,0.6,-1]", "[1,0.6,0.6,-1,0]", "[-1,1,1,0.6,-0.6]", "[1,0.6,0,-0.6,1]"],
+                    "options": ["[1,0,-1]", "[0.6,-1,0.6]", "[-1,0.6,1]", "[1,0,1]"],
                     "unit": "",
                     "tooltipId": 11,
-                    "answer": "[1,-0.6,0,0.6,-1]",
-                    "praise": "Perfect! Our finite element models agree with this observation. There are many methods to estimate mode shapes, but the ratio of imaginary peaks is a good starting point for receptance FRF plots. For mobility, real peaks are commonly used while for inertance, imaginary peaks can be used provided that necessary scaling are done.",
+                    "answer": "[1,0,-1]",
+                    "praise": "Perfect! Our finite element models agree with this observation. There are many methods to estimate mode shapes, but the ratio of imaginary peaks is a good starting point. Plotting imaginary values tell us about both the magnitude and phase of the response relative to the applied forcing.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -309,7 +309,7 @@
                     "unit": "%",
                     "tooltipId": 12,
                     "answer": 10,
-                    "praise": "Perfect! Our finite element models agree with this observation. Remember there are two different methods to obtain modal damping ratios: half-power method on Bode plot and circle-fitting method on mobility Nyquist plot. Circle-fitting method is used more widely as effects of noises are compensated through fitting a circle through data points",
+                    "praise": "Perfect! Our finite element models agree with this observation. Remember there are two different methods to obtain modal damping ratios: half-power method on Bode plot and circle-fitting method on mobility Nyquist plot. Circle-fitting method is used more widely as effects of noises are compensated through fitting a circle through data points.",
                     "feedback": [
                         {
                             "stage": 1,

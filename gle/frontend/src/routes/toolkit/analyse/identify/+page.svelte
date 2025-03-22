@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { getPath } from '$lib/utils';
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
     import { testOptions, tools } from '$lib/stores';
+    import { goto } from '$app/navigation';
 
     let plotPaths = new Map()
 
@@ -39,6 +39,7 @@
             {/each}
         {/if}
     </div>
+    <button class='back' on:click={() => goto('/toolkit/analyse')}>Back</button>
 </section>
 
 <style>
@@ -88,7 +89,7 @@
         border-radius: 10px;
     }
 
-    .return {
+    .back {
         margin: 4rem;
     }
 </style>

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { tooltips } from "$lib/tooltips.json"
+    import { PUBLIC_BACKEND_URL } from "$env/static/public";
 
     export let displayText: string = '';
     export let displayImage: boolean = false;
@@ -20,7 +21,7 @@
     {displayText}
     <span class="content">
         {#if tooltipContent?.tooltipImage}
-            <img class='tooltip-img' src={tooltipContent.tooltipImage} alt="Tooltip" />
+            <img class='tooltip-img' src={PUBLIC_BACKEND_URL + tooltipContent.tooltipImage} alt="Tooltip" />
         {/if}
         {tooltipText}
     </span>

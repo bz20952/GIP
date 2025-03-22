@@ -79,7 +79,7 @@ def fe(n_nodes: int):
     # Damping (assumes Rayleigh damping)
     a1 = np.array([[w[0]**2, w[0]],
                    [w[1]**2, w[1]]])
-    a2 = np.array([0.0, 0.0]).reshape(2,1)
+    a2 = np.array([0.01, 0.01]).reshape(2,1)
     alpha_beta = 2*(np.linalg.inv(a1) @ a2)
     C = alpha_beta[0,0]*M + alpha_beta[1,0]*K
 
@@ -174,13 +174,6 @@ def get_frequency_response(M, K, C, frequencies):
     return gains, phases
 
 
-def find_step(t: float, cumulative_periods: np.ndarray):
-    index = np.searchsorted(cumulative_periods, t)
-    if index >= len(cumulative_periods):
-        index = 0
-    return index
-
-
 def solve_ode_analytically(t, m, c, k, f, ics: list):
 
     """Use sympy for analytical solve.""" 
@@ -236,51 +229,43 @@ if __name__ == '__main__':
     IC = np.zeros(n_nodes*2*2)  # Number of nodes * number of DOFs at each node * 2 (displacement and velocity)
     # IC[1] = 0.001  # Displace node zero
     T = 10
-    num_intervals = 1000
-    freq_range = np.linspace(50, 1000, 500)*2*np.pi
-    p.plot_frf(freq_range, get_frequency_response(M, K, C, freq_range)[0])
+    num_intervals = 100000
+    freq_range = np.linspace(50, 1000, 50)*2*np.pi
+    # p.plot_frf(freq_range, get_frequency_response(M, K, C, freq_range)[0], excitation_location=0)
     
-    # for forcing_type in ['random', 'stepped sweep']:
-    #     for location in range(3):
-    #         if forcing_type == 'random':
-    #             random_amplitude = np.random.random(len(freq_range))
-    #             random_phase = np.random.uniform(-np.pi, np.pi, len(freq_range))
-    #             forcing_fnc = lambda t: sum([np.sin(2*np.pi*freq*t + phi) * amp for freq, phi, amp in zip(freq_range, random_phase, random_amplitude)])
-    #         elif forcing_type == 'sine':
-    #             freq = 30
-    #             forcing_fnc = lambda t: np.sin(2*np.pi*freq*t)
-    #         elif forcing_type == 'sine sweep':  # WIP
-    #             freq_low = 100
-    #             freq_high = 150
-    #             hz_per_second = (freq_high - freq_low) / T
-    #             forcing_fnc = lambda t: np.sin(2*np.pi*(freq_low+(hz_per_second*t))*t)
-    #         elif forcing_type == 'stepped sweep':
-    #             freqs = np.linspace(100, 150, 49)
-    #             periods = 200*(1/freqs)
-    #             cumulative_periods = np.array([sum(periods[:i+1]) for i in range(len(periods))])
-    #             print(cumulative_periods)
-    #             forcing_fnc = lambda t: np.sin(2*np.pi*freqs[find_step(t, cumulative_periods)]*t)
-    #         elif forcing_type == 'soft hammer':
-    #             forcing_fnc = lambda t: -20*t**2+10*t if t <= 0.5 else 0
-    #         elif forcing_type == 'hard hammer':
-    #             forcing_fnc = lambda t: -50*(t-0.075)**2+10*(t-0.075)+1 if t <= 0.35 else 0
-    #         else:
-    #             forcing_fnc = lambda t: 0
+    for forcing_type in ['random']:
+        for location in range(3):
+            if forcing_type == 'random':
+                random_amplitude = np.random.random(len(freq_range))
+                random_phase = np.random.uniform(-np.pi, np.pi, len(freq_range))
+                forcing_fnc = lambda t: sum([np.sin(freq*t + phi) * amp for freq, phi, amp in zip(freq_range, random_phase, random_amplitude)])
+            elif forcing_type == 'stepped sweep':
+                signal_time = 0.4
+                T = signal_time*len(freq_range)
+                forcing_fnc = lambda t: np.sin(freq_range[int(t//signal_time)]*t)
+            elif forcing_type == 'sine':
+                freq = 30
+                forcing_fnc = lambda t: np.sin(freq*t)
+            elif forcing_type == 'sine sweep':
+                freq_low = 100
+                freq_high = 150
+                hz_per_second = (freq_high - freq_low) / T
+                forcing_fnc = lambda t: np.sin((freq_low+(hz_per_second*t))*t)
 
-    #         times = np.linspace(0, T, num_intervals)
-    #         plt.plot(times, [forcing_fnc(t) for t in times])
-    #         plt.title('Forcing Function')
-    #         plt.show()
+            times = np.linspace(0, T, num_intervals)
+            plt.plot(times, [forcing_fnc(t) for t in times])
+            plt.title('Forcing Function')
+            plt.show()
 
-    #         sim_params = {
-    #             'period': T,
-    #             'num_intervals': num_intervals,
-    #             'initial_conditions': IC,
-    #             'forcing': {
-    #                 'location': location,
-    #                 'amplitude': 1,
-    #                 'signal': forcing_fnc,
-    #                 'type': forcing_type
-    #             }
-    #         }
-    #         simulate(sim_params, M, K, C, n_free_dofs=10, plot=True)
+            sim_params = {
+                'period': T,
+                'num_intervals': num_intervals,
+                'initial_conditions': IC,
+                'forcing': {
+                    'location': location,
+                    'amplitude': 1,
+                    'signal': forcing_fnc,
+                    'type': forcing_type
+                }
+            }
+            simulate(sim_params, M, K, C, n_free_dofs=10, plot=True)

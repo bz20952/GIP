@@ -178,3 +178,5 @@ test.xlsx
 !.dockerignore
 
 **/tracking/*.json
+
+push.ps1

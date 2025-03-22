@@ -3,12 +3,12 @@
         {
             "id": 1,
             "tooltipText": "",
-            "tooltipImage": "http://localhost:8000/images/Tooltip1.png"
+            "tooltipImage": "/images/tooltips/time-domain-freq.png"
         },
         {
             "id": 2,
             "tooltipText": "Hammer tip datasheet",
-            "tooltipImage": "/src/lib/images/hammer-table.png"
+            "tooltipImage": "/images/tooltips/hammer-table.png"
         },
         {
             "id": 3,
@@ -43,7 +43,7 @@
         {
             "id": 9,
             "tooltipText": "The circle-fitting equation.",
-            "tooltipImage": "/src/lib/images/circle-fitting-eq.png"
+            "tooltipImage": "/images/tooltips/circle-fitting-eq.png"
         },
         {
             "id": 10,
