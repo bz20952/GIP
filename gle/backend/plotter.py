@@ -336,24 +336,6 @@ async def plot_bode(data: pd.DataFrame, options: dict):
 
             # Find Half-Power (-3 dB) Magnitude
             half_power_mag = peak_mag - 3  # -3 dB point
-            
-            # Find first index to the left of peak where magnitude drops to or below -3 dB
-            # Search backwards from the peak index
-            try:
-                idx_f1 = np.where(magnitude_filtered[:idx_peak] <= half_power_mag)[0][-1]  # First index to the left
-            except IndexError:
-                continue
-
-            # Find first index to the right of peak where magnitude drops to or below -3 dB
-            # Search forwards from the peak index
-            try:
-                idx_f2 = np.where(magnitude_filtered[idx_peak:] <= half_power_mag)[0][0] + idx_peak  # First index to the right
-            except IndexError:
-                continue
-
-            # Get corresponding frequency values
-            f1 = f_filtered[idx_f1]
-            f2 = f_filtered[idx_f2]
 
             # Magnitude Plot
             plt.subplot(2, 1, 1)
@@ -362,19 +344,38 @@ async def plot_bode(data: pd.DataFrame, options: dict):
             plt.ylabel('Magnitude [dB]')
             plt.grid(True, which="both")
 
+            text_objects = []
+            
+            # Find first index to the left of peak where magnitude drops to or below -3 dB
+            # Search backwards from the peak index
+            try:
+                idx_f1 = np.where(magnitude_filtered[:idx_peak] <= half_power_mag)[0][-1]  # First index to the left
+            except IndexError:
+                pass
+            else:
+                f1 = f_filtered[idx_f1]
+                text_objects.append(plt.text(f1, magnitude_filtered[idx_f1]+2, f'f1: {f1:.2f} Hz', color='black', verticalalignment='bottom', horizontalalignment='center'))
+                plt.axvline(f1, color='black', linestyle='--')  # Vertical line at f1
+
+            # Find first index to the right of peak where magnitude drops to or below -3 dB
+            # Search forwards from the peak index
+            try:
+                idx_f2 = np.where(magnitude_filtered[idx_peak:] <= half_power_mag)[0][0] + idx_peak  # First index to the right
+            except IndexError:
+                pass
+            else:
+                f2 = f_filtered[idx_f2]
+                text_objects.append(plt.text(f2, magnitude_filtered[idx_f2]+2, f'f2: {f2:.2f} Hz', color='black', verticalalignment='bottom', horizontalalignment='center'))
+                plt.axvline(f2, color='black', linestyle='--')  # Vertical line at f2
+
             # Annotate Bode Plot with vertical lines 
             plt.axvline(f_n, color='red', linestyle='--')  # Vertical line at peak frequency
             # plt.text(f_n, peak_mag+2, f'Peak: {f_n:.2f} Hz', color='red', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='red', boxstyle='round4', pad=0.5))
-            plt.axvline(f1, color='black', linestyle='--')  # Vertical line at f1
             # plt.text(f1, magnitude_filtered[idx_f1]+2, f'f1: {f1:.2f} Hz', color='blue', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='blue', boxstyle='round4', pad=0.5))
-            plt.axvline(f2, color='black', linestyle='--')  # Vertical line at f2
             # plt.text(f2, magnitude_filtered[idx_f2]+2, f'f2: {f2:.2f} Hz', color='blue', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='blue', boxstyle='round4', pad=0.5))
              
             # Text labels
-            text_objects = []
             text_objects.append(plt.text(f_n, peak_mag+2, f'Peak: {f_n:.2f} Hz', color='red', verticalalignment='bottom', horizontalalignment='center'))
-            text_objects.append(plt.text(f1, magnitude_filtered[idx_f1]+2, f'f1: {f1:.2f} Hz', color='black', verticalalignment='bottom', horizontalalignment='center'))
-            text_objects.append(plt.text(f2, magnitude_filtered[idx_f2]+2, f'f2: {f2:.2f} Hz', color='black', verticalalignment='bottom', horizontalalignment='center'))
 
             # Use adjustText to automatically adjust text positions to avoid overlap
             adjust_text(text_objects) #arrowprops=dict(arrowstyle="->", color='grey', lw=1))
@@ -387,6 +388,7 @@ async def plot_bode(data: pd.DataFrame, options: dict):
             plt.ylabel('Phase [°]')
             plt.grid(True, which="both")
 
+    plt.legend()
     plot_path = f'./images/{u.format_accel_plot_name(options, "bode")}'
     plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
     plt.close()

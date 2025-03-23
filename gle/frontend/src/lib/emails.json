@@ -2,9 +2,9 @@
     "emails": [
         {
             "id": 1,
-            "sender": "Lada Ovelace",
+            "sender": "Mark Eting",
             "subject": "Wing test needed ASAP!",
-            "body": "Hey, Flairbus are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. I'd recommend estimating frequency from the unforced time-domain response. Have a look in your toolkit and see what you can do.",
+            "body": "Hey, the clients are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. Check the hint in Send Results or estimate frequency from the unforced time-domain response. Have a look in your toolkit and see what you can do. Good luck!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -12,8 +12,8 @@
                     "inputType": "number",
                     "unit": "Hz",
                     "tooltipId": 1,
-                    "answer": 100,
-                    "praise": "Nice one! The client will be pleased with such a quick turnaround. You are able to estimate the first natural frequency from the unforced (or free) testing as the first mode usually dominated the response of free testing. Finding the higher modes is usually not possible using free testing.",
+                    "answer": 150,
+                    "praise": "Nice one! The client will be pleased with such a quick turnaround. You are able to estimate the first natural frequency from the unforced (or free) testing as the first mode usually dominated the response of free testing. Exciting the higher modes is usually not possible using free testing.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -25,7 +25,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Our in-house testing gives a first natural frequency of 100 Hz. Free testing is usually dominated by the first mode, which means the first natural frequency can be simply measured by calculating the inverse of a period of a single oscillation. Finding the higher modes is usually not possible using free testing."
+                            "message": "Our finite element model gives a first natural frequency of approximately 150 Hz. Free testing is usually dominated by the first mode, which means the first natural frequency can be simply measured by calculating the inverse of a period of a single oscillation. Finding the higher modes is usually not possible using free testing."
                         }
                     ]
                 }
@@ -34,9 +34,9 @@
         },
         {
             "id": 2,
-            "sender": "Tikola Nesla",
+            "sender": "Diana Namics",
             "subject": "Modal test data needed",
-            "body": "I need a quick and rough estimate of the first three natural frequencies of the wing before my next stakeholder meeting. Please setup a test (NOTE: the wing is too stiff to execute free vibration testing in this case) to excite the first three modes. Time is of the essence!",
+            "body": "I need a quick and rough estimate of some modal parameters of the wing before my next stakeholder meeting. Please setup a test (NOTE: the wing is too stiff to execute free vibration testing in this case) to excite the first three modes. Time is of the essence!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -48,11 +48,11 @@
                         "excitationType": "Hammer testing",
                         "tipHardness": "Hard"
                     },
-                    "praise": "Great! A hammer test provides a quick and simple test considering the constraints of the task. Hard tip also enabled excitation of the all required modes as its initial shape is already 'made up' of different higher modes.",
+                    "praise": "Great! A hammer test provides a quick and simple test considering the constraints of the task. Hard tip also enabled excitation of the all required modes by exerting a short sharp impulse which contains higher frequency components and creates the initial conditions required to form higher (sharper) mode shapes.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "One or more of the parameters in your test setup is incorrect. Focus on the excitation method."
+                            "message": "One or more of the parameters in your test setup is incorrect. Focus on the excitation method being quick and easy to execute."
                         },
                         {
                             "stage": 2,
@@ -60,7 +60,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Hard tip hammer testing is ideal as it is quick to execute (does not require a shaker). Soft tip hammer testing usually does not excite higher modes as its initial shape is sufficiently made up of the first mode. "
+                            "message": "Hard tip hammer testing is ideal as it is quick to execute (does not require a shaker), exerts a short sharp impulse which contains higher frequency components and creates the initial conditions required to form higher (sharper) mode shapes."
                         }
                     ]
                 },
@@ -70,12 +70,12 @@
                     "inputType": "number",
                     "unit": "Hz",
                     "tooltipId": 3,
-                    "answer": 150,
-                    "praise": "Correct! You successfully setup an appropriate test and employed the discrete Fourier transform. The DFT is suffcient in identifying modal frequencies. However, in real world an FRF plot is used more commonly as it provides more information on the amplitude of the response and the structure behaviour in operation.",
+                    "answer": 390,
+                    "praise": "Correct! You successfully setup an appropriate test and employed the Discrete Fourier Transform. The DFT identifies the frequency components of a time domain signal and in this case uses the Fast Fourier Transform algorithm to achieve this programatically.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "That doesn't seem to match our simulations. Make sure you are using Hammer testing. Make use of the DFT graph for easier identification of the the natural frequencies."
+                            "message": "That doesn't seem to match our simulations. Make sure you are using hard-tip hammer testing. Make use of the Discrete Fourier Transform (DFT) graph for easier identification of the the natural frequencies."
                         },
                         {
                             "stage": 2,
@@ -83,7 +83,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Our in-house testing gives a second natural frequency of 150 Hz. This is approximately the position of the second peak in the DFT. The DFT is suffcient in identifying modal frequencies. However, in real world an FRF plot is used more commonly as it provides more information on the amplitude of the response and the structure behaviour in operation."
+                            "message": "Our in-house testing gives a second natural frequency of 390 Hz. This is approximately the position of the second peak in the DFT. The DFT identifies the frequency components of a time domain signal and in this case uses the Fast Fourier Transform algorithm to achieve this programatically."
                         }
                     ]
                 }
@@ -92,9 +92,9 @@
         },
         {
             "id": 3,
-            "sender": "Fichael Maraday",
+            "sender": "Tim Principal",
             "subject": "Modelling vibration caused by engine",
-            "body": "In an aircraft wing, the engine (which vibrates a lot!) is usually located at the middle of the wing. We need you to conduct a modal test to simulate the dynamics.",
+            "body": "In an aircraft wing, the engine (which vibrates a lot!) is usually located at the middle of the wing. We need you to conduct a modal test to simulate the dynamics. Check the hint for test constraints!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -114,7 +114,7 @@
                         },
                         {
                             "stage": 2,
-                            "message": "Check the tooltip. There are some constraints on sampling frequency."
+                            "message": "Check the hint. There are some constraints on sampling frequency."
                         },
                         {
                             "stage": 3,
@@ -124,13 +124,13 @@
                 },
                 {
                     "subtaskId": 2,
-                    "name": "Run a few tests with this setup. What error might you be introducing by limiting sampling to 512 Hz?",
+                    "name": "Run a few tests with this setup and observe any differences from previous tests. What error might you be introducing by limiting sampling to 512 Hz?",
                     "inputType": "select",
-                    "options": ["Aliasing", "Leakage", "Hysteretic damping"],
+                    "options": ["Leakage", "Aliasing", "Hysteretic damping"],
                     "unit": "",
                     "tooltipId": 7,
                     "answer": "Aliasing",
-                    "praise": "Correct! Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency (half the sampling frequency is called Nyquist frequency). This is why the response frequency is measured incorrectly.",
+                    "praise": "Correct! Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency (half the sampling frequency is called Nyquist frequency). This is why the natural frequencies might be measured incorrectly.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -142,7 +142,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Aliasing is the correct answer. Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency (half the sampling frequency is called Nyquist frequency)."
+                            "message": "Aliasing is the correct answer. Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency (half the sampling frequency is called the Nyquist frequency)."
                         }
                     ]
                 }
@@ -151,9 +151,9 @@
         },
         {
             "id": 4,
-            "sender": "Fichard Reynman",
+            "sender": "Cher Holder",
             "subject": "We need modal damping ratios!",
-            "body": "Hello, I've heard big things about your modal testing expertise. Please can you produce a Nyquist plot and use it to extract the radius of the circle in the first mode, the first natural frequency and the first modal damping ratio?",
+            "body": "Hello, I've heard big things about your modal testing expertise. Please can you execute a sine sweep test, produce a Nyquist plot and use it to extract the radius of the circle in the first mode, the first natural frequency and the first modal damping ratio?",
             "results": [
                 {
                     "subtaskId": 1,
@@ -161,20 +161,20 @@
                     "inputType": "number", 
                     "unit": "",
                     "tooltipId": 8,
-                    "answer": 20,
-                    "praise": "That is correct! Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate for mobility Nyquist. The radius provides information on the value of a/m of the structure, obtained from the equation of motion.",
+                    "answer": 0.08,
+                    "praise": "That is correct! In a perfect world, the mobility Nyquist circle is centred on the real axis and starts from the origin. Therefore the radius is simply the x-value of the centre coordinate. The radius provides information on the value of the modal participation coefficient for the given mode.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Not quite, try using Sine sweep with maximum sampling frequency for higher resolution. Also only use one accelerometer at a time for clearer plots and try to bound your frequency range as tightly as possible."
+                            "message": "Not quite, try using Sine sweep with maximum sampling frequency for higher resolution. Try to bound your frequency range as tightly as possible."
                         },
                         {
                             "stage": 2,
-                            "message": "Unfortunately that is not correct. Remember, the point where the Nyquist plot crosses the x-axis is approximately the diameter of the circle."
+                            "message": "Unfortunately that is not correct. Remember, that there is a false peak created by one of the springs just before the first natural frequency."
                         },
                         {
                             "stage": 3,
-                            "message": "Our finite element simulations give a radius of 20. Since the circle is centred on the real axis and starts from the origin, the radius is simply the x-value of the centre coordinate. The radius provides information on the value of a/m of the structure, obtained from the equation of motion."
+                            "message": "Our finite element simulations give a radius of 0.08. The radius provides information on the value of the modal participation coefficient for the given mode."
                         }
                     ]
                 },
@@ -184,8 +184,8 @@
                     "inputType": "number",
                     "unit": "Hz",
                     "tooltipId": 8,
-                    "answer": 200,
-                    "praise": "Well done! The natural frequency is where the mobility Nyquist plot crosses the real axis. This is also where the sweep rate is at its maximum. For flawed data, the natural frequencies may sometimes not located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies.",
+                    "answer": 110,
+                    "praise": "Well done! You might notice that this method gives a different result to previous tasks. This could be for a variety of reasons but is most likely due to measurment noise and/or inherited dynamics of the surroundings. For flawed data, the natural frequencies may sometimes not be located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -197,7 +197,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "The first natural frequency should be roughly 200 Hz. The natural frequency is where the sweep rate of mobility Nyquist plot is at its maximum. For clean data like this one, it is where the plot crosses the real axis. For flawed data, the natural frequencies may sometimes not located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies."
+                            "message": "The first natural frequency should be roughly 110 Hz. You might notice that this method gives a different result to previous tasks. This could be for a variety of reasons but is most likely due to measurment noise and/or inherited dynamics of the surroundings. For flawed data, the natural frequencies may sometimes not located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies."
                         }
                     ]
                 },
@@ -229,9 +229,9 @@
         },
         {
             "id": 5,
-            "sender": "Kisambard Bingdom Irunel",
+            "sender": "Charlotte Eyo",
             "subject": "Mode shapes on my desk by this afternoon",
-            "body": "Hello, we've just had some new clients adopt the Flairbus wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 9000 rpm, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP using exactly three accelerometers. I'd recommend starting by producing an imaginary FRF plot. Mode shapes can be found by the ratios of the imaginary peaks at different measurement locations. Good luck, we're depending on you here!",
+            "body": "Hello, we've just had some new clients adopt the new wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 24,000 rpm and located at l/4, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP using the three leftmost accelerometers. Mode shapes can be found by the ratios of the imaginary peaks at different measurement locations. Good luck, we're depending on you here!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -241,11 +241,11 @@
                     "unit": "",
                     "tooltipId": 7,
                     "answer": "2",
-                    "praise": "Perfect! The engine is rotating at 9000 rpm = 150 Hz which is approximately the second natural frequency. Note that it is entirely possible for the engine to excite multiple modes, but it is reasonable to guess that it is most likely to excite the second mode here.",
+                    "praise": "Perfect! The engine is rotating at 24,000 rpm = 400 Hz which is approximately the second natural frequency. Note that it is entirely possible for the engine to excite multiple modes, but it is reasonable to guess that it is most likely to excite the second mode here.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Double check that you're converting your units of rotational speed to Hz correctly. Using the wrong unit can lead to misidentification of mode."
+                            "message": "Double check that you're converting your units of rotational speed to Hz correctly."
                         },
                         {
                             "stage": 2,
@@ -274,11 +274,11 @@
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Pick an excitation method which provides information over a range of frequencies, especially if we want to target the operational frequencies of the structure."
+                            "message": "Pick an excitation method which can be used to smoothly excite frequencies surrounding the second natural frequency."
                         },
                         {
                             "stage": 2,
-                            "message": "Double check the placement of your accelerometers. Mode shape is best estimated using accelerometers placed at equal distance from one another."
+                            "message": "Double check the placement of your accelerometers and shaker. Mode shape is best estimated using accelerometers placed at equal distance from one another."
                         }
                     ]
                 },
@@ -294,11 +294,11 @@
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Make sure you are comparing ratio of imaginary peaks at different measurement locations at the same natural frequencies."
+                            "message": "It is worth trialling different excitation methods to get a better estimate of the mode shape."
                         },
                         {
                             "stage": 2,
-                            "message": "It is always a good idea to normalise the peaks so that the maximum peak will be 1, and other peaks are the ratio of that maximum peak."
+                            "message": "Ensure you are exciting the wing at l/4."
                         }
                     ]
                 },
@@ -307,7 +307,7 @@
                     "name": "Second modal damping ratio",
                     "inputType": "number",
                     "unit": "%",
-                    "tooltipId": 12,
+                    "tooltipId": 9,
                     "answer": 10,
                     "praise": "Perfect! Our finite element models agree with this observation. Remember there are two different methods to obtain modal damping ratios: half-power method on Bode plot and circle-fitting method on mobility Nyquist plot. Circle-fitting method is used more widely as effects of noises are compensated through fitting a circle through data points.",
                     "feedback": [
@@ -317,7 +317,7 @@
                         },
                         {
                             "stage": 2,
-                            "message": "Remember there are two different methods to obtain modal damping ratios. If you are struggling with half power method on Bode plot, maybe try circle-fitting method on mobility Nyquist plot."
+                            "message": "Remember there are two different methods to obtain modal damping ratios. If you are struggling with half power method on Bode plot, maybe try circle-fitting on mobility Nyquist plot."
                         }
                     ]
                 },

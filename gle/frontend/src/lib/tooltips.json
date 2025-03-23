@@ -37,22 +37,22 @@
         },
         {
             "id": 8,
-            "tooltipText": "",
+            "tooltipText": "The Nyquist plot will only produce a plot for the leftmost accelerometer on the beam to make the plot more readable.",
             "tooltipImage": ""
         },
         {
             "id": 9,
-            "tooltipText": "The circle-fitting equation.",
-            "tooltipImage": "/images/tooltips/circle-fitting-eq.png"
+            "tooltipText": "The half-power equation.",
+            "tooltipImage": "/images/tooltips/half-power-eq.png"
         },
         {
             "id": 10,
-            "tooltipText": "We want mode shape to be a three-dimensional vector. The three measurement locations should be equally spaced along the beam.",
+            "tooltipText": "",
             "tooltipImage": ""
         },
         {
             "id": 11,
-            "tooltipText": "You will need to run multiple tests as only three accelerometers can be used at once. This was a real challenge that we faced in data collection!",
+            "tooltipText": "",
             "tooltipImage": ""
         }
     ]

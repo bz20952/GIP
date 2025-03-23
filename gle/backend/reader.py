@@ -23,11 +23,14 @@ def read_csv(options: dict):
         sample_interval = math.floor(2048/options['samplingFreq'])
         df = df.iloc[::sample_interval,:]
 
+    # Normalise the data to have zero mean
     for accel_index in range(5):
         for prefix in ['A', 'F']:
             df[f'{prefix}{accel_index}'] = df[f'{prefix}{accel_index}'] - np.mean(df[f'{prefix}{accel_index}'])
 
-    # print(df)
+    # # Mirror measurement locations if mirroring shaker position
+    # if options['shakerPosition'] > 2:
+    #     df.columns = ['t', 'F4', 'A4', 'F3', 'A3', 'F2', 'A2', 'F1', 'A1', 'F0', 'A0']
 
     return df
 

@@ -1,6 +1,6 @@
 <script lang='ts'>
     import { onMount } from 'svelte';
-    import WindowsNotify from '$lib/sounds/Windows Notify.wav';
+    import WindowsNotify from '$lib/sounds/Notify.mp3';
 
     const message = 'New message!';
 

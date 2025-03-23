@@ -49,8 +49,8 @@
   .message-container {
     /* padding: 10px; */
     min-height: 10rem;
-    max-height: 30rem;
-    /* overflow-y: auto; */
+    max-height: 20rem;
+    overflow-y: auto;
   }
 
   .email {
