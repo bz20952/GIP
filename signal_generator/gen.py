@@ -108,7 +108,7 @@ if __name__ == "__main__":
     # duration = float(input("Enter the duration of the sine wave (seconds): "))
     sample_rate = 44100
 
-    wave = generate_sine_wave(500, 1, 0, 10, sample_rate)
+    wave = generate_sine_wave(100, 1, 0, 10, sample_rate)
     # wave = generate_sine_sweep(20, 1000, 1, 20, sample_rate)
     # wave = generate_stepped_sweep(50, 1000, 990, 1, 20, sample_rate)
     # wave = gen_step_sweep(365, 375.1, 0.1)

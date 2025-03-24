@@ -10,7 +10,7 @@ ser = serial.Serial('COM5', 128000, timeout=0.1, write_timeout=0.1)
 time.sleep(2)  # ✅ Allow serial connection to fully initialize
 ser.reset_input_buffer()  # ✅ Flush any old data from the buffer
 
-filename = "teensy_data.csv"
+filename = "NewComp_Stepped100_150_10s.csv"
 recording_duration = 10  # ✅ Specify how long to capture data (in seconds)
 discard_time = 2  # ✅ Discard first 2 seconds of data to remove startup noise
 
@@ -21,6 +21,7 @@ nyquist_freq = fs / 2  # Maximum frequency we can analyze
 # Data storage lists
 time_vals = []
 a0_vals = []
+#force_vals = []
 
 # Initialize start time
 start_time = None
@@ -131,21 +132,28 @@ with open(filename, "w", newline="") as file:
         #fft_magnitude = np.abs(np.fft.rfft(a0_vals))  # Compute the FFT magnitude
 
         #Trial FFT computation
-        X = np.fft.fft(a0_vals)
-        X_mag = np.abs(X) / n
+        # X = np.fft.fft(a0_vals)
+        # X_mag = np.abs(X) / n
 
-        fstep = fs / n
-        f = np.linspace(0, (n-1)*fstep, n) #freq steps
+        f = np.fft.fftfreq(n, 1/fs)
+        f = f[:n//2]
+        fft = np.abs(np.fft.fft(a0_vals))[:n//2]
 
-        f_plot = f[0:int(n/2+1)]
-        X_mag_plot = 2 * X_mag[0:int(n/2+1)]
-        X_mag_plot[0] = X_mag_plot[0] / 2
+        plt.scatter(f, fft/max(fft), s=10, label=a0_vals)
 
 
-        # ✅ Generate the FFT plot
+        # fstep = fs / n
+        # f = np.linspace(0, (n-1)*fstep, n) #freq steps
+
+        # f_plot = f[0:int(n/2+1)]
+        # X_mag_plot = 2 * X_mag[0:int(n/2+1)]
+        # X_mag_plot[0] = X_mag_plot[0] / 2
+
+
+        # # ✅ Generate the FFT plot
         plt.figure(figsize=(10, 5))
         #plt.plot(freq_values, fft_magnitude, label="Magnitude Spectrum", linewidth=1.5)
-        plt.plot(f_plot, X_mag_plot, label="Magnitude Spectrum", linewidth=1.5)
+        plt.plot(f, fft/max(fft), label="Magnitude Spectrum", linewidth=1.5)
         plt.xlabel("Frequency (Hz)")
         plt.ylabel("Amplitude")
         plt.title("Frequency Spectrum of Acceleration Data")
