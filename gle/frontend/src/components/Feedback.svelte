@@ -28,9 +28,10 @@
             $progress.currentTask.currentSubtask.correct = true;
           }
         } else if (result.inputType === 'none') {
+          $progress.currentTask.currentSubtask.correct = true;
           Object.keys(result.answer).forEach((key) => {
-            if (result.answer[key] === $testOptions[key as keyof TestOptions]) {
-              $progress.currentTask.currentSubtask.correct = true;
+            if (result.answer[key] !== $testOptions[key as keyof TestOptions]) {
+              $progress.currentTask.currentSubtask.correct = false;
             }
           })
         }

@@ -104,7 +104,7 @@
                     "tooltipId": 5,
                     "answer": {
                         "shakerPosition": 2,
-                        "samplingFrequency": 512
+                        "samplingFreq": 512
                     },
                     "praise": "Nice one! You have setup the test correctly.",
                     "feedback": [
@@ -130,7 +130,7 @@
                     "unit": "",
                     "tooltipId": 7,
                     "answer": "Aliasing",
-                    "praise": "Correct! Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency (half the sampling frequency is called Nyquist frequency). This is why the natural frequencies might be measured incorrectly.",
+                    "praise": "Correct! Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency (half the sampling frequency is called Nyquist frequency). Aliasing manifests as the appearance of high frequency components at lower frequencies.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -142,7 +142,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "Aliasing is the correct answer. Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency (half the sampling frequency is called the Nyquist frequency)."
+                            "message": "Aliasing is the correct answer. Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency (half the sampling frequency is called the Nyquist frequency). Aliasing manifests as the appearance of high frequency components at lower frequencies."
                         }
                     ]
                 }
@@ -207,7 +207,7 @@
                     "inputType": "number",
                     "unit": "%",
                     "tooltipId": 9,
-                    "answer": 20,
+                    "answer": 0.27,
                     "praise": "Spot on! This is the most accurate estimate of zeta from the plot. The points 90 degrees from the natural frequency point are the half-power points, allowing application of the half-power formula.",
                     "feedback": [
                         {
@@ -216,11 +216,11 @@
                         },
                         {
                             "stage": 2,
-                            "message": "Try bounding the frequency between 105 and 115 Hz."
+                            "message": "Try bounding the frequency between 108 and 115 Hz."
                         },
                         {
                             "stage": 3,
-                            "message": "The first modal damping ratio is expected to be around 20% using the half-power method. The points 90 degrees from the natural frequency point are the half-power points, allowing application of the half-power formula."
+                            "message": "The first modal damping ratio is expected to be around 0.3% using the half-power method. The points 90 degrees from the natural frequency point are the half-power points, allowing application of the half-power formula."
                         }
                     ]
                 }
@@ -258,14 +258,14 @@
                     "name": "Experimental setup",
                     "inputType": "none",
                     "unit": "",
-                    "tooltipId": 10,
+                    "tooltipId": 7,
                     "answer": {
                         "accelerometers": {
                             "A0": true,
-                            "A1": false,
+                            "A1": true,
                             "A2": true,    
                             "A3": false,
-                            "A4": true
+                            "A4": false
                         },
                         "shakerPosition": 3,
                         "excitationType": "Sine sweep"
@@ -308,7 +308,7 @@
                     "inputType": "number",
                     "unit": "%",
                     "tooltipId": 9,
-                    "answer": 10,
+                    "answer": 0.61,
                     "praise": "Perfect! Our finite element models agree with this observation. Remember there are two different methods to obtain modal damping ratios: half-power method on Bode plot and circle-fitting method on mobility Nyquist plot. Circle-fitting method is used more widely as effects of noises are compensated through fitting a circle through data points.",
                     "feedback": [
                         {

@@ -2,7 +2,6 @@
     import { goto } from '$app/navigation';
     import { tools } from '$lib/stores';
     import { testOptions } from '$lib/stores';
-    // import { sendApiRequest } from '$lib/utils';
 
     let showSpinner = false;
 
@@ -18,11 +17,6 @@
             (event.target as HTMLInputElement).checked = true;
         }
     }
-
-    // function handleRunTest(event: Event) {
-    //     sendApiRequest('run-test', 'POST', testOptions);
-    //     goto('/toolkit/process');
-    // }
 </script>
 
 <svelte:head>

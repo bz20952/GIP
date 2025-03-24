@@ -47,6 +47,44 @@ def plot_mode_shapes(mode_shapes, n_free_dofs):
     plt.show()
 
 
+def plot_nyquist(frequencies, frfs, excitation_location):
+
+    """Plot Nyquist plot."""
+
+    for i in range(0, 5*2, 2):
+        plt.plot([(frf[excitation_location,i]/(1j*frequencies[k])).real for k, frf in enumerate(frfs)], 
+                 [(frf[excitation_location,i]/(1j*frequencies[k])).imag for k, frf in enumerate(frfs)],
+                 label=f'A{(i/2):.0f}')
+
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.xlabel('Re')
+    plt.ylabel('Im')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+
+def plot_im(frequencies, frfs, excitation_location):
+
+    """Plot Im component of FRF plot."""
+
+    mobility_frf = []
+    for freq, frf in zip(frequencies, frfs):
+        mobility_frf.append(frf/(1j*freq))
+
+    for i in range(0, 5*2, 2):
+        gains = np.abs([mobility_frf[k][excitation_location, i] for k in range(len(frequencies))])
+        wn_index = np.argmax(gains)
+        plt.plot(i, mobility_frf[excitation_location, i][wn_index], label=f'A{(i/2):.0f}')
+
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.xlabel('Re')
+    plt.ylabel('Im')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+
 def plot_motion(y, v, a, t, n_free_dofs, nodal: bool = True):
 
     """Generic plotting function for dynamic motion data."""

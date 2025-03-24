@@ -7,7 +7,7 @@
 
 <section>
 	<div class="summary">
-		Watch <a href="https://www.bbc.co.uk/news" target="_blank">this video</a> for a visual how-to guide.
+		Watch <a href="https://youtu.be/CW5EYQ-pZUc" target="_blank">this video</a> for a visual how-to guide.
 		Or keep reading for a quick summary.
 	</div>
 

@@ -33,7 +33,7 @@
         {:else if currentResult.inputType === 'text'}
             <input type="text" id={currentResult.name} name={currentResult.name} bind:value={$progress.currentTask.currentSubtask.answer} required>
         {:else if currentResult.inputType === 'number'}
-            <input type="number" id={currentResult.name} name={currentResult.name} bind:value={$progress.currentTask.currentSubtask.answer} required>
+            <input type="number" step="0.01" id={currentResult.name} name={currentResult.name} bind:value={$progress.currentTask.currentSubtask.answer} required>
         {:else if currentResult.inputType === 'none'}
             <i>This answer is read automatically from the <a href="/toolkit/test">Test Setup</a> page.</i>
         {/if}

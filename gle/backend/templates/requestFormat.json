@@ -7,11 +7,11 @@
         "A3": true,
         "A4": true
     },
-    "shakerPosition": 1,
-    "excitationType": "Sine sweep",
+    "shakerPosition": 0,
+    "excitationType": "Random excitation",
     "tipHardness": "Soft",
     "samplingFreq": 2048,
     "filterType": "Bandpass",
-    "lowerCutoff": 300,
-    "upperCutoff": 400
+    "lowerCutoff": 350,
+    "upperCutoff": 450
 }

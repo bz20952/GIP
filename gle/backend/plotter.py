@@ -195,6 +195,7 @@ async def plot_nyquist(data: pd.DataFrame, options: dict):
 
     plot_path = f'./images/{u.format_accel_plot_name(options, "nyquist")}'
     plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
+    plt.show()
     plt.close()
 
     return plot_path
@@ -231,7 +232,6 @@ def plotcircfit(x,y,z):
     plt.plot(x, y, 'bo-', label='Data Points', markersize=5)
     plt.plot(x[0], y[0], 'go', label='Start Point', markersize=5)  # First point (green)
     plt.plot(x[-1], y[-1], 'ro', label='End Point', markersize=5)  # Last point (red)
-    # ax.plot(xc, yc, 'ko', label='Circle Center: 'f'Radius={r:.2f}, 'f'Coordinates=({xc:.2f}, {yc:.2f})', markersize=5)  # Circle center (black)
     plt.plot(xc, yc, 'ko', label=f'Circle Center (Radius={r:.2f})', markersize=5)  # Circle center (black)
 
     # Annotate labels
@@ -404,7 +404,6 @@ def frf_matrix(data: pd.DataFrame, options: dict):
 
     for i, shaker_pos in enumerate([0, 2, 4]):
         options['shakerPosition'] = shaker_pos
-        print(options)
         data = r.read_csv(options)
         for j, acc in enumerate(['A0', 'A2', 'A4']):
             # Compute FFT and Frequency Response Function
@@ -646,7 +645,6 @@ async def plot_argand_r(data: pd.DataFrame, options: dict) -> None:
 
     frf_ar = np.array(frf_ar)
     frf_abs = np.array(frf_abs)
-    print(len(frf_ar))
 
     if frf_ar.ndim == 1:
         # If frf_ar is 1D, treat it as a single row
@@ -654,9 +652,6 @@ async def plot_argand_r(data: pd.DataFrame, options: dict) -> None:
     else:
         # If frf_ar is 2D, extract the rows corresponding to active accelerometers
         frf_rows = [frf_ar[i] for i in range(len(active_accelerometers))]
-
-    # Print the first row for debugging
-    print(len(frf_rows))
 
     # Find peaks in the absolute FRF
     prominence = 0.01
@@ -666,7 +661,6 @@ async def plot_argand_r(data: pd.DataFrame, options: dict) -> None:
     else:
         peaks, _ = find_peaks(frf_abs[0], prominence=prominence)  # Access the first row if it's 2D
 
-    print("peaks number", len(peaks))
     # Extract values at peaks
     arg = []
     for i in range(len(peaks)):  # Loop through all peaks
@@ -752,9 +746,10 @@ if __name__ == '__main__':
     with open('./templates/requestFormat.json') as f:
         options = json.load(f)
     data = r.read_csv(options)
-    # asyncio.run(plot_dft(data, options))
-    # asyncio.run(plot_nyquist(data, options))
-    # asyncio.run(plot_bode(data, options))
+    asyncio.run(plot_dft(data, options))
+    asyncio.run(plot_nyquist(data, options))
+    asyncio.run(plot_bode(data, options))
     # frf_matrix(data, options)
-    asyncio.run(plot_imaginary_r(data, options))
+    # asyncio.run(plot_imaginary_r(data, options))
     # asyncio.run(plot_argand_r(data, options))
+    asyncio.run(plot_acceleration(data, options))

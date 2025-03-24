@@ -7,9 +7,11 @@
     let plotPaths = new Map()
 
     onMount(() => {
-        $tools.filter(tool => tool.type === 'identification').forEach(async (analysisTool) => {
-            plotPaths = plotPaths.set(analysisTool.endpoint, await getPath((analysisTool.endpoint as string), $testOptions))
-        })
+        if ($tools.filter(tool => (tool.type === 'identification' && tool.available)).length !== 0) {
+                $tools.filter(tool => tool.type === 'identification').forEach(async (analysisTool) => {
+                plotPaths = plotPaths.set(analysisTool.endpoint, await getPath((analysisTool.endpoint as string), $testOptions))
+            })
+        }
     });
 </script>
 

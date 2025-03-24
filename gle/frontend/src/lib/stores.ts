@@ -33,12 +33,12 @@ export const tools: Writable<Tool[]> = writable([
         type: 'excitation',
         description: 'Generate a sine wave signal which gradually changes frequency. Typically used to search for resonance.'
     },
-    {
-        name: 'Stepped sweep',
-        available: false,
-        type: 'excitation',
-        description: 'Generate a stepped signal which gradually changes frequency. Typically used to determine natural frequencies.'
-    },
+    // {
+    //     name: 'Stepped sweep',
+    //     available: false,
+    //     type: 'excitation',
+    //     description: 'Generate a stepped signal which gradually changes frequency. Typically used to determine natural frequencies.'
+    // },
     {
         name: 'Discrete Fourier transform',
         available: false,

@@ -4,21 +4,16 @@ import os
 import numpy as np
 
 
-def format_filename(options: dict):
+def format_filename(options: dict, mirror_shaker_position: bool = False):
 
     """Format filename to standard schema."""
 
     excitation = options['excitationType'].split(' ')[0].upper()
 
-    # locations = ['0', 'l/4', 'l/2', '3l/4', 'l']
-    # shaker_position = locations.index(options['shakerPosition'])
-
-    # Because recorded data is symetric we can use data recorded at 0 as l and l/4 and 3l/4
-    shaker_position = options['shakerPosition']
-    if options['shakerPosition'] > 2:
-        shaker_position = 5-shaker_position-1
-
-    return f"{excitation}_{shaker_position}"
+    if mirror_shaker_position:
+        return f"{excitation}_{4-options['shakerPosition']}"
+    else:
+        return f"{excitation}_{options['shakerPosition']}"
 
 
 def check_if_file_exists(options: dict, plot_type: str):

@@ -31,14 +31,14 @@
 		flex: 0.6;
 	}
 
-	h1 {
+	/* h1 {
 		width: 100%;
 		margin: 3rem 0rem;
-	}
+	} */
 
 	img {
 		margin: 1rem 0 0 0;
-		height: 15em;
+		height: 10em;
 		width: auto;
 	}
 </style>

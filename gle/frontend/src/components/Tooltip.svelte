@@ -81,4 +81,9 @@
         display: inline;
         width: 1.5rem;
     }
+
+    .tooltip-img {
+        max-height: 8rem;
+        margin-top: 1rem;
+    }
 </style>
