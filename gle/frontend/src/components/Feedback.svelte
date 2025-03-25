@@ -3,7 +3,7 @@
   import { showFeedback, progress, tools, testOptions } from '$lib/stores';
   import { removeItemAll, sendApiRequest } from '$lib/utils';
   import { emails } from '$lib/emails.json';
-  import Noti from './Noti.svelte';
+  // import Noti from './Noti.svelte';
 	import type { Email, Tool, Feedback, Result, TestOptions, DisplayMessage } from '$lib/types';
 
   export let emailId: number;
@@ -113,9 +113,9 @@
   });  
 </script>
 
-{#if showNotification && $progress.currentTask.emailId <= emails.length}
+<!-- {#if showNotification && $progress.currentTask.emailId <= emails.length}
   <Noti />
-{/if}
+{/if} -->
 <div class="feedback-container">
   <p style="color: {($progress.displayMessage.find(emailFb => emailFb.emailId === emailId) as DisplayMessage).colour}">{($progress.displayMessage.find(emailFb => emailFb.emailId === emailId) as DisplayMessage).message}</p>
   {#if (emailId < $progress.currentTask.emailId)}
