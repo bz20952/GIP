@@ -225,51 +225,51 @@ if __name__ == '__main__':
     IC = np.zeros(n_nodes*2*2)  # Number of nodes * number of DOFs at each node * 2 (displacement and velocity)
     # IC[1] = 0.001  # Displace node zero
     T = 10
-    sampling_freq = 50
+    sampling_freq = 1000
     freq_range = np.linspace(10, 450, 1000)*2*np.pi
     frfs = get_frequency_response(M, K, C, freq_range)
     excitation_location = 4
-    p.plot_frf(freq_range, frfs, excitation_location)
-    p.plot_nyquist(freq_range, frfs, excitation_location)
-    p.plot_im(freq_range, frfs, excitation_location)
+    # p.plot_frf(freq_range, frfs, excitation_location)
+    # p.plot_nyquist(freq_range, frfs, excitation_location)
+    # p.plot_im(freq_range, frfs, excitation_location)
     
-    # for forcing_type in ['random']:
-    #     for location in range(3):
-    #         if forcing_type == 'random':
-    #             random_amplitude = np.random.random(len(freq_range))
-    #             random_phase = np.random.uniform(-np.pi, np.pi, len(freq_range))
-    #             forcing_fnc = lambda t: sum([np.sin(freq*t + phi) * amp for freq, phi, amp in zip(freq_range, random_phase, random_amplitude)])
-    #         elif forcing_type == 'stepped sweep':
-    #             signal_time = 4/(np.min(freq_range)/(2*np.pi))  # 4 periods per frequency
-    #             rest_time = signal_time/2
-    #             T = signal_time*len(freq_range)
-    #             forcing_fnc = lambda t: np.sin(t*freq_range[int(t//signal_time)]) if (t % (signal_time+rest_time)) < signal_time else 0
-    #         elif forcing_type == 'sine':
-    #             freq = 30
-    #             forcing_fnc = lambda t: np.sin(freq*t)
-    #         elif forcing_type == 'sine sweep':
-    #             freq_low = 100
-    #             freq_high = 160
-    #             hz_per_second = (freq_high - freq_low) / T
-    #             forcing_fnc = lambda t: np.sin((freq_low+(hz_per_second*t))*t)
+    for forcing_type in ['sine']:
+        for location in range(3):
+            if forcing_type == 'random':
+                random_amplitude = np.random.random(len(freq_range))
+                random_phase = np.random.uniform(-np.pi, np.pi, len(freq_range))
+                forcing_fnc = lambda t: sum([np.sin(freq*t + phi) * amp for freq, phi, amp in zip(freq_range, random_phase, random_amplitude)])
+            elif forcing_type == 'stepped sweep':
+                signal_time = 4/(np.min(freq_range)/(2*np.pi))  # 4 periods per frequency
+                rest_time = signal_time/2
+                T = signal_time*len(freq_range)
+                forcing_fnc = lambda t: np.sin(t*freq_range[int(t//signal_time)]) if (t % (signal_time+rest_time)) < signal_time else 0
+            elif forcing_type == 'sine':
+                freq = 30
+                forcing_fnc = lambda t: np.sin(freq*t)
+            elif forcing_type == 'sine sweep':
+                freq_low = 100
+                freq_high = 160
+                hz_per_second = (freq_high - freq_low) / T
+                forcing_fnc = lambda t: np.sin((freq_low+(hz_per_second*t))*t)
 
-    #         num_intervals = int(T*sampling_freq)
-    #         time_steps = np.linspace(0, T, num_intervals)
-    #         plt.plot(time_steps, [forcing_fnc(t) for t in time_steps])
-    #         plt.title('Forcing Function')
-    #         plt.show()
+            num_intervals = int(T*sampling_freq)
+            time_steps = np.linspace(0, T, num_intervals)
+            plt.plot(time_steps, [forcing_fnc(t) for t in time_steps])
+            plt.title('Forcing Function')
+            plt.show()
 
-    #         sim_params = {
-    #             'period': T,
-    #             'num_intervals': num_intervals,
-    #             'sampling_freq': sampling_freq,
-    #             'time_steps': time_steps,
-    #             'initial_conditions': IC,
-    #             'forcing': {
-    #                 'location': location,
-    #                 'amplitude': 1,
-    #                 'signal': forcing_fnc,
-    #                 'type': forcing_type
-    #             }
-    #         }
-    #         simulate(sim_params, M, K, C, n_free_dofs=10, plot=True)
+            sim_params = {
+                'period': T,
+                'num_intervals': num_intervals,
+                'sampling_freq': sampling_freq,
+                'time_steps': time_steps,
+                'initial_conditions': IC,
+                'forcing': {
+                    'location': location,
+                    'amplitude': 1,
+                    'signal': forcing_fnc,
+                    'type': forcing_type
+                }
+            }
+            simulate(sim_params, M, K, C, n_free_dofs=10, plot=True)

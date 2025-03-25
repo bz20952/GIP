@@ -195,7 +195,7 @@ async def plot_nyquist(data: pd.DataFrame, options: dict):
 
     plot_path = f'./images/{u.format_accel_plot_name(options, "nyquist")}'
     plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
-    plt.show()
+    # plt.show()
     plt.close()
 
     return plot_path

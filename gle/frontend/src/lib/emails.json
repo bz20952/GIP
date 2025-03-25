@@ -162,7 +162,7 @@
                     "unit": "",
                     "tooltipId": 8,
                     "answer": 0.08,
-                    "praise": "That is correct! In a perfect world, the mobility Nyquist circle is centred on the real axis and starts from the origin. Therefore the radius is simply the x-value of the centre coordinate. The radius provides information on the value of the modal participation coefficient for the given mode.",
+                    "praise": "That is correct! In a perfect world, the mobility Nyquist circle is centred on the real axis and starts from the origin. The radius provides information on the value of the modal participation coefficient for the given mode. In reality, sine sweep tests should not be used to generate Nyquist plots as the DFT should only be applied to steady-state signals.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -286,10 +286,10 @@
                     "subtaskId": 3,
                     "name": "Second mode shape",
                     "inputType": "select",
-                    "options": ["[1,0,-1]", "[0.6,-1,0.6]", "[-1,0.6,1]", "[1,0,1]"],
+                    "options": ["[0,1,0]", "[0.6,-1,0.6]", "[-1,0.6,1]", "[1,0,1]"],
                     "unit": "",
                     "tooltipId": 11,
-                    "answer": "[1,0,-1]",
+                    "answer": "[0,1,0]",
                     "praise": "Perfect! Our finite element models agree with this observation. There are many methods to estimate mode shapes, but the ratio of imaginary peaks is a good starting point. Plotting imaginary values tell us about both the magnitude and phase of the response relative to the applied forcing.",
                     "feedback": [
                         {

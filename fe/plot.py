@@ -15,7 +15,7 @@ def plot_frf(frequencies, gains, excitation_location):
     gains = linear_to_db(gains)
 
     for i in range(0, 5*2, 2):
-        plt.plot(frequencies / (2*np.pi), [gain[excitation_location,i] for gain in gains], label=f'A{(i/2):.0f}')
+        plt.plot(frequencies / (2*np.pi), [gain[excitation_location*2,i] for gain in gains], label=f'A{(i/2):.0f}')
 
     # ax[j].set_yscale('log')
     # ax[-1].set_xticks(fontsize=18)
@@ -52,8 +52,8 @@ def plot_nyquist(frequencies, frfs, excitation_location):
     """Plot Nyquist plot."""
 
     for i in range(0, 5*2, 2):
-        plt.plot([(frf[excitation_location,i]/(1j*frequencies[k])).real for k, frf in enumerate(frfs)], 
-                 [(frf[excitation_location,i]/(1j*frequencies[k])).imag for k, frf in enumerate(frfs)],
+        plt.plot([(frf[excitation_location*2,i]/(1j*frequencies[k])).real for k, frf in enumerate(frfs)], 
+                 [(frf[excitation_location*2,i]/(1j*frequencies[k])).imag for k, frf in enumerate(frfs)],
                  label=f'A{(i/2):.0f}')
 
     plt.gca().set_aspect('equal', adjustable='box')

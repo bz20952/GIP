@@ -19,7 +19,7 @@ export const tools: Writable<Tool[]> = writable([
         name: 'Random excitation',
         available: true,
         type: 'excitation',
-        description: 'Generate a random signal which is passed to a shaker and used to excite a beam. Typically used to simulate real-world excitation.'
+        description: 'Generate a random signal which is passed to a shaker and used to excite a beam. Typically used to simulate real-world excitation. The random signal we used in practice is a white noise signal which is not best practice for modal testing.'
     },
     {
         name: 'Hammer testing',
