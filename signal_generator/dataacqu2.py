@@ -6,22 +6,22 @@ import numpy as np
 import re  # Import regex module
 
 # Set the correct serial port and baud rate
-ser = serial.Serial('COM5', 128000, timeout=0.1, write_timeout=0.1)
+ser = serial.Serial('COM6', 128000, timeout=0.1, write_timeout=0.1)
 time.sleep(2)  # ✅ Allow serial connection to fully initialize
 ser.reset_input_buffer()  # ✅ Flush any old data from the buffer
 
-filename = "NewComp_Sin_850_10s.csv"
-recording_duration = 20  # ✅ Specify how long to capture data (in seconds)
+filename = "force_trans_test.csv"
+recording_duration = 10  # ✅ Specify how long to capture data (in seconds)
 discard_time = 2  # ✅ Discard first 2 seconds of data to remove startup noise
 
 # ✅ Define sampling frequency (Change this if needed)
 fs = 2000  # Hz (Sampling frequency of the sensor)
 nyquist_freq = fs / 2  # Maximum frequency we can analyze
 
-# Data storage list
+# Data storage lists
 time_vals = []
 a0_vals = []
-force_vals = []
+#force_vals = []
 
 # Initialize start time
 start_time = None
@@ -34,7 +34,7 @@ float_pattern = re.compile(r"^-?\d+(\.\d+)?$")
 # ✅ Open CSV file and start data collection
 with open(filename, "w", newline="") as file:
     writer = csv.writer(file)
-    writer.writerow(["Time (s)", "A0 (g)", "Force(N)"])  # ✅ Time in seconds and corrected acceleration
+    writer.writerow(["Time (s)", "A0 (g)"])  # ✅ Time in seconds and corrected acceleration
 
     try:
         print(f"Recording for {recording_duration} seconds (first {discard_time}s discarded)...")
@@ -59,8 +59,8 @@ with open(filename, "w", newline="") as file:
                     
                     data = serial_line.split(",")  # Split values
 
-                    if len(data) == 3:  # ✅ Ensure correct number of values
-                        timestamp_str, acceleration_str, force_str = data  # Extract components
+                    if len(data) == 2:  # ✅ Ensure correct number of values
+                        timestamp_str, acceleration_str = data  # Extract components
 
                         # ✅ Validate timestamp: Must be a pure integer
                         if not timestamp_str.isdigit():
@@ -72,8 +72,8 @@ with open(filename, "w", newline="") as file:
 
                         try:
                             timestamp = int(timestamp_str)  # Teensy's `micros()` time (µs)
-                            acceleration = float(acceleration_str) - accel_offset  # ✅ Remove offset
-                            force = float(force_str)
+                            acceleration = float(acceleration_str)# - accel_offset  # ✅ Remove offset
+                            #force = float(force_str)
 
                             # ✅ Correct start_time initialization
                             if start_time is None:
@@ -100,10 +100,10 @@ with open(filename, "w", newline="") as file:
                             # ✅ Store data in lists
                             time_vals.append(adjusted_time)
                             a0_vals.append(acceleration)
-                            force_vals.append(force)
+                            #force_vals.append(force)
 
                             # ✅ Save to CSV
-                            writer.writerow([adjusted_time, acceleration, force])
+                            writer.writerow([adjusted_time, acceleration])
 
                             # ✅ Stop recording after the specified duration
                             if adjusted_time >= recording_duration:
@@ -120,7 +120,7 @@ with open(filename, "w", newline="") as file:
         # ✅ Generate the final acceleration vs time plot
         plt.figure(figsize=(10, 5))
         plt.plot(time_vals, a0_vals, label="Acceleration (g)", linewidth=1.5)
-        plt.plot(time_vals, force_vals, label="Force (N)", linewidth=1.5)
+        # plt.plot(time_vals, force_vals, label="Force (N)", linewidth=1.5)
         plt.xlabel("Time (s)")
         plt.ylabel("Response signal")
         plt.title(f"Acceleration Data and Force Over {recording_duration} Seconds")
@@ -142,7 +142,7 @@ with open(filename, "w", newline="") as file:
         f = f[:n//2]
         fft = np.abs(np.fft.fft(a0_vals))[:n//2]
 
-        # plt.scatter(f, fft/max(fft), s=10, label="Acceleration FFT")
+        plt.scatter(f, fft/max(fft), s=10, label="Acceleration FFT")
 
 
         # fstep = fs / n
@@ -167,6 +167,3 @@ with open(filename, "w", newline="") as file:
 
         print("Fourier Transform completed and plotted.")
         print("Plot displayed. Data saved to", filename)
-
-
-
