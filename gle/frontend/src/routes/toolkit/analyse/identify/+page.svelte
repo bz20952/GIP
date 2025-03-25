@@ -7,22 +7,22 @@
     let plotPaths = new Map()
 
     onMount(() => {
-        $tools.filter(tool => tool.type === 'analysis').forEach(async (analysisTool) => {
+        $tools.filter(tool => tool.type === 'identification').forEach(async (analysisTool) => {
             plotPaths = plotPaths.set(analysisTool.endpoint, await getPath((analysisTool.endpoint as string), $testOptions))
         })
     });
 </script>
 
 <svelte:head>
-	<title>Frequency Domain Analysis</title>
-	<meta name="description" content="Frequency Domain Analysis" />
+	<title>Modal Parameter Identification</title>
+	<meta name="description" content="Modal parameter identification" />
 </svelte:head>
 
-<h1>Frequency Domain Analysis</h1>
+<h1>Modal Parameter Identification</h1>
 
 <section>
     <div class="plots-container">
-        {#if $tools.filter(tool => (tool.type === 'analysis' && tool.available)).length === 0}
+        {#if $tools.filter(tool => (tool.type === 'identification' && tool.available)).length === 0}
             <h2>No tools available yet.</h2>
         {:else}
             {#each plotPaths.keys() as toolEndpoint}
@@ -37,20 +37,8 @@
                     {/if}
                 {/if}
             {/each}
-            <div class="freq">
-                <label for="lowerCutoff">Lower cutoff frequency (Hz): </label>
-                <input type="number" name="lowerCutoff" bind:value={$testOptions.lowerCutoff}/>
-                <br>
-                <br>
-                <label for="upperCutoff">Upper cutoff frequency (Hz): </label>
-                <input type="number" name="upperCutoff" bind:value={$testOptions.upperCutoff}/>
-                <br>
-                <br>
-                <button class='bode-and-nyquist' on:click={() => goto('/toolkit/analyse/identify')}>Identify</button>
-            </div>
         {/if}
     </div>
-	<!-- <button class='return' on:click={() => goto('/')}>Return to Dashboard</button> -->
 </section>
 
 <style>
@@ -98,5 +86,9 @@
         height: auto;
         box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
         border-radius: 10px;
+    }
+
+    .return {
+        margin: 4rem;
     }
 </style>

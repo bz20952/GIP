@@ -127,7 +127,7 @@ async def plot_dft(data: pd.DataFrame, options: dict):
     plt.title('Discrete Fourier Transform of Acceleration')
     plt.legend()
     plt.grid(True)
-    plt.xlim(50, max(f))  # Set limits for the x-axis (frequency)
+    plt.xlim(0, max(f))  # Set limits for the x-axis (frequency)
     plt.ylim(0, 1.1)  # Set limits for the y-axis (frequency)
     plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5) 
     plt.close()          
@@ -531,8 +531,9 @@ if __name__ == '__main__':
     # asyncio.run (main())
 
     # plot_forcing(data, options)
-    # plot_dft(data, options)
-    # plot_nyquist(data, options)
-    # plot_bode(data, options)
 
-# "C:\Users\Ammar Haziq\Downloads\GIP\gle\backend\templates\requestFormat.json"
+    asyncio.run(plot_dft(data, options))
+    asyncio.run(plot_nyquist(data, options))
+    asyncio.run(plot_bode(data, options))
+    # frf_matrix(data, options)
+

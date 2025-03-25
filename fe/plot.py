@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 
 
+def linear_to_db(gains):
+    return 20*np.log10(gains)
+
+
 def plot_frf(frequencies, gains):
 
     """Generic FRF plotting."""
@@ -81,7 +85,7 @@ def plot_motion(y, v, a, t, n_free_dofs, nodal: bool = True):
             label = f'A{i}'
         else:
             label = f'Mode {i+1}'
-        plt.plot(t[:-1], a[f'A{i}'], label=label)
+        plt.plot(t, a[f'A{i}'], label=label)
     plt.title('Acceleration')
     plt.xlabel('t [s]')
     if nodal:

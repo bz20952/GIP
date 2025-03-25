@@ -21,9 +21,9 @@
             $progress.currentTask.currentSubtask.correct = true;
           }
         } else if (result.inputType === 'number') {
-          // Acceptable answer margin of +- 10%
-          let upper_bound = 1.1*(result.answer as number);
-          let lower_bound = 0.9*(result.answer as number);
+          // Acceptable answer margin of +- 20%
+          let upper_bound = 1.2*(result.answer as number);
+          let lower_bound = 0.8*(result.answer as number);
           if ($progress.currentTask.currentSubtask.answer as number >= lower_bound && $progress.currentTask.currentSubtask.answer as number <= upper_bound) {
             $progress.currentTask.currentSubtask.correct = true;
           }

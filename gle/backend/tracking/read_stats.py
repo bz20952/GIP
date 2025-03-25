@@ -1,10 +1,21 @@
 import json
+import pandas as pd
+import glob
 
-with open('test.json', 'r') as f:
-    data = json.load(f)
 
-for key in data.keys():
-    print('Task ' + key)
-    print('Time taken: ' + str(data[key]['endTime'] - data[key]['startTime']) + 's')
-    print('Attempts: ' + str(data[key]['attempts']))
-    print('\n')
+tracking = []
+
+for file in glob.glob('./*.json'):
+    with open(file, 'r') as f:
+        track = json.load(f)
+
+    for key in track.keys():
+        row = {}
+        row['Serial Number'] = file.replace('.\\', '').split('.')[0]
+        row['Task'] = key
+        row['Time Taken'] = track[key]['endTime'] - track[key]['startTime']
+        row['Attempts'] = track[key]['attempts']
+        tracking.append(row)
+
+tracking_df = pd.DataFrame(tracking, columns=['Serial Number', 'Task', 'Time Taken', 'Attempts'])
+tracking_df.to_csv('tracking.csv', index=False)

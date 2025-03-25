@@ -1,0 +1,9 @@
+# SvelteKit specific
+node_modules/
+.vercel/
+build/
+
+# General
+.env
+Dockerfile
+.dockerignore
