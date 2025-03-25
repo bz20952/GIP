@@ -2,9 +2,9 @@
     "serialNumber": "1234",
     "accelerometers": {
         "A0": true,
-        "A1": true,
+        "A1": false,
         "A2": true,    
-        "A3": true,
+        "A3": false,
         "A4": true
     },
     "shakerPosition": 0,

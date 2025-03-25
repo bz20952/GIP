@@ -231,7 +231,7 @@
             "id": 5,
             "sender": "Charlotte Eyo",
             "subject": "Mode shapes on my desk by this afternoon",
-            "body": "Hello, we've just had some new clients adopt the new wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 24,000 rpm and located at l/4, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP using the three leftmost accelerometers. Mode shapes can be found by the ratios of the imaginary peaks at different measurement locations. Good luck, we're depending on you here!",
+            "body": "Hello, we've just had some new clients adopt the new wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 24,000 rpm and located at l/4, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP using the three equally-spaced. Mode shapes can be found by the ratios of the peaks and phases at different measurement locations. Good luck, we're depending on you here!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -267,7 +267,7 @@
                             "A3": false,
                             "A4": false
                         },
-                        "shakerPosition": 3,
+                        "shakerPosition": 1,
                         "excitationType": "Sine sweep"
                     },
                     "praise": "Correct! You have setup the test correctly to measure accelerations in the second mode of vibration. It is possible to use other excitation methods, but sine sweep is suitable here as it is fast and can be set to include the expected operational frequencies.",
@@ -286,15 +286,15 @@
                     "subtaskId": 3,
                     "name": "Second mode shape",
                     "inputType": "select",
-                    "options": ["[1,0,-1]", "[0.6,-1,0.6]", "[-1,0.6,1]", "[1,0,1]"],
+                    "options": ["[0.6,-1,0.6]", "[-1,0.6,1]", "[1,0,-1]", "[1,0,1]"],
                     "unit": "",
                     "tooltipId": 11,
                     "answer": "[1,0,-1]",
-                    "praise": "Perfect! Our finite element models agree with this observation. There are many methods to estimate mode shapes, but the ratio of imaginary peaks is a good starting point. Plotting imaginary values tell us about both the magnitude and phase of the response relative to the applied forcing.",
+                    "praise": "Perfect! Our finite element models agree with this observation. There are many methods to estimate mode shapes, but the ratio of peaks in the FRF is a good starting point. This tell us about both the magnitude and phase of the response relative to the applied forcing.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "It is worth trialling different excitation methods to get a better estimate of the mode shape."
+                            "message": "Compare your results to what you would expect the analytical solution to be."
                         },
                         {
                             "stage": 2,
