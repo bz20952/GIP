@@ -166,11 +166,11 @@
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Not quite, try using Sine sweep with maximum sampling frequency for higher resolution. Try to bound your frequency range as tightly as possible."
+                            "message": "Not quite, try using Sine sweep with maximum sampling frequency for higher resolution. Try to bound your frequency range between 108 and 115 Hz."
                         },
                         {
                             "stage": 2,
-                            "message": "Unfortunately that is not correct. Remember, that there is a false peak created by one of the springs just before the first natural frequency."
+                            "message": "Unfortunately that is not correct. Remember, that there is a false peak created by one of the springs just before the first natural frequency. Try exciting and measuring at x = 0."
                         },
                         {
                             "stage": 3,
@@ -207,7 +207,7 @@
                     "inputType": "number",
                     "unit": "%",
                     "tooltipId": 9,
-                    "answer": 0.27,
+                    "answer": 0.14,
                     "praise": "Spot on! This is the most accurate estimate of zeta from the plot. The points 90 degrees from the natural frequency point are the half-power points, allowing application of the half-power formula.",
                     "feedback": [
                         {
