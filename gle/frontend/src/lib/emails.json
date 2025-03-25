@@ -220,7 +220,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "The first modal damping ratio is expected to be around 0.3% using the half-power method. The points 90 degrees from the natural frequency point are the half-power points, allowing application of the half-power formula."
+                            "message": "The first modal damping ratio is expected to be around 0.14% using the half-power method. The points 90 degrees from the natural frequency point are the half-power points, allowing application of the half-power formula."
                         }
                     ]
                 }
@@ -231,7 +231,7 @@
             "id": 5,
             "sender": "Charlotte Eyo",
             "subject": "Mode shapes on my desk by this afternoon",
-            "body": "Hello, we've just had some new clients adopt the new wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 24,000 rpm and located at l/4, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP using the three equally-spaced. Mode shapes can be found by the ratios of the peaks and phases at different measurement locations. Good luck, we're depending on you here!",
+            "body": "Hello, we've just had some new clients adopt the new wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 24,000 rpm and located at l/4, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP using the three equally-spaced. Mode shapes can be found by the ratios of the peaks and phases at different measurement locations. Finally, we need an estimate to the second modal damping ratio. Good luck, we're depending on you here!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -274,7 +274,7 @@
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Pick an excitation method which can be used to smoothly excite frequencies surrounding the second natural frequency."
+                            "message": "Make sure you have pick an excitation method which can be used to smoothly excite frequencies surrounding the second natural frequency."
                         },
                         {
                             "stage": 2,
@@ -286,15 +286,15 @@
                     "subtaskId": 3,
                     "name": "Second mode shape",
                     "inputType": "select",
-                    "options": ["[0.6,-1,0.6]", "[-1,0.6,1]", "[1,0,-1]", "[1,0,1]"],
+                    "options": ["[0.6,-1,0.6]", "[-1,0.6,1]", "[0,1,0]", "[1,0,1]"],
                     "unit": "",
                     "tooltipId": 11,
-                    "answer": "[1,0,-1]",
-                    "praise": "Perfect! Our finite element models agree with this observation. There are many methods to estimate mode shapes, but the ratio of peaks in the FRF is a good starting point. This tell us about both the magnitude and phase of the response relative to the applied forcing.",
+                    "answer": "[0,1,0]",
+                    "praise": "Perfect! There are many methods to estimate mode shapes, but the ratio of peaks in the FRF is a good starting point. This tells us about both the magnitude and phase of the response relative to the applied forcing. If you look up the analytical solution for a free-free beam you will see that the second mode shape is nearer to [1,0,-1]. This implies that our accelerometers are dominated by different modes at different times.",
                     "feedback": [
                         {
                             "stage": 1,
-                            "message": "Compare your results to what you would expect the analytical solution to be."
+                            "message": "Try bounding your frequency between 250 and 450 Hz."
                         },
                         {
                             "stage": 2,
@@ -317,7 +317,7 @@
                         },
                         {
                             "stage": 2,
-                            "message": "Remember there are two different methods to obtain modal damping ratios. If you are struggling with half power method on Bode plot, maybe try circle-fitting on mobility Nyquist plot."
+                            "message": "The Bode plot might be easier to read when only using a single accelerometer."
                         }
                     ]
                 },
@@ -327,10 +327,15 @@
                     "inputType": "select",
                     "options": ["The recorded time-domain signals are not periodic over the DFT window.", "The damping model is incorrect.", "The application of a digital filter has removed useful frequency components as well as noise."],
                     "unit": "",
-                    "tooltipId": 12,
+                    "tooltipId": 7,
                     "answer": "The recorded time-domain signals are not periodic over the DFT window.",
                     "praise": "Correct! Leakage occurs when the time-domain signal is not periodic over the DFT window. This can result in the appearance of frequency peaks which, in reality, are not present in the measured time-domain signal.",
-                    "feedback": []
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Run a few hammer tests to try and observe a noisy DFT."
+                        }
+                    ]
                 }
             ],
             "unlocks": []

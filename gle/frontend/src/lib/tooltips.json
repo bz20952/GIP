@@ -52,7 +52,7 @@
         },
         {
             "id": 11,
-            "tooltipText": "",
+            "tooltipText": "Remember that the beam has free-free boundary conditions.",
             "tooltipImage": ""
         }
     ]

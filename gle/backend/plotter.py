@@ -238,7 +238,10 @@ def plotcircfit(x,y,z):
     txts = []
     label_indices = np.array([theta_n_index, theta_l_index, theta_h_index])
     for i in label_indices:
-        txt = plt.text(x[i], y[i]*0.65, f"f = {z[i]:.2f} Hz", color='k') # text for coordinates and frequency of data point
+        if i == theta_n_index:
+            txt = plt.text(x[i], y[i]*0.65, f"Resonant frequency = {z[i]:.2f} Hz", color='k') # text for coordinates and frequency of data point
+        else:
+            txt = plt.text(x[i], y[i]*0.65, f"Half-power frequency = {z[i]:.2f} Hz", color='k')
         txts.append(txt)
 
     adjust_text(txts, target_x=x[label_indices], target_y=y[label_indices], arrowprops=dict(arrowstyle="->", color='black', lw=3))
@@ -365,7 +368,7 @@ async def plot_bode(data: pd.DataFrame, options: dict):
                 pass
             else:
                 f2 = f_filtered[idx_f2]
-                text_objects.append(plt.text(f2, magnitude_filtered[idx_f2]+2, f'f2: {f2:.2f} Hz', color='black', verticalalignment='bottom', horizontalalignment='center'))
+                text_objects.append(plt.text(f2, magnitude_filtered[idx_f2]-5, f'f2: {f2:.2f} Hz', color='black', verticalalignment='bottom', horizontalalignment='center'))
                 plt.axvline(f2, color='black', linestyle='--')  # Vertical line at f2
 
             # Annotate Bode Plot with vertical lines 
