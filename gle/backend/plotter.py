@@ -469,7 +469,9 @@ async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
     # frf_i = []
     # frf_abs = []
 
-    im_values = []
+    # im_values = []
+    abs_values = []
+    phase_values = []
 
     for acc in accelerometers.keys():
         if accelerometers[acc]:
@@ -495,11 +497,14 @@ async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
 
             # Get gain and imag component
             frf_abs = np.abs(frf_r)
-            frf_img = np.imag(frf_r)
+            frf_phase = np.angle(frf_r)
+            # frf_img = np.imag(frf_r)
 
             # Find peak magnitude and corresponding frequency
             idx_peak = np.argmax(frf_abs)
-            im_values.append(frf_img[idx_peak])
+            # im_values.append(frf_img[idx_peak])
+            abs_values.append(frf_abs[idx_peak])
+            phase_values.append(frf_phase[idx_peak])
 
             # frf_i.append(frf_img)
             # frf_abs.append(abs_frf)
@@ -527,7 +532,8 @@ async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
     #     idx_peak = np.argmax(frf_abs[accelerometer_index,:])
     #     im_values.append(frf_i[accelerometer_index,idx_peak])
 
-    im_values /= np.max(np.abs(im_values))  # Normalise imaginary values
+    # im_values /= np.max(np.abs(im_values))  # Normalise imaginary values
+    abs_values /= np.max(np.abs(abs_values))  # Normalise abs values
     active_x_locations = [locations[i] for i, acc in enumerate(accelerometers.keys()) if accelerometers[acc]]
 
     # # Number of peaks found
@@ -584,12 +590,21 @@ async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
     #     ax.tick_params(axis='both', labelsize=tick_label_size)
     #     ax.grid(True, linestyle='--', linewidth=0.5)
     #     # ax.legend(fontsize=tick_label_size)  # Scale legend font size
+
+    # Check quadrant
+    plot_phase = []
+    datum = phase_values[0]
+    for phase in phase_values:
+        if abs(phase-datum) < np.pi/2:
+            plot_phase.append(1)
+        else:
+            plot_phase.append(-1)
     
     # Plot the imaginary part of FRF for the current peak
-    plt.scatter(active_x_locations, im_values, color='red', s=10)
+    plt.scatter(active_x_locations, abs_values*plot_phase, color='red', s=10)
 
     # Add vertical lines from the x-axis to each point
-    for loc, val in zip(active_x_locations, im_values):
+    for loc, val in zip(active_x_locations, abs_values*plot_phase):
         if not np.isnan(val):  # Skip NaN values
             plt.plot([loc, loc], [0, val], color='blue', linestyle='--', linewidth=1)
 
@@ -597,7 +612,7 @@ async def plot_imaginary_r(data: pd.DataFrame, options: dict) -> None:
     plt.xticks(active_x_locations)
     plt.axhline(0, color='black', linewidth=0.5)
     plt.xlabel('Accelerometer location')
-    plt.ylabel('Normalised Im(Receptance FRF)')
+    plt.ylabel('Normalised Abs(Receptance FRF)')
 
     plot_path = f'./images/{u.format_accel_plot_name(options, "mode-shapes")}'
     plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
@@ -746,10 +761,10 @@ if __name__ == '__main__':
     with open('./templates/requestFormat.json') as f:
         options = json.load(f)
     data = r.read_csv(options)
-    asyncio.run(plot_dft(data, options))
-    asyncio.run(plot_nyquist(data, options))
-    asyncio.run(plot_bode(data, options))
+    # asyncio.run(plot_dft(data, options))
+    # asyncio.run(plot_nyquist(data, options))
+    # asyncio.run(plot_bode(data, options))
     # frf_matrix(data, options)
-    # asyncio.run(plot_imaginary_r(data, options))
+    asyncio.run(plot_imaginary_r(data, options))
     # asyncio.run(plot_argand_r(data, options))
-    asyncio.run(plot_acceleration(data, options))
+    # asyncio.run(plot_acceleration(data, options))
