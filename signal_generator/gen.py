@@ -76,6 +76,19 @@ def play_wave(wave, sample_rate=44100):
     sd.play(wave, samplerate=sample_rate)
     sd.wait()
 
+
+def plot_fft(wave, sample_rate):
+    N = len(wave)
+    fft_result = np.fft.fft(wave)
+    freqs = np.fft.fftfreq(N, d=1/sample_rate)
+    magnitude = np.abs(fft_result) / N  # Normalize magnitude
+
+    # Plot only the positive frequencies
+    pos_mask = freqs >= 0
+    freqs = freqs[pos_mask]
+    magnitude = magnitude[pos_mask]
+
+
 # def define_signal():
 
 #     """Defines signal sent to shaker."""
@@ -128,4 +141,13 @@ if __name__ == "__main__":
     plt.figure()
     # plot_path = f'./images/wave.png'
     plt.plot(wave)
+    plt.show()
+
+    plt.figure()
+    plt.plot(freqs, magnitude)
+    plt.title("Frequency Spectrum")
+    plt.xlabel("Frequency (Hz)")
+    plt.ylabel("Magnitude")
+    plt.grid(True)
+    plt.tight_layout()
     plt.show()
