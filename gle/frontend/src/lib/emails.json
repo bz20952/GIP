@@ -4,7 +4,7 @@
             "id": 1,
             "sender": "Mark Eting",
             "subject": "Wing test needed ASAP!",
-            "body": "Hey, the clients are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. Check the hint in Send Results or estimate frequency from the unforced time-domain response. Have a look in your toolkit and see what you can do. Good luck!",
+            "body": "Hey, the clients are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. Check the hint in Send Results to observe the period of oscillation. Good luck!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -106,7 +106,7 @@
                         "shakerPosition": 2,
                         "samplingFreq": 512
                     },
-                    "praise": "Nice one! You have setup the test correctly.",
+                    "praise": "Nice one! You have setup the test correctly. From now on we would recommend using a sampling frequency of 2048 Hz. A maximum sampling frequency should be used wherever possible to avoid aliasing.",
                     "feedback": [
                         {
                             "stage": 1,
@@ -118,7 +118,7 @@
                         },
                         {
                             "stage": 3,
-                            "message": "The correct excitation location is at l/2. Sampling is limited to 512 Hz in this case."
+                            "message": "The correct excitation location is at l/2. Sampling is limited to 512 Hz in this case. From now on we would recommend using a sampling frequency of 2048 Hz. A maximum sampling frequency should be used wherever possible to avoid aliasing."
                         }
                     ]
                 },
@@ -153,7 +153,7 @@
             "id": 4,
             "sender": "Cher Holder",
             "subject": "We need modal damping ratios!",
-            "body": "Hello, I've heard big things about your modal testing expertise. Please can you execute a sine sweep test, produce a Nyquist plot and use it to extract the radius of the circle in the first mode, the first natural frequency and the first modal damping ratio?",
+            "body": "Hello, I've heard big things about your modal testing expertise. Please can you execute a sine sweep test using accelerometer and shaker at x=0, produce a Nyquist plot and use it to extract the radius of the circle in the first mode, the first natural frequency and the first modal damping ratio?",
             "results": [
                 {
                     "subtaskId": 1,
@@ -170,7 +170,7 @@
                         },
                         {
                             "stage": 2,
-                            "message": "Unfortunately that is not correct. Remember, that there is a false peak created by one of the springs just before the first natural frequency. Try exciting and measuring at x = 0."
+                            "message": "Unfortunately that is not correct. Remember, that there is a false peak created by one of the springs very close to the first natural frequency. Try exciting and measuring at x = 0."
                         },
                         {
                             "stage": 3,
@@ -231,7 +231,7 @@
             "id": 5,
             "sender": "Charlotte Eyo",
             "subject": "Mode shapes on my desk by this afternoon",
-            "body": "Hello, we've just had some new clients adopt the new wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 24,000 rpm and located at l/4, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP using the three equally-spaced. Mode shapes can be found by the ratios of the peaks and phases at different measurement locations. Finally, we need an estimate to the second modal damping ratio. Good luck, we're depending on you here!",
+            "body": "Hello, we've just had some new clients adopt the new wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 24,000 rpm and located at l/4, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP using the three equally-spaced accelerometers. Finally, we need an estimate to the second modal damping ratio. Good luck, we're depending on you here!",
             "results": [
                 {
                     "subtaskId": 1,
@@ -290,7 +290,7 @@
                     "unit": "",
                     "tooltipId": 11,
                     "answer": "[0,1,0]",
-                    "praise": "Perfect! There are many methods to estimate mode shapes, but the ratio of peaks in the FRF is a good starting point. This tells us about both the magnitude and phase of the response relative to the applied forcing. If you look up the analytical solution for a free-free beam you will see that the second mode shape is nearer to [1,0,-1]. This implies that our accelerometers are dominated by different modes at different times.",
+                    "praise": "Perfect! There are many methods to estimate mode shapes, but the ratio of peaks in the FRF is a good starting point. This tells us about both the magnitude and phase of the response relative to the applied forcing. If you look up the analytical solution for a free-free beam you will see that the second mode shape is nearer to [1,0,-1]. This could imply that our accelerometers are dominated by different modes at different frequencies which is unusual.",
                     "feedback": [
                         {
                             "stage": 1,

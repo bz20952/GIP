@@ -25,9 +25,9 @@
 <section>
     <div class="plots-container">
         {#if $tools.filter(tool => (tool.type === 'identification' && tool.available)).length === 0}
-            <h2>No identification tools available yet.</h2>
+            <h2>No identification tools available yet. Unlock them by completing tasks.</h2>
         {:else if $testOptions.excitationType === 'Free vibration'}
-            <h2>No forcing measurements available yet.</h2>
+            <h2>No forcing measurements available with free vibration.</h2>
         {:else}
             {#each plotPaths.keys() as toolEndpoint}
                 {#if $tools.find(tool => tool.endpoint == toolEndpoint)?.available}
