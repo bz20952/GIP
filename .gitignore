@@ -180,3 +180,5 @@ test.xlsx
 **/tracking/*.json
 
 push.ps1
+
+!.env.example
