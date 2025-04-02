@@ -61,8 +61,3 @@ with open(filename, "w", newline="") as file:
         print("\nData collection stopped.")
         ser.close()
         post_process()
-
-
-
-
-

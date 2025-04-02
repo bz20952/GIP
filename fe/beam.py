@@ -4,10 +4,10 @@ import vals
 from matplotlib import pyplot as plt
 import smoa
 import pandas as pd
-from scipy.integrate import odeint, solve_ivp
-from scipy.signal import chirp
+from scipy.integrate import solve_ivp
 import plot as p
 import sympy as sp
+from scipy.interpolate import interp1d
 
 
 plt.rcParams.update({'font.size': 18})
@@ -79,7 +79,7 @@ def fe(n_nodes: int):
     # Damping (assumes Rayleigh damping)
     a1 = np.array([[w[0]**2, w[0]],
                    [w[1]**2, w[1]]])
-    a2 = np.array([0.0027, 0.0061]).reshape(2,1)
+    a2 = np.array([vals.zeta_1, vals.zeta_2]).reshape(2,1)
     alpha_beta = 2*(np.linalg.inv(a1) @ a2)
     C = alpha_beta[0,0]*M + alpha_beta[1,0]*K
 
@@ -90,12 +90,6 @@ def simulate(sim_params: dict, M: np.ndarray, K: np.ndarray, C: np.ndarray, n_fr
 
     """Calculate transient time domain response. Displacements, velocities and accelerations are calculated relative to the ground."""
 
-    # Define period of simulation
-    T = sim_params['period']
-    # Specify minimum number of calculation intervals (odeint may require more)
-    n_intervals = sim_params['num_intervals']
-    # Specify array of time values at which to simulate
-    time_steps = sim_params['time_steps']
     # Define initial conditions
     IC = sim_params['initial_conditions']
     # Invert mass matrix
@@ -131,24 +125,38 @@ def simulate(sim_params: dict, M: np.ndarray, K: np.ndarray, C: np.ndarray, n_fr
         return z_dot
 
     # Call solver
-    u = solve_ivp(model, t_span=(time_steps[0], time_steps[-1]), y0=IC, method='LSODA', t_eval=time_steps).y.T
+    result = solve_ivp(model, t_span=(0, sim_params['period']), y0=IC, method='LSODA', max_step=0.01, rtol=1e-6, atol=1e-6)
+    u = result.y.T  # Transpose to get time steps in rows and DOFs in columns
+    time_steps = result.t  # Time steps
     y = u[:,1::4]  # Displacements
     v = u[:,0::4]  # Velocities
 
     num_accelerometers = n_free_dofs//2
 
     # Numerically differentiating velocity to obtain acceleration
-    a = np.zeros((n_intervals, num_accelerometers))
-    for i in range(n_intervals-1):
+    a = np.zeros((len(time_steps), num_accelerometers))
+    for i in range(len(time_steps)-1):
         for j in range(num_accelerometers):
-            a[i+1,j] = ((v[i+1,j] - v[i,j])/(1/sim_params['sampling_freq']))/9.81  # Convert units to g
+            a[i+1,j] = ((v[i+1,j] - v[i,j])/(time_steps[i+1]-time_steps[i]))/9.81  # Convert units to g
     a = pd.DataFrame(a, columns=[f'A{i}' for i in range(num_accelerometers)])  # Accelerations
     a['t'] = time_steps
 
+    f = [sim_params['forcing']['signal'](time) for time in a['t'].values]
     for i in range(num_accelerometers):
-        a[f'F{i}'] = [sim_params['forcing']['signal'](t) for t in time_steps]
-    a = a[['t'] + [f'F{i}' for i in range(num_accelerometers)] + [f'A{i}' for i in range(num_accelerometers)]]
-    a.to_csv(f'./sim_data/{sim_params["forcing"]["type"].split(" ")[0].upper()}_{sim_params["forcing"]["location"]}.csv', index=False)
+        a[f'F{i}'] = f
+
+    # Interpolate to regular time grid
+    new_time = np.linspace(0, sim_params['period'], 2048*sim_params['period'])  # New time grid for interpolation
+    a_interp = pd.DataFrame({'t': new_time})
+    for col in ['F0', 'A0', 'F1', 'A1', 'F2', 'A2', 'F3', 'A3', 'F4', 'A4']:
+        f = interp1d(a["t"], a[col], kind="cubic", fill_value="extrapolate")
+        a_interp[col] = f(new_time)
+
+    print(a_interp)
+    a = a_interp  # Use interpolated data
+
+    columns = ['t', 'F0', 'A0', 'F1', 'A1', 'F2', 'A2', 'F3', 'A3', 'F4', 'A4']  # Reorder columns
+    a.to_csv(f'./sim_data/{sim_params["forcing"]["type"].split(" ")[0].upper()}_{sim_params["forcing"]["location"]}.csv', index=False, columns=columns)  # Save accelerations to CSV
 
     if plot:
         p.plot_motion(y, v, a, time_steps, num_accelerometers)
@@ -162,7 +170,6 @@ def get_frequency_response(M, K, C, frequencies):
     for w in frequencies:
         s = complex(0, w)
 
-        # Gives response to impulse (delta function)
         frf = np.linalg.inv(np.add(np.subtract(K, (w**2)*M), s*C))
 
         frfs.append(frf)
@@ -225,51 +232,46 @@ if __name__ == '__main__':
     IC = np.zeros(n_nodes*2*2)  # Number of nodes * number of DOFs at each node * 2 (displacement and velocity)
     # IC[1] = 0.001  # Displace node zero
     T = 10
-    sampling_freq = 1000
-    freq_range = np.linspace(10, 450, 1000)*2*np.pi
-    frfs = get_frequency_response(M, K, C, freq_range)
-    excitation_location = 4
-    # p.plot_frf(freq_range, frfs, excitation_location)
+    sampling_freq = 2048
+    excitation_location = 0
+    freq_range = np.linspace(10, 1000, 10000)*2*np.pi
+    # frfs = get_frequency_response(M, K, C, freq_range)
+    # p.plot_bode(freq_range, frfs, excitation_location)
     # p.plot_nyquist(freq_range, frfs, excitation_location)
     # p.plot_im(freq_range, frfs, excitation_location)
     
-    for forcing_type in ['sine']:
-        for location in range(3):
-            if forcing_type == 'random':
-                random_amplitude = np.random.random(len(freq_range))
-                random_phase = np.random.uniform(-np.pi, np.pi, len(freq_range))
-                forcing_fnc = lambda t: sum([np.sin(freq*t + phi) * amp for freq, phi, amp in zip(freq_range, random_phase, random_amplitude)])
-            elif forcing_type == 'stepped sweep':
-                signal_time = 4/(np.min(freq_range)/(2*np.pi))  # 4 periods per frequency
-                rest_time = signal_time/2
-                T = signal_time*len(freq_range)
-                forcing_fnc = lambda t: np.sin(t*freq_range[int(t//signal_time)]) if (t % (signal_time+rest_time)) < signal_time else 0
-            elif forcing_type == 'sine':
-                freq = 30
-                forcing_fnc = lambda t: np.sin(freq*t)
-            elif forcing_type == 'sine sweep':
-                freq_low = 100
-                freq_high = 160
-                hz_per_second = (freq_high - freq_low) / T
-                forcing_fnc = lambda t: np.sin((freq_low+(hz_per_second*t))*t)
+    for forcing_type in ['stepped sweep']:
+        # for location in range(3):
+        if forcing_type == 'random':
+            random_amplitude = np.random.random(len(freq_range)) + 1
+            random_phase = np.random.uniform(-np.pi, np.pi, len(freq_range))
+            forcing_fnc = lambda t: sum([np.sin(freq*t + phi) * amp for freq, phi, amp in zip(freq_range, random_phase, random_amplitude)])
+        elif forcing_type == 'stepped sweep':
+            signal_time = 4/(np.min(freq_range)/(2*np.pi))  # 4 periods per frequency
+            T = signal_time*len(freq_range)
+            forcing_fnc = lambda t: np.sin(t*freq_range[int(t//signal_time)]) if (t % signal_time) < signal_time else 0
+        elif forcing_type == 'sine':
+            freq = 20
+            forcing_fnc = lambda t: np.sin(2*np.pi*freq*t)
+        elif forcing_type == 'sine sweep':
+            freq_low = 10
+            freq_high = 1000
+            hz_per_second = (freq_high - freq_low) / T
+            forcing_fnc = lambda t: np.sin((freq_low+(hz_per_second*t))*2*np.pi*t)
 
-            num_intervals = int(T*sampling_freq)
-            time_steps = np.linspace(0, T, num_intervals)
-            plt.plot(time_steps, [forcing_fnc(t) for t in time_steps])
-            plt.title('Forcing Function')
-            plt.show()
+        time_steps = np.linspace(0, T, int(T*sampling_freq))
+        plt.plot(time_steps, [forcing_fnc(t) for t in time_steps])
+        plt.title('Forcing Function')
+        plt.show()
 
-            sim_params = {
-                'period': T,
-                'num_intervals': num_intervals,
-                'sampling_freq': sampling_freq,
-                'time_steps': time_steps,
-                'initial_conditions': IC,
-                'forcing': {
-                    'location': location,
-                    'amplitude': 1,
-                    'signal': forcing_fnc,
-                    'type': forcing_type
-                }
+        sim_params = {
+            'period': T,
+            'initial_conditions': IC,
+            'forcing': {
+                'location': excitation_location,
+                'amplitude': 1,
+                'signal': forcing_fnc,
+                'type': forcing_type
             }
-            simulate(sim_params, M, K, C, n_free_dofs=10, plot=True)
+        }
+        simulate(sim_params, M, K, C, n_free_dofs=10, plot=True)

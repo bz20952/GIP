@@ -182,3 +182,5 @@ test.xlsx
 push.ps1
 
 !.env.example
+
+test.py

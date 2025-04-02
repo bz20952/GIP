@@ -1,7 +1,0 @@
-FRONTEND
-- Create 'Getting started' youtube video.
-- Tooltips.
-- Add 'No tools available' to Modal Param page.
-
-BACKEND
-

@@ -9,8 +9,8 @@ services:
       - BACKEND_PORT=8000
       - FRONTEND_URL=http://localhost
       - ENV=docker
-    volumes:
-      - ./tracking:/app/tracking
+    # volumes:
+    #   - ./tracking:/app/tracking
     networks:
       - customnet
 

@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY requirements_docker.txt .
 
-RUN pip install -r requirements_docker.txt
+RUN pip install -r requirements.txt
 RUN apt-get update && apt-get install -y cron
 
 COPY . .

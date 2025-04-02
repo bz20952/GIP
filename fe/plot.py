@@ -3,31 +3,47 @@ import numpy as np
 import pandas as pd
 
 
+plt.rcParams.update({
+    'font.size': 18,
+    'figure.figsize': (8, 5),
+    'figure.dpi': 300
+})
+
+
 def linear_to_db(gains):
     return 20*np.log10(gains)
 
 
-def plot_frf(frequencies, gains, excitation_location):
+def plot_bode(frequencies, frfs, excitation_location):
 
     """Generic FRF plotting."""
 
-    # Compute magnitude and phase
-    gains = linear_to_db(gains)
+    fig, axes = plt.subplots(nrows=2, ncols=1, sharex='col', figsize=(10, 8))
 
     for i in range(0, 5*2, 2):
-        plt.plot(frequencies / (2*np.pi), [gain[excitation_location*2,i] for gain in gains], label=f'A{(i/2):.0f}')
+        axes[0].plot(frequencies / (2*np.pi), [linear_to_db(np.abs(frf))[excitation_location*2,i] for frf in frfs], label=f'A{(i/2):.0f}')
+        axes[1].plot(frequencies / (2*np.pi), [np.angle(frf)[excitation_location*2,i] for frf in frfs], label=f'A{(i/2):.0f}')
 
-    # ax[j].set_yscale('log')
-    # ax[-1].set_xticks(fontsize=18)
-    # ax[-1].set_xlabel(r'$f$ [MHz]', fontsize=18)
-    # plt.ylabel('Amplitude [m/N]', fontsize=18)
-    # plt.yscale('log')
+    axes[0].set_title('Bode plot')
+    axes[0].set_ylabel('Gain [dB]')
+    axes[0].grid(True)
 
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Gain (dB)')
-    plt.grid(True)
-    plt.legend(fontsize=18)
-    plt.show()
+    axes[1].set_ylabel('Phase [rad]')
+    axes[1].set_xlabel('Frequency [Hz]')
+    axes[1].grid(True)
+
+    plt.legend()
+    fig.savefig('bode.png', bbox_inches='tight')
+
+    # for i in range(0, 5*2, 2):
+    #     plt.subplot(2, 1, 1)
+    #     plt.plot(frequencies / (2*np.pi), [linear_to_db(np.abs(frf))[excitation_location*2,i] for frf in frfs], label=f'A{(i/2):.0f}')
+
+    # plt.xlabel('Frequency [Hz]')
+    # plt.ylabel('Gain [dB]')
+    # plt.grid(True)
+    # plt.savefig('bode.png', bbox_inches='tight')
+    # plt.show()
 
 
 def plot_mode_shapes(mode_shapes, n_free_dofs):
@@ -61,6 +77,7 @@ def plot_nyquist(frequencies, frfs, excitation_location):
     plt.ylabel('Im')
     plt.grid(True)
     plt.legend()
+    plt.savefig('nyquist.png', bbox_inches='tight')
     plt.show()
 
 
@@ -126,7 +143,7 @@ def plot_motion(y, v, a, t, n_free_dofs, nodal: bool = True):
             label = f'A{i}'
         else:
             label = f'Mode {i+1}'
-        plt.plot(t, a[f'A{i}'], label=label)
+        plt.plot(a['t'], a[f'A{i}'], label=label)
     plt.title('Acceleration')
     plt.xlabel('t [s]')
     if nodal:

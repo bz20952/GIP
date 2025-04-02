@@ -2,16 +2,16 @@
     "serialNumber": "1234",
     "accelerometers": {
         "A0": true,
-        "A1": false,
+        "A1": true,
         "A2": true,    
-        "A3": false,
+        "A3": true,
         "A4": true
     },
     "shakerPosition": 0,
-    "excitationType": "Random excitation",
-    "tipHardness": "Soft",
+    "excitationType": "Stepped sweep",
+    "tipHardness": "Hard",
     "samplingFreq": 2048,
     "filterType": "Bandpass",
-    "lowerCutoff": 350,
-    "upperCutoff": 450
+    "lowerCutoff": 10,
+    "upperCutoff": 1000
 }
