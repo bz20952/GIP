@@ -187,28 +187,30 @@ async def plot_nyquist(data: pd.DataFrame, options: dict, plot_type: str = 'Mobi
             frfReal_filtered = frfReal[valid_idx]
             frfImag_filtered = frfImag[valid_idx]
 
-            xc, yc, r = plotcircfit(frfReal_filtered, frfImag_filtered, f_filtered)  # Correct usage
+            xc, yc, r = plotcircfit(frfReal_filtered, frfImag_filtered, f_filtered, plot_type)  # Correct usage
             break  # Only plot for first accelerometer
 
     # Labels & Title
-    plt.xlabel('Real')
-    plt.ylabel('Imaginary')
-    plt.title(f'Mobility Nyquist plot ({acc})')
-    plt.legend(loc='center left', bbox_to_anchor=(1.05, 0.5))
-    plt.gca().set_aspect('equal', adjustable='box')
+    # plt.xlabel('Real')
+    # plt.ylabel('Imaginary')
+    # plt.title(f'Mobility Nyquist plot ({acc})')
+    # plt.legend(loc='center left', bbox_to_anchor=(1.05, 0.5))
+    plt.grid(True)
+    plt.gca().set_xticklabels([])
+    plt.gca().set_yticklabels([])
     plt.xlim((xc - r)*1.1, (xc + r)*1.1)
     plt.ylim((yc - r)*1.1, (yc + r)*1.1)
-    plt.grid(True)
+    plt.gca().set_aspect('equal', adjustable='box')
 
     plot_path = f'./images/{u.format_accel_plot_name(options, "nyquist")}'
-    plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
+    plt.savefig(plot_path, bbox_inches='tight')
     # plt.show()
     plt.close()
 
     return plot_path
 
 
-def plotcircfit(x,y,z):
+def plotcircfit(x, y, z, plot_type):
 
     """
     Fit X-Y data to a circle and create a plot.
@@ -223,9 +225,18 @@ def plotcircfit(x,y,z):
     r, xc, yc, RMSE = u.circfit(x, y)
     
     # Find upper and lower indices for theta
-    theta_n_index = np.argmax(np.abs(x))
-    theta_h_index = u.closest_index(yc+r, y)
-    theta_l_index = u.closest_index(yc-r, y)
+    if plot_type == 'Mobility':
+        theta_n_index = np.argmax(np.abs(x))
+        theta_h_index = u.closest_index(yc+r, y)
+        theta_l_index = u.closest_index(yc-r, y)
+    elif plot_type == 'Receptance':
+        theta_n_index = np.argmax(np.abs(y))
+        theta_h_index = u.closest_index(xc+r, x)
+        theta_l_index = u.closest_index(xc-r, x)
+    else:
+        theta_n_index = 0
+        theta_h_index = 0
+        theta_l_index = 0
 
     # # Create figure
     # fig, ax = plt.subplots(figsize=(20, 6))
@@ -239,14 +250,15 @@ def plotcircfit(x,y,z):
     plt.plot(x, y, 'bo-', label='Data Points', markersize=5)
     plt.plot(x[0], y[0], 'go', label='Start Point', markersize=5)  # First point (green)
     plt.plot(x[-1], y[-1], 'ro', label='End Point', markersize=5)  # Last point (red)
-    plt.plot(xc, yc, 'ko', label=f'Circle Center (Radius={r:.2f})', markersize=5)  # Circle center (black)
+    plt.plot(xc, yc, 'ko', label=f'Circle Center (Radius={r:.6f})', markersize=5)  # Circle center (black)
 
     # Annotate labels
     txts = []
-    label_indices = np.array([theta_n_index, theta_l_index, theta_h_index])
+    # label_indices = np.array([theta_n_index, theta_l_index, theta_h_index])
+    label_indices = np.array([theta_n_index])
     for i in label_indices:
         if i == theta_n_index:
-            txt = plt.text(x[i], y[i]*0.65, f"Resonant frequency = {z[i]:.2f} Hz", color='k') # text for coordinates and frequency of data point
+            txt = plt.text(x[i], y[i]*0.65, f"{z[i]:.2f} Hz", color='k', size=30) # text for coordinates and frequency of data point
         else:
             txt = plt.text(x[i], y[i]*0.65, f"Half-power frequency = {z[i]:.2f} Hz", color='k')
         txts.append(txt)
@@ -334,6 +346,8 @@ async def plot_bode(data: pd.DataFrame, options: dict, plot_type: str = 'Mobilit
     f_min=max(options['lowerCutoff'], 10)
     f_max=min(options['upperCutoff'], 1000)
 
+    f_ns = []
+
     for acc in accelerometers.keys():
         if accelerometers[acc]:
             # Compute FFT and Frequency Response Function
@@ -371,6 +385,7 @@ async def plot_bode(data: pd.DataFrame, options: dict, plot_type: str = 'Mobilit
             peak_mag = np.max(magnitude_filtered)
             idx_peak = np.argmax(magnitude_filtered)
             f_n = f_filtered[idx_peak]
+            f_ns.append(f_n)
 
             # Find Half-Power (-3 dB) Magnitude
             half_power_mag = peak_mag - 3  # -3 dB point
@@ -406,9 +421,9 @@ async def plot_bode(data: pd.DataFrame, options: dict, plot_type: str = 'Mobilit
             #     text_objects.append(plt.text(f2, magnitude_filtered[idx_f2]-5, f'f2: {f2:.2f} Hz', color='black', verticalalignment='bottom', horizontalalignment='center'))
             #     plt.axvline(f2, color='black', linestyle='--')  # Vertical line at f2
 
-            # # Annotate Bode Plot with vertical lines 
-            # plt.axvline(f_n, color='red', linestyle='--')  # Vertical line at peak frequency
-            # plt.text(f_n, peak_mag+2, f'Peak: {f_n:.2f} Hz', color='red', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='red', boxstyle='round4', pad=0.5))
+            # Annotate Bode Plot with vertical lines 
+            plt.axvline(f_n, color='red', linestyle='--')  # Vertical line at peak frequency
+            plt.text(f_n, peak_mag+2, f'Peak: {f_n:.2f} Hz', color='red', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='red', boxstyle='round4', pad=0.5))
             # plt.text(f1, magnitude_filtered[idx_f1]+2, f'f1: {f1:.2f} Hz', color='blue', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='blue', boxstyle='round4', pad=0.5))
             # plt.text(f2, magnitude_filtered[idx_f2]+2, f'f2: {f2:.2f} Hz', color='blue', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='blue', boxstyle='round4', pad=0.5))
              
@@ -428,12 +443,12 @@ async def plot_bode(data: pd.DataFrame, options: dict, plot_type: str = 'Mobilit
 
     # plt.legend()
     plot_path = f'./images/{u.format_accel_plot_name(options, "bode")}'
-    plt.legend(loc='center left', bbox_to_anchor=(1.05, 0.5))
+    # plt.legend(loc='center left', bbox_to_anchor=(1.05, 0.5))
     plt.savefig(plot_path, bbox_inches='tight')
-    plt.show()
+    # plt.show()
     plt.close()
 
-    return plot_path
+    return plot_path, f_ns
 
 
 def frf_matrix(data: pd.DataFrame, options: dict):
@@ -819,14 +834,39 @@ if __name__ == '__main__':
     import reader as r
     with open('./templates/requestFormat.json') as f:
         options = json.load(f)
-    data = r.read_csv(options)
-    # options['samplingFreq'] = 1/(data['t'].max()/len(data))
-    print(options)
+    # data = r.read_csv(options)
+    # options['samplingFreq'] = int(1/(data['t'].max()/len(data)))
     # asyncio.run(plot_dft(data, options))
-    # asyncio.run(plot_nyquist(data, options))
-    asyncio.run(plot_bode(data, options, 'Receptance'))
+    # asyncio.run(plot_nyquist(data, options, 'Receptance'))
+    # asyncio.run(plot_bode(data, options, 'Receptance'))
     # frf_matrix(data, options)
     # asyncio.run(plot_imaginary_r(data, options))
     # asyncio.run(plot_argand_r(data, options))
     # asyncio.run(plot_acceleration(data, options))
     # asyncio.run(plot_forcing(data, options))
+
+    for excitation in [('Hammer testing', 'Soft'), ('Hammer testing', 'Hard'), ('Sine sweep', 'Soft'), ('Stepped sweep', 'Hard'), ('Random excitation', 'Hard')]:
+        options['excitationType'] = excitation[0]
+        options['tipHardness'] = excitation[1]
+
+        error_data = []
+        for shaker_pos in range(5):
+            options['shakerPosition'] = shaker_pos
+
+            for mode, lower_freq, upper_freq in [(1, 100, 160), (2, 350, 420), (3, 750, 850)]:
+                row = {
+                    'F': shaker_pos,
+                    'mode': mode
+                }
+                options['lowerCutoff'] = lower_freq
+                options['upperCutoff'] = upper_freq
+                data = r.read_csv(options)
+                options['samplingFreq'] = int(1/(data['t'].max()/len(data)))
+                _, f_ns = asyncio.run(plot_bode(data, options, 'Receptance'))
+                for i, f_n in enumerate(f_ns):
+                    row[f'A{i}'] = f_n
+                error_data.append(row)
+        
+        df = pd.DataFrame(error_data)
+        print(df)
+        df.to_csv(f'../../figures/w_n_{excitation[0]}.csv', index=False)

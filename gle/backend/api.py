@@ -279,5 +279,5 @@ if __name__ == "__main__":
     if os.environ.get('ENV') == 'docker':
         uvicorn.run("api:app", host='0.0.0.0', port=int(os.environ.get('BACKEND_PORT')), workers=1)
     else:
-        load_dotenv('../.env.local')
+        load_dotenv('.env')
         uvicorn.run("api:app", port=int(os.environ.get('BACKEND_PORT')), reload=True)

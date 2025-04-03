@@ -7,7 +7,7 @@ If you wish to use these packages directly on a machine running the Docker engin
 docker compose -f docker-compose-dev.yml up --build
 ```
 
-If you wish to build and run the frontend without the Docker engine, you will need to install both Node.js v22.13.1 or greater and Python v3.12.1 or greater. Once installed, the .env file will need to be defined within the gle directory and a copy must also exist within the gle/frontend directory. An example of a .env file is given in the .env.example file. The frontend and backend can be run on localhost by running the following commands.
+If you wish to build and run the app without the Docker engine, you will need to install both Node.js v22.13.1 or greater and Python v3.12.1 or greater. Once installed, the .env file will need to be defined within the gle/backend directory and a copy must also exist within the gle/frontend directory. An example of an appropriate .env file for local development is given in the .env.local.example file. The frontend and backend can be run on localhost by running the following commands.
 
 In one terminal...
 
@@ -25,3 +25,4 @@ npm install
 npm run dev
 ```
 
+The frontend will then be accessible at the URL displayed in the second terminal.

@@ -65,18 +65,26 @@ def plot_mode_shapes(mode_shapes, n_free_dofs):
 
 def plot_nyquist(frequencies, frfs, excitation_location):
 
-    """Plot Nyquist plot."""
+    """Plot Receptance Nyquist plot."""
 
     for i in range(0, 5*2, 2):
-        plt.plot([(frf[excitation_location*2,i]/(1j*frequencies[k])).real for k, frf in enumerate(frfs)], 
-                 [(frf[excitation_location*2,i]/(1j*frequencies[k])).imag for k, frf in enumerate(frfs)],
-                 label=f'A{(i/2):.0f}')
+        node_frfs = np.array([frf[excitation_location*2,i] for frf in frfs])
+        plt.plot(node_frfs.real, node_frfs.imag, label=f'A{(i/2):.0f}', c='k')
+        theta_n_index = np.argmax([np.abs((frf[excitation_location*2,i]).imag) for frf in frfs])
+        txt = plt.text((node_frfs.real)[theta_n_index], (node_frfs.imag)[theta_n_index]*0.65, f"{frequencies[theta_n_index]/(2*np.pi):.2f} Hz", color='k', size=30) # text for coordinates and frequency of data point
+        break
 
+    from adjustText import adjust_text
+    adjust_text([txt], target_x=(node_frfs.real)[[theta_n_index]], target_y=(node_frfs.imag)[[theta_n_index]], arrowprops=dict(arrowstyle="->", color='black', lw=3))
+
+    plt.scatter(0, 0, s=40, c='purple')
     plt.gca().set_aspect('equal', adjustable='box')
-    plt.xlabel('Re')
-    plt.ylabel('Im')
+    # plt.xlabel('Re')
+    # plt.ylabel('Im')
+    plt.gca().set_xticklabels([])
+    plt.gca().set_yticklabels([])
     plt.grid(True)
-    plt.legend()
+    # plt.legend()
     plt.savefig('nyquist.png', bbox_inches='tight')
     plt.show()
 

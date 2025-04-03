@@ -3,7 +3,6 @@ import sounddevice as sd
 from tracer import plot_wave_gif
 import threading
 import math
-from scipy.signal import butter, lfilter
 import matplotlib.pyplot as plt
 
 
@@ -17,14 +16,6 @@ def generate_sine_sweep(start_freq, end_freq, amplitude, duration, sample_rate=4
     freqs = np.linspace(start_freq, end_freq, t.size)
     wave = amplitude * np.sin(2 * np.pi * freqs * t)
     return wave
-
-# def bandpass_filter(data, lowcut, highcut, sample_rate, order=5):
-#     nyquist = 0.5 * sample_rate
-#     low = lowcut / nyquist
-#     high = highcut / nyquist
-#     b, a = butter(order, [low, high], btype='band')
-#     y = lfilter(b, a, data)
-#     return y
 
 def generate_random_signal(lowcut, highcut, amplitude, duration, sample_rate=44100):
     freqs = np.linspace(lowcut, highcut, 1000)

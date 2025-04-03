@@ -22,8 +22,8 @@ def read_csv(options: dict):
         columns = ['t', 'F4', 'A4', 'F3', 'A3', 'F2', 'A2', 'F1', 'A1', 'F0', 'A0']
 
     filename = u.format_filename(options, mirror_shaker_position)
-    df = pd.read_csv(f'../../fe/sim_data/{filename}.csv', header=0, names=columns)  # Read from simulation data
-    # df = pd.read_csv(f'./data/{filename}.csv', header=0, names=columns)  # Read from experimental data
+    # df = pd.read_csv(f'../../fe/sim_data/{filename}.csv', header=0, names=columns)  # Read from simulation data
+    df = pd.read_csv(f'./data/{filename}.csv', header=0, names=columns)  # Read from experimental data
 
     # Adjust the sampling frequency if necessary
     if options['samplingFreq'] < 2048:

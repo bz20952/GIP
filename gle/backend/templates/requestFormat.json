@@ -8,10 +8,10 @@
         "A4": true
     },
     "shakerPosition": 0,
-    "excitationType": "Stepped sweep",
+    "excitationType": "Hammer testing",
     "tipHardness": "Hard",
     "samplingFreq": 2048,
     "filterType": "Bandpass",
-    "lowerCutoff": 10,
-    "upperCutoff": 1000
+    "lowerCutoff": 130,
+    "upperCutoff": 170
 }
