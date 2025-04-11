@@ -20,9 +20,16 @@ def plot_bode(frequencies, frfs, excitation_location):
 
     fig, axes = plt.subplots(nrows=2, ncols=1, sharex='col', figsize=(10, 8))
 
+    # max_gain = linear_to_db(0)
+
     for i in range(0, 5*2, 2):
-        axes[0].plot(frequencies / (2*np.pi), [linear_to_db(np.abs(frf))[excitation_location*2,i] for frf in frfs], label=f'A{(i/2):.0f}')
+        gains = [linear_to_db(np.abs(frf))[excitation_location*2,i] for k, frf in enumerate(frfs)]
+        # if max(gains) > max_gain:
+        #     max_gain = max(gains)
+        axes[0].plot(frequencies / (2*np.pi), gains, label=f'A{(i/2):.0f}')
         axes[1].plot(frequencies / (2*np.pi), [np.angle(frf)[excitation_location*2,i] for frf in frfs], label=f'A{(i/2):.0f}')
+
+    # print(max_gain)
 
     axes[0].set_title('Bode plot')
     axes[0].set_ylabel('Gain [dB]')

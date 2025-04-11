@@ -76,9 +76,9 @@
         if ($progress.currentTask.currentSubtask.correct || ($progress.currentTask.emailId !== emails.length && $progress.currentTask.currentSubtask.feedbackStage === result.feedback.length)) {
 
           // Stop tracking if final task is complete
-          if ($progress.currentTask.emailId === emails.length) {
-            sendApiRequest('stop-tracking', 'POST', { serialNumber: $testOptions.serialNumber, subtaskId: $progress.currentTask.currentSubtask.subtaskId, timestamp: Math.floor(Date.now() / 1000), attempts: $progress.currentTask.currentSubtask.attempts });
-          };
+          // if ($progress.currentTask.emailId === emails.length) {
+          //   sendApiRequest('stop-tracking', 'POST', { serialNumber: $testOptions.serialNumber, subtaskId: $progress.currentTask.currentSubtask.subtaskId, timestamp: Math.floor(Date.now() / 1000), attempts: $progress.currentTask.currentSubtask.attempts });
+          // };
 
           $progress.current = Math.max(emailId, $progress.current); // Update progress
           $progress.currentTask.emailId += 1;
@@ -98,14 +98,14 @@
           showNotification = true;  // Notify user of new task
 
           // If has just moved onto final task, start tracking subtask one of final task
-          if ($progress.currentTask.emailId === emails.length) {
-            sendApiRequest('start-tracking', 'POST', { serialNumber: $testOptions.serialNumber, subtaskId: $progress.currentTask.currentSubtask.subtaskId, timestamp: Math.floor(Date.now() / 1000) });
-          }
+          // if ($progress.currentTask.emailId === emails.length) {
+          //   sendApiRequest('start-tracking', 'POST', { serialNumber: $testOptions.serialNumber, subtaskId: $progress.currentTask.currentSubtask.subtaskId, timestamp: Math.floor(Date.now() / 1000) });
+          // }
         }
       } else if ($progress.currentTask.currentSubtask.correct || ($progress.currentTask.emailId !== emails.length && $progress.currentTask.currentSubtask.feedbackStage === result.feedback.length)) {
-        if ($progress.currentTask.emailId === emails.length) {
-          sendApiRequest('stop-tracking', 'POST', { serialNumber: $testOptions.serialNumber, subtaskId: $progress.currentTask.currentSubtask.subtaskId, timestamp: Math.floor(Date.now() / 1000), attempts: $progress.currentTask.currentSubtask.attempts });
-        };
+        // if ($progress.currentTask.emailId === emails.length) {
+        //   sendApiRequest('stop-tracking', 'POST', { serialNumber: $testOptions.serialNumber, subtaskId: $progress.currentTask.currentSubtask.subtaskId, timestamp: Math.floor(Date.now() / 1000), attempts: $progress.currentTask.currentSubtask.attempts });
+        // };
 
         $progress.currentTask.currentSubtask.subtaskId += 1;
         $progress.currentTask.currentSubtask.feedbackStage = 0;
@@ -114,9 +114,9 @@
         $progress.currentTask.currentSubtask.correct = false;
 
         // Tracking time to complete each of the tasks in task 5
-        if ($progress.currentTask.emailId === emails.length) {
-          sendApiRequest('start-tracking', 'POST', { serialNumber: $testOptions.serialNumber, subtaskId: $progress.currentTask.currentSubtask.subtaskId, timestamp: Math.floor(Date.now() / 1000) });
-        };
+        // if ($progress.currentTask.emailId === emails.length) {
+        //   sendApiRequest('start-tracking', 'POST', { serialNumber: $testOptions.serialNumber, subtaskId: $progress.currentTask.currentSubtask.subtaskId, timestamp: Math.floor(Date.now() / 1000) });
+        // };
       }
     }
   });  

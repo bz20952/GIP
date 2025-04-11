@@ -37,6 +37,7 @@ def fe(n_nodes: int):
     # Element 1
     L_1 = vals.L/(n_nodes-1)
     I_1, A_1 = smoa.hollow_rect_beam(vals.b, vals.h, vals.b_inner, vals.h_inner)
+    print(I_1, A_1)
     M_1 = ((vals.density * A_1 * L_1)/420) * mass_mat(L_1)
     K_1 = ((vals.E*I_1)/(L_1**3)) * stiffness_mat(L_1)
 
@@ -229,11 +230,11 @@ if __name__ == '__main__':
     # IC[1] = 0.001  # Displace node zero
     T = 10
     sampling_freq = 44100
-    excitation_location = 0
-    freq_range = np.linspace(130, 170, 10000)*2*np.pi
+    excitation_location = 2
+    freq_range = np.linspace(10, 1000, 10000)*2*np.pi
     frfs = get_frequency_response(M, K, C, freq_range)
-    # p.plot_bode(freq_range, frfs, excitation_location)
-    p.plot_nyquist(freq_range, frfs, excitation_location)
+    p.plot_bode(freq_range, frfs, excitation_location)
+    # p.plot_nyquist(freq_range, frfs, excitation_location)
     # p.plot_im(freq_range, frfs, excitation_location)
     
     # for forcing_type in ['sine sweep']:
