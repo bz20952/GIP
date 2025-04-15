@@ -422,8 +422,8 @@ async def plot_bode(data: pd.DataFrame, options: dict, plot_type: str = 'Mobilit
             #     plt.axvline(f2, color='black', linestyle='--')  # Vertical line at f2
 
             # Annotate Bode Plot with vertical lines 
-            plt.axvline(f_n, color='red', linestyle='--')  # Vertical line at peak frequency
-            plt.text(f_n, peak_mag+2, f'Peak: {f_n:.2f} Hz', color='red', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='red', boxstyle='round4', pad=0.5))
+            # plt.axvline(f_n, color='red', linestyle='--')  # Vertical line at peak frequency
+            # plt.text(f_n, peak_mag+2, f'Peak: {f_n:.2f} Hz', color='red', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='red', boxstyle='round4', pad=0.5))
             # plt.text(f1, magnitude_filtered[idx_f1]+2, f'f1: {f1:.2f} Hz', color='blue', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='blue', boxstyle='round4', pad=0.5))
             # plt.text(f2, magnitude_filtered[idx_f2]+2, f'f2: {f2:.2f} Hz', color='blue', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='blue', boxstyle='round4', pad=0.5))
              
@@ -834,9 +834,9 @@ if __name__ == '__main__':
     import reader as r
     with open('./templates/requestFormat.json') as f:
         options = json.load(f)
-    # data = r.read_csv(options)
+    data = r.read_csv(options)
     # options['samplingFreq'] = int(1/(data['t'].max()/len(data)))
-    # asyncio.run(plot_dft(data, options))
+    asyncio.run(plot_dft(data, options))
     # asyncio.run(plot_nyquist(data, options, 'Receptance'))
     # asyncio.run(plot_bode(data, options, 'Receptance'))
     # frf_matrix(data, options)
@@ -845,28 +845,28 @@ if __name__ == '__main__':
     # asyncio.run(plot_acceleration(data, options))
     # asyncio.run(plot_forcing(data, options))
 
-    for excitation in [('Hammer testing', 'Soft'), ('Hammer testing', 'Hard'), ('Sine sweep', 'Soft'), ('Stepped sweep', 'Hard'), ('Random excitation', 'Hard')]:
-        options['excitationType'] = excitation[0]
-        options['tipHardness'] = excitation[1]
+    # for excitation in [('Hammer testing', 'Soft'), ('Hammer testing', 'Hard'), ('Sine sweep', 'Soft'), ('Stepped sweep', 'Hard'), ('Random excitation', 'Hard')]:
+    #     options['excitationType'] = excitation[0]
+    #     options['tipHardness'] = excitation[1]
 
-        error_data = []
-        for shaker_pos in range(5):
-            options['shakerPosition'] = shaker_pos
+    #     error_data = []
+    #     for shaker_pos in range(5):
+    #         options['shakerPosition'] = shaker_pos
 
-            for mode, lower_freq, upper_freq in [(1, 100, 160), (2, 350, 420), (3, 750, 850)]:
-                row = {
-                    'F': shaker_pos,
-                    'mode': mode
-                }
-                options['lowerCutoff'] = lower_freq
-                options['upperCutoff'] = upper_freq
-                data = r.read_csv(options)
-                options['samplingFreq'] = int(1/(data['t'].max()/len(data)))
-                _, f_ns = asyncio.run(plot_bode(data, options, 'Receptance'))
-                for i, f_n in enumerate(f_ns):
-                    row[f'A{i}'] = f_n
-                error_data.append(row)
+    #         for mode, lower_freq, upper_freq in [(1, 100, 160), (2, 350, 420), (3, 750, 850)]:
+    #             row = {
+    #                 'F': shaker_pos,
+    #                 'mode': mode
+    #             }
+    #             options['lowerCutoff'] = lower_freq
+    #             options['upperCutoff'] = upper_freq
+    #             data = r.read_csv(options)
+    #             options['samplingFreq'] = int(1/(data['t'].max()/len(data)))
+    #             _, f_ns = asyncio.run(plot_bode(data, options, 'Receptance'))
+    #             for i, f_n in enumerate(f_ns):
+    #                 row[f'A{i}'] = f_n
+    #             error_data.append(row)
         
-        df = pd.DataFrame(error_data)
-        print(df)
-        df.to_csv(f'../../figures/w_n_{excitation[0]}.csv', index=False)
+    #     df = pd.DataFrame(error_data)
+    #     print(df)
+    #     df.to_csv(f'../../figures/w_n_{excitation[0]}.csv', index=False)
