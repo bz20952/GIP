@@ -31,7 +31,7 @@ def generate_random_signal(lowcut, highcut, amplitude, duration, sample_rate=441
     return wave
 
 
-def generate_stepped_sweep(start_freq, end_freq, interval, amplitude, duration_per_freq=0.4, pause_duration=0.3, sample_rate=44100):
+def generate_stepped_sweep(start_freq, end_freq, interval, duration_per_freq=0.4, pause_duration=0.3, amplitude=1, sample_rate=44100):
     freqs = np.arange(start_freq, end_freq, interval)
     duration = duration_per_freq*len(freqs)
     signal_duration = duration_per_freq - pause_duration
@@ -45,13 +45,14 @@ def generate_stepped_sweep(start_freq, end_freq, interval, amplitude, duration_p
         signal_samples = int(signal_duration * sample_rate)
         time_array = np.linspace(0, signal_duration, signal_samples)
         sine_wave = amplitude * np.sin(2 * np.pi * freq * time_array)
+        # Apply windowing function for fade-in/fade-out
         window = hann(signal_samples)  # You can use other window functions too
         windowed_sine_wave = sine_wave * window
         # Combine pause and signal
         freq_wave = np.concatenate([pause_wave, windowed_sine_wave])
         # Concatenate to the main wave
         wave = np.concatenate([wave, freq_wave])
-    return wave
+    return wave, duration
 
 
 def play_wave(wave, delay=0, sample_rate=44100):
@@ -65,8 +66,8 @@ if __name__ == "__main__":
     sample_rate = 44100
 
     # wave = generate_sine_wave(300, 1, 0, 60, sample_rate)
-    wave = generate_sine_sweep(0.5, 10, 1, 20, sample_rate)
-    # wave = generate_stepped_sweep(50, 1000, 50, 0.1, sample_rate)
+    # wave = generate_sine_sweep(0.5, 10, 1, 20, sample_rate)
+    wave = generate_stepped_sweep(50, 1000, 50, 0.1, sample_rate)
     # wave = generate_stepped_sweep(0.5, 1000, 1, 20, sample_rate)
 
     # # Play the wave in a separate thread
