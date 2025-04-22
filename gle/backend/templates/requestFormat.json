@@ -7,7 +7,7 @@
         "A3": false,
         "A4": false
     },
-    "shakerPosition": 4,
+    "shakerPosition": 0,
     "excitationType": "SINE",
     "tipHardness": "",
     "samplingFreq": 2048

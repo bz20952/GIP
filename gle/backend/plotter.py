@@ -133,7 +133,7 @@ def plot_dft(data: pd.DataFrame, options: dict):
     return plot_path
 
 
-async def plot_nyquist(data: pd.DataFrame, options: dict):
+def plot_nyquist(data: pd.DataFrame, options: dict):
 
     """
     Plot the Nyquist plot of the acceleration.
@@ -153,8 +153,8 @@ async def plot_nyquist(data: pd.DataFrame, options: dict):
     accelerometers = options['accelerometers']
     sample_rate = options['samplingFreq']    
 
-    fig = plt.figure()  # Create a 3D subplot
-    ax = fig.add_subplot(111, projection='3d')  # Create a 3D subplot
+    # fig = plt.figure()  # Create a 3D subplot
+    # ax = fig.add_subplot(111, projection='3d')  # Create a 3D subplot
 
     for acc in accelerometers.keys():
         if accelerometers[acc]:
@@ -167,9 +167,9 @@ async def plot_nyquist(data: pd.DataFrame, options: dict):
             frfReal = np.real(frf)
             frfImag = np.imag(frf)
 
-            ax.plot(f, frfReal, frfImag, label=acc) #3d plot
-            # plt.figure()
-            # plt.plot(frfReal, frfImag, label=acc) #2d plot
+            # ax.plot(f, frfReal, frfImag, label=acc) #3d plot
+            plt.figure()
+            plt.plot(f, frfImag, label=acc) #2d plot
 
 
     # ax.set_xlim(150, 200)  # Set limits for the z-axis (Frequency) #3d plot
@@ -178,14 +178,14 @@ async def plot_nyquist(data: pd.DataFrame, options: dict):
 
     plot_path = f'./images/{u.format_accel_plot_name(options, "nyquist")}'
 
-    ax.set_ylabel('Re') #3d plot
-    ax.set_zlabel('Im') #3d plot
-    ax.set_xlabel('Frequency [Hz]') #3d plot
-    ax.set_title('Inertance Nyquist plot') #3d plot
+    # ax.set_ylabel('Re') #3d plot
+    # ax.set_zlabel('Im') #3d plot
+    # ax.set_xlabel('Frequency [Hz]') #3d plot
+    # ax.set_title('Inertance Nyquist plot') #3d plot
 
-    # plt.xlabel('Re') #2d plot
-    # plt.ylabel('Im') #2d plot
-    # plt.title('Inertance Nyquist plot') #2d plot
+    plt.xlabel('Re') #2d plot
+    plt.ylabel('Im') #2d plot
+    plt.title('Inertance Nyquist plot') #2d plot
     plt.legend()
     plt.grid(True)
     plt.savefig(plot_path, bbox_inches='tight', pad_inches=0.5)
@@ -194,7 +194,7 @@ async def plot_nyquist(data: pd.DataFrame, options: dict):
     return plot_path
 
 
-async def plot_bode(data: pd.DataFrame, options: dict):
+def plot_bode(data: pd.DataFrame, options: dict):
 
     """Plot the bode plot of the data."""
 
@@ -211,7 +211,7 @@ async def plot_bode(data: pd.DataFrame, options: dict):
 
             # Avoid division by zero
             fftforce[np.abs(fftforce) < 1e-10] = np.finfo(float).eps
-            frf = fftacc / fftforce  # Frequency Response Function
+            frf = fftforce / fftacc  # Frequency Response Function
 
             # Compute magnitude and phase
             magnitude = 20 * np.log10(np.abs(frf))  # Convert to dB
@@ -304,7 +304,7 @@ if __name__ == '__main__':
     data = r.read_csv(options)
     asyncio.run(plot_acceleration(data, options))
     # plot_forcing(data, options)
-    plot_dft(data, options)
+    # plot_dft(data, options)
     # plot_nyquist(data, options)
-    # asyncio.run(plot_bode(data, options))
+    plot_bode(data, options)
     # frf_matrix(data, options)

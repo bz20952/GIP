@@ -48,26 +48,43 @@ def generate_stepped_sweep(start_freq, end_freq, num_freqs, amplitude, num_perio
         i += period_samples
     return wave
 
-def gen_step_sweep(start_freq, end_freq, interval, duration_per_freq=0.4, pause_duration=0.3, amplitude=1, sample_rate=44100):
+def gen_step_sweep(start_freq, end_freq, interval, duration_per_freq=0.4, signal_duration=0.3, amplitude=5, sample_rate=44100):
     freqs = np.arange(start_freq, end_freq, interval)
     duration = duration_per_freq*len(freqs)
-    signal_duration = duration_per_freq - pause_duration
+    # signal_duration = duration_per_freq - pause_duration
     print('Duration:', duration, 's')
     wave = np.zeros(0) # Initialize an empty wave
     i = 0
     for freq in freqs:
-    # Pause
+        signal_dur_acc = math.floor(signal_duration*freq)/freq  # Duration of the pause in seconds
+        pause_duration = duration_per_freq - signal_dur_acc  # Duration of the sine wave
+        # Pause
         pause_samples = int(pause_duration * sample_rate)
         pause_wave = np.zeros(pause_samples)
         # Signal
-        signal_samples = int(signal_duration * sample_rate)
-        time_array = np.linspace(0, signal_duration, signal_samples)
+        signal_samples = int(signal_dur_acc * sample_rate)
+        time_array = np.linspace(0, signal_dur_acc, signal_samples)
         sine_wave = amplitude * np.sin(2 * np.pi * freq * time_array)
         # Apply windowing function for fade-in/fade-out
-        window = windows.hann(signal_samples)  # You can use other window functions too
-        windowed_sine_wave = sine_wave * window
+        # window = windows.hann(signal_samples)  # Hanning window
+        # window = windows.tukey(signal_samples, alpha=0.2) # cosine-taper window
+        # windowed_sine_wave = sine_wave * window
         # Combine pause and signal
-        freq_wave = np.concatenate([pause_wave, windowed_sine_wave])
+        freq_wave = np.concatenate([pause_wave, sine_wave])
+
+        # # Signal no windowing
+        # # Calculate the period of the signal
+        # period = 1 / freq  
+        # # Calculate the number of periods to fit in signal_duration
+        # num_periods = int((duration_per_freq - pause_duration) / period)
+        # # Calculate the actual signal duration based on whole periods
+        # signal_duration = num_periods * period  
+        # signal_samples = int(signal_duration * sample_rate)
+        # time_array = np.linspace(0, signal_duration, signal_samples)
+        # sine_wave = amplitude * np.sin(2 * np.pi * freq * time_array)
+        # # Combine pause and signal
+        # freq_wave = np.concatenate([pause_wave, sine_wave])
+
         # Concatenate to the main wave
         wave = np.concatenate([wave, freq_wave])
     return wave
@@ -108,11 +125,11 @@ if __name__ == "__main__":
     # duration = float(input("Enter the duration of the sine wave (seconds): "))
     sample_rate = 44100
 
-    # wave = generate_sine_wave(500, 1, 0, 60, sample_rate)
-    # wave = generate_sine_sweep(20, 1000, 1, 20, sample_rate)
-    # wave = generate_stepped_sweep(50, 1000, 990, 1, 20, sample_rate)
-    wave = gen_step_sweep(365, 375.1, 0.1)
-    # wave = generate_random_signal(110, 150, 1, 60, sample_rate)
+    wave = generate_sine_wave(108, 5, 0, 60, sample_rate)
+    # wave = generate_sine_sweep(50, 850, 5, 30, sample_rate)
+    # wave = generate_stepped_sweep(108, 110, 20, 5, 100, sample_rate)
+    wave = gen_step_sweep(330, 380, 0.1)
+    # wave = generate_random_signal(50, 200, 5, 40, sample_rate)
 
     # Play the wave in a separate thread
     sound_thread = threading.Thread(target=play_wave, args=(wave, sample_rate))
@@ -125,7 +142,7 @@ if __name__ == "__main__":
     # sound_thread.join()
 
     # play_wave(wave, sample_rate)
-    plt.figure()
-    # plot_path = f'./images/wave.png'
-    plt.plot(wave)
-    plt.show()
+    # plt.figure()
+    # # plot_path = f'./images/wave.png'
+    # plt.plot(wave)
+    # plt.show()
