@@ -1,0 +1,51 @@
+services:
+  
+  app:
+    container_name: app
+    image: ghcr.io/cheshirecat51/gle-app:latest
+    pull_policy: always
+    restart: always
+    ports:
+      - "$BACKEND_PORT:$BACKEND_PORT"
+    environment:
+      - PUBLIC_BACKEND_URL=$PUBLIC_BACKEND_URL
+      - BACKEND_PORT=$BACKEND_PORT
+      - FRONTEND_URL=$FRONTEND_URL
+      - ENV=docker
+    volumes:
+      - ./tracking:/app/tracking
+    networks:
+      - customnet
+
+  web:
+    container_name: web
+    image: ghcr.io/cheshirecat51/gle-web:latest
+    pull_policy: always
+    restart: always
+    ports:
+      - "$FRONTEND_PORT:$FRONTEND_PORT"
+    environment:
+      - PUBLIC_BACKEND_URL=$PUBLIC_BACKEND_URL
+      - PORT=$FRONTEND_PORT
+    depends_on:
+      - app
+    networks:
+      - customnet
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    depends_on:
+      - app
+      - web
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    networks:
+      - customnet
+
+networks:
+  customnet:
+    driver: bridge

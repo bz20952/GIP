@@ -1,22 +1,11 @@
-<!-- Ideally this will have some customisable test setup animation of the beam. Where:
-- Accelerometers can be placed.
-- Excitation location can be selected.
-- Excitation type can be selected.
-- Sampling frequency can be selected. -->
-
 <script lang="ts">
     import { goto } from '$app/navigation';
-    import beam from '$lib/images/beam.png';
-    import speaker from '$lib/images/speaker.png';
     import { tools } from '$lib/stores';
+    import { testOptions } from '$lib/stores';
 
-    let accel1: boolean = false;
-    let accel2: boolean = false;
-    let accel3: boolean = false;
-    let accel4: boolean = false;
-    let accel5: boolean = false;
-    let shakerPosition: number;
-    let samplingFreq: number;
+    let showSpinner = false;
+
+    const locations = ['0', 'l/4', 'l/2', '3l/4', 'l'];
 
     function limitAccelSelection(event: Event) {
         const checkboxes = document.querySelectorAll('.checkbox-row input[type="checkbox"]');
@@ -24,6 +13,8 @@
         
         if (checkedCount > 3) {
             (event.target as HTMLInputElement).checked = false;
+        } else if (checkedCount < 1) {
+            (event.target as HTMLInputElement).checked = true;
         }
     }
 </script>
@@ -36,43 +27,53 @@
 <h1>Test Setup</h1>
 
 <div class="instructions">
-    You can position up to 3 accelerometers on the beam. The excitation location can be selected by moving the shaker icon <img class='demo-icon' src={speaker} alt="Shaker" />.
+    You can position up to 3 accelerometers on the beam. The excitation location can be selected by moving the shaker icon <img class='demo-icon' src="$lib/images/speaker.png" alt="Shaker" />.
 </div>
 
 <section class="experiment">
     <div class="checkbox-row">
-        <input class='accelerometer' type="checkbox" bind:checked={accel1} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel2} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel3} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel4} on:change={limitAccelSelection} />
-        <input class='accelerometer' type="checkbox" bind:checked={accel5} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A0']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A1']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A2']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A3']} on:change={limitAccelSelection} />
+        <input class='accelerometer' type="checkbox" bind:checked={$testOptions['accelerometers']['A4']} on:change={limitAccelSelection} />
     </div>
 
-    <img class="beam" src={beam} alt="Free-free beam" />
+    <img class="beam" src="$lib/images/beam.png" alt="Free-free beam" />
 
     <div class="shaker-slider">
-        <input type="range" min="1" max="5" step="1" bind:value={shakerPosition}/>
+        <input type="range" min=0 max={locations.length - 1} step=1 bind:value={$testOptions['shakerPosition']}/>
     </div>
 
     <div class="extra-params">
         <div class="excitation-type">
-            <label for="excitation-type">Excitation type: </label>
-            <select name="excitation-type" id="excitation-type">
+            <label for="excitation-type">Excitation type:</label>
+            <select name="excitation-type" id="excitation-type" bind:value={$testOptions['excitationType']}>
                 {#each $tools as tool}
                     {#if tool.available && tool.type === "excitation"}
                         <option value={tool.name}>{tool.name}</option>
                     {/if}
                 {/each}
             </select>
+            {#if $testOptions['excitationType'] === 'Hammer testing'}
+                <label for="tip-hardness">Tip hardness:</label>
+                <select name="tip-hardness" id="tip-hardness" bind:value={$testOptions['tipHardness']}>
+                    <option value='Soft'>Soft</option>
+                    <option value='Hard'>Hard</option>
+                </select>
+            {/if}
         </div>
 
         <div class="sampling-slider">
-            <label for="sampling-freq">Sampling frequency: <strong>{samplingFreq} kHz</strong></label>
-            <input type="range" min="100" max="600" step="100" bind:value={samplingFreq} />
+            <label for="sampling-freq">Sampling frequency: <strong>{$testOptions['samplingFreq']} Hz</strong></label>
+            <input type="range" min="512" max="2048" step="512" bind:value={$testOptions['samplingFreq']} />
         </div>
     </div>
 
     <button class="run-test" on:click={() => goto('/toolkit/process')}>Run Test</button>
+    {#if showSpinner}
+        <div class="fa spinner"></div>
+    {/if}
 </section>
 
 <style>

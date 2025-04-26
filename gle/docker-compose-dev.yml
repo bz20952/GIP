@@ -1,13 +1,46 @@
 services:
-  web:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-
   app:
+    container_name: app
     build: ./backend
     ports:
       - "8000:8000"
+    environment:
+      - PUBLIC_BACKEND_URL=http://localhost/api
+      - BACKEND_PORT=8000
+      - FRONTEND_URL=http://localhost
+      - ENV=docker
+    # volumes:
+    #   - ./tracking:/app/tracking
+    networks:
+      - customnet
+
+  web:
+    container_name: web
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - PUBLIC_BACKEND_URL=http://localhost/api
+      - PORT=5173
+    depends_on:
+      - app
+    networks:
+      - customnet
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    depends_on:
+      - app
+      - web
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    networks:
+      - customnet
 
 networks:
-  customnet
+  customnet:
+    driver: bridge

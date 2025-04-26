@@ -169,3 +169,21 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+test.xlsx
+.*
+
+/gle/certs/
+
+!.dockerignore
+
+**/tracking/*.json
+
+push.ps1
+
+!.env.example
+!.env.local.example
+
+test.py
+
+figures/

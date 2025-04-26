@@ -1,62 +1,60 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { sendApiRequest } from '$lib/api';
-    import { PUBLIC_HOSTNAME, PUBLIC_BACKEND_PORT } from '$env/static/public';
+    import { getPath } from '$lib/utils';
 	import { goto } from '$app/navigation';
+    import { testOptions } from '$lib/stores';
 
-    let filterType: string = 'none';
-    let timeDomainPlotPath: string;
-    let animationPath: string;
+    let plotPaths = new Map([
+        ['time-domain', ''],
+        ['forcing', ''],
+        // ['animate', '']
+    ]);
 
-    onMount(async () => {
-        await getTimeDomainPlotPath();
-        console.log(timeDomainPlotPath);
-        await getAnimationPath();
+    onMount(() => {
+        plotPaths.keys().forEach(async (endpoint: string) => {
+            plotPaths = plotPaths.set(endpoint, await getPath(endpoint, $testOptions));
+        });
     });
-
-    async function getTimeDomainPlotPath() {
-        const result = await sendApiRequest('time-domain', 'GET', {});
-        timeDomainPlotPath = `http://${PUBLIC_HOSTNAME}:${PUBLIC_BACKEND_PORT}/images/${result.message}`;
-    };
-
-    async function getAnimationPath() {
-        const result = await sendApiRequest('animate', 'GET', {});
-        animationPath = `http://${PUBLIC_HOSTNAME}:${PUBLIC_BACKEND_PORT}/images/${result.message}`;
-    };
 </script>
+
+<svelte:head>
+	<title>Signal processing</title>
+	<meta name="description" content="Signal processing" />
+</svelte:head>
 
 <h1>Signal Processing</h1>
 
-<div class="plot-container">
-    <img src={timeDomainPlotPath} alt='Time domain plot' class="time-domain" />
-    <img src={timeDomainPlotPath} alt='Animation' class="animation" />
-</div>
-
 <section>
-    <div class="filter">
-        <label for="filter-type">Filter type: </label>
-        <select name="filter-type" bind:value={filterType}>
-            <option value="none">None</option>
-            <option value="low-pass">Low-pass</option>
-            <option value="high-pass">High-pass</option>
-            <option value="band-pass">Band-pass</option>
-        </select>
-        <div class="cutoff-freq">
-            {#if filterType === 'low-pass' || filterType === 'high-pass'}
-                <label for="cutoff-freq">Cutoff frequency: </label>
-                <input type="number" name="cutoff-freq" />
-            {:else if filterType === 'band-pass'}
-                    <label for="lower-cutoff">Lower cutoff frequency: </label>
-                    <input type="number" name="lower-cutoff" />
-                    <label for="upper-cutoff">Upper cutoff frequency: </label>
-                    <input type="number" name="upper-cutoff" />
+    <div class="plots-container"> 
+        {#if plotPaths.get('time-domain')}
+            <div class="plot-container">
+                <img src={plotPaths.get('time-domain')} alt='Time-domain response' class="time-domain plot" />
+                <a class="fullscreen-link" href={plotPaths.get('time-domain')} target="_blank" rel="noopener noreferrer">Open fullscreen</a>
+            </div>
+        {:else}
+            <i class="fa fa-spinner fa-pulse"></i>
+        {/if}
+        {#if $testOptions.excitationType !== 'Free vibration'}
+            {#if plotPaths.get('forcing')}
+                <div class="plot-container">
+                    <img src={plotPaths.get('forcing')} alt='Forcing signal' class="forcing plot" />
+                    <a class="fullscreen-link" href={plotPaths.get('forcing')} target="_blank" rel="noopener noreferrer">Open fullscreen</a>
+                </div>
+            {:else}
+                <i class="fa fa-spinner fa-pulse"></i>
             {/if}
-        </div>
+        {/if}
+        <!-- {#if plotPaths.get('animate')}
+            <div class="plot-container">
+                <img src={plotPaths.get('animate')} alt='Animation' class="animation plot" />
+                <a class="fullscreen-link" href={plotPaths.get('animate')} target="_blank" rel="noopener noreferrer">Open fullscreen</a>
+            </div>
+        {:else}
+            <i class="fa fa-spinner fa-pulse"></i>
+        {/if} -->
     </div>
 
-    <div>
-        <button class="dft" on:click={() => goto('/toolkit/analyse')}>Compute DFT</button>
-    </div>
+    <button class="analyse" on:click={() => goto('/toolkit/analyse')}>Analyse</button>
 </section>
 
 <style>
@@ -73,26 +71,40 @@
 		flex: 0.6;
 	}
 
-    .plot-container {
+    .fa-spinner {
+        font-size: 2rem;
+        padding: 0 2rem;
+    }
+
+    .plots-container {
         display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
+        width: 150%;
     }
 
-    .time-domain {
-        width: 40%;
+    .plot-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0 2rem;
+        width: 40rem;
+    }
+
+    .fullscreen-link {
+        margin: 1rem;
+    }
+
+    .plot {
+        width: 100%;
         height: auto;
-        margin: 0 1rem;
+        box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
     }
 
-    .animation {
-        width: 40%;
-        height: auto;
-        margin: 0 1rem;
-    }
-
-    .filter {
+    /* .filter {
         width: 100%;
     }
 
@@ -101,18 +113,18 @@
     }
 
     .filter input {
-        background-color: azure;
-        border-radius: 10px;
         margin: 0 1rem;
-        border: #2c6392 solid 1px;
-        color: black;
     }
 
-    .cutoff-freq {
+    .freq {
         margin: 1rem 0;
     }
 
-    .dft {
-        margin: 1rem;
+    .freq input {
+        width: 20%;
+    } */
+
+    .analyse {
+        margin: 4rem;
     }
 </style>

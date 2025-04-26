@@ -1,0 +1,9 @@
+b = 0.025  # Beam base (m)
+h = 0.0102  # Beam height (m)
+b_inner = 0.0156  # Beam inner width (m)
+h_inner = 0.0058  # Beam inner height (m)
+density = 2712  # Density of aluminium (https://www.engineeringtoolbox.com/metal-alloys-densities-d_50.html)
+E = 69E9  # Young's modulus of aluminium
+L = 0.65  # Length of entire beam
+zeta_1 = 0.0014  # Damping ratio of first mode
+zeta_2 = 0.005  # Damping ratio of second mode

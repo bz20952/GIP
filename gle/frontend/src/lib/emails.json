@@ -2,15 +2,343 @@
     "emails": [
         {
             "id": 1,
-            "sender": "John Doe",
-            "subject": "Wing test needed ASAP",
-            "body": "Hey, X are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. Have a look in your toolkit and see what you can do.",
+            "sender": "Mark Eting",
+            "subject": "Wing test needed ASAP!",
+            "body": "Hey, the clients are on my back about their latest wing design. I need you to send over the first natural frequency by tomorrow. Check the hint in Send Results to observe the period of oscillation. Good luck!",
             "results": [
                 {
+                    "subtaskId": 1,
                     "name": "First natural frequency",
-                    "unit": "Hz"
+                    "inputType": "number",
+                    "unit": "Hz",
+                    "tooltipId": 1,
+                    "answer": 150,
+                    "praise": "Nice one! The client will be pleased with such a quick turnaround. You are able to estimate the first natural frequency from the unforced (or free) testing as the first mode usually dominated the response of free testing. Exciting the higher modes is usually not possible using free testing.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Hmm, your measured natural frequency is not quite right. Remember, frequency is 1/T, where T is the period of a single oscillation."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Not quite. Remember that period is the time between two peaks in the time domain."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Our finite element model gives a first natural frequency of approximately 150 Hz. Free testing is usually dominated by the first mode, which means the first natural frequency can be simply measured by calculating the inverse of a period of a single oscillation. Finding the higher modes is usually not possible using free testing."
+                        }
+                    ]
                 }
-            ]
+            ],
+            "unlocks": ["Hammer testing", "Sine sweep", "Discrete Fourier transform"]
+        },
+        {
+            "id": 2,
+            "sender": "Diana Namics",
+            "subject": "Modal test data needed",
+            "body": "I need a quick and rough estimate of some modal parameters of the wing before my next stakeholder meeting. Please setup a test (NOTE: the wing is too stiff to execute free vibration testing in this case) to excite the first three modes. Time is of the essence!",
+            "results": [
+                {
+                    "subtaskId": 1,
+                    "name": "Experimental setup",
+                    "inputType": "none",
+                    "unit": "",
+                    "tooltipId": 2,
+                    "answer": {
+                        "excitationType": "Hammer testing",
+                        "tipHardness": "Hard"
+                    },
+                    "praise": "Great! A hammer test provides a quick and simple test considering the constraints of the task. Hard tip also enabled excitation of the all required modes by exerting a short sharp impulse which contains higher frequency components and creates the initial conditions required to form higher (sharper) mode shapes.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "One or more of the parameters in your test setup is incorrect. Focus on the excitation method being quick and easy to execute."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Given that Hammer testing should be used, which tip hardness enables excitation of the greatest number of modes?"
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Hard tip hammer testing is ideal as it is quick to execute (does not require a shaker), exerts a short sharp impulse which contains higher frequency components and creates the initial conditions required to form higher (sharper) mode shapes."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 2,
+                    "name": "Second natural frequency",
+                    "inputType": "number",
+                    "unit": "Hz",
+                    "tooltipId": 3,
+                    "answer": 390,
+                    "praise": "Correct! You successfully setup an appropriate test and employed the Discrete Fourier Transform. The DFT identifies the frequency components of a time domain signal and in this case uses the Fast Fourier Transform algorithm to achieve this programatically.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "That doesn't seem to match our simulations. Make sure you are using hard-tip hammer testing. Make use of the Discrete Fourier Transform (DFT) graph for easier identification of the the natural frequencies."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Not quite, make sure you are reading the correct peak off the DFT graph."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Our in-house testing gives a second natural frequency of 390 Hz. This is approximately the position of the second peak in the DFT. The DFT identifies the frequency components of a time domain signal and in this case uses the Fast Fourier Transform algorithm to achieve this programatically."
+                        }
+                    ]
+                }
+            ],
+            "unlocks": ["Stepped sweep"]
+        },
+        {
+            "id": 3,
+            "sender": "Tim Principal",
+            "subject": "Modelling vibration caused by engine",
+            "body": "In an aircraft wing, the engine (which vibrates a lot!) is usually located at the middle of the wing. We need you to conduct a modal test to simulate the dynamics. Check the hint for test constraints!",
+            "results": [
+                {
+                    "subtaskId": 1,
+                    "name": "Experimental setup",
+                    "inputType": "none",
+                    "unit": "",
+                    "tooltipId": 5,
+                    "answer": {
+                        "shakerPosition": 2,
+                        "samplingFreq": 512
+                    },
+                    "praise": "Nice one! You have setup the test correctly. From now on we would recommend using a sampling frequency of 2048 Hz. A maximum sampling frequency should be used wherever possible to avoid aliasing.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Not quite, make sure you are exciting the structure from where the engine would be located."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Check the hint. There are some constraints on sampling frequency."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "The correct excitation location is at l/2. Sampling is limited to 512 Hz in this case. From now on we would recommend using a sampling frequency of 2048 Hz. A maximum sampling frequency should be used wherever possible to avoid aliasing."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 2,
+                    "name": "Run a few tests with this setup and observe any differences from previous tests. What error might you be introducing by limiting sampling to 512 Hz?",
+                    "inputType": "select",
+                    "options": ["Leakage", "Aliasing", "Hysteretic damping"],
+                    "unit": "",
+                    "tooltipId": 7,
+                    "answer": "Aliasing",
+                    "praise": "Correct! Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency (half the sampling frequency is called Nyquist frequency). Aliasing manifests as the appearance of high frequency components at lower frequencies.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Unfortunately that is not correct. This error is associated with the concept of 'Nyquist frequency'."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Unfortunately that is not correct."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Aliasing is the correct answer. Aliasing occurs when the signal contains frequency content at greater than half the sampling frequency (half the sampling frequency is called the Nyquist frequency). Aliasing manifests as the appearance of high frequency components at lower frequencies."
+                        }
+                    ]
+                }
+            ],
+            "unlocks": ["Nyquist"]
+        },
+        {
+            "id": 4,
+            "sender": "Cher Holder",
+            "subject": "We need modal damping ratios!",
+            "body": "Hello, I've heard big things about your modal testing expertise. Please can you execute a sine sweep test using accelerometer and shaker at x=0, produce a Nyquist plot and use it to extract the radius of the circle in the first mode, the first natural frequency and the first modal damping ratio?",
+            "results": [
+                {
+                    "subtaskId": 1,
+                    "name": "Radius of the circle",
+                    "inputType": "number", 
+                    "unit": "",
+                    "tooltipId": 8,
+                    "answer": 0.08,
+                    "praise": "That is correct! In a perfect world, the mobility Nyquist circle is centred on the real axis and starts from the origin. The radius provides information on the value of the modal participation coefficient for the given mode. In reality, sine sweep tests should not be used to generate Nyquist plots as the DFT should only be applied to steady-state signals.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Not quite, try using Sine sweep with maximum sampling frequency for higher resolution. Try to bound your frequency range between 108 and 115 Hz."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Unfortunately that is not correct. Remember, that there is a false peak created by one of the springs very close to the first natural frequency. Try exciting and measuring at x = 0."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "Our finite element simulations give a radius of 0.08. The radius provides information on the value of the modal participation coefficient for the given mode."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 2,
+                    "name": "First natural frequency",
+                    "inputType": "number",
+                    "unit": "Hz",
+                    "tooltipId": 8,
+                    "answer": 110,
+                    "praise": "Well done! You might notice that this method gives a different result to previous tasks. This could be for a variety of reasons but is most likely due to measurment noise and/or inherited dynamics of the surroundings. For flawed data, the natural frequencies may sometimes not be located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Not quite, look for the frequency where the sweep rate is at its maximum."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Try reading off the frequency where the circle crosses the real axis."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "The first natural frequency should be roughly 110 Hz. You might notice that this method gives a different result to previous tasks. This could be for a variety of reasons but is most likely due to measurment noise and/or inherited dynamics of the surroundings. For flawed data, the natural frequencies may sometimes not located where the plot crosses the x-axis. The location of maximum sweep rate is a more reliable method of identifying natural frequencies."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 3,
+                    "name": "First modal damping ratio",
+                    "inputType": "number",
+                    "unit": "%",
+                    "tooltipId": 9,
+                    "answer": 0.14,
+                    "praise": "Spot on! This is the most accurate estimate of zeta from the plot. The points 90 degrees from the natural frequency point are the half-power points, allowing application of the half-power formula.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Not quite, try using Sine sweep with maximum sampling frequency for higher resolution. Also only use one accelerometer at a time for clearer plots and try to bound your frequency range as tightly as possible."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Try bounding the frequency between 108 and 115 Hz."
+                        },
+                        {
+                            "stage": 3,
+                            "message": "The first modal damping ratio is expected to be around 0.14% using the half-power method. The points 90 degrees from the natural frequency point are the half-power points, allowing application of the half-power formula."
+                        }
+                    ]
+                }
+            ],
+            "unlocks": ["Bode", "Mode shapes"]
+        },
+        {
+            "id": 5,
+            "sender": "Charlotte Eyo",
+            "subject": "Mode shapes on my desk by this afternoon",
+            "body": "Hello, we've just had some new clients adopt the new wing design and they're encountering issues with large wing tip deflections. Given that the engine is rotating at 24,000 rpm and located at l/4, identify which mode this is likely to be exciting. Then we need an estimate for the mode shape of this mode ASAP using the three equally-spaced accelerometers. Finally, we need an estimate to the second modal damping ratio. Good luck, we're depending on you here!",
+            "results": [
+                {
+                    "subtaskId": 1,
+                    "name": "Mode of vibration",
+                    "inputType": "select",
+                    "options": [1, 2, 3],
+                    "unit": "",
+                    "tooltipId": 7,
+                    "answer": "2",
+                    "praise": "Perfect! The engine is rotating at 24,000 rpm = 400 Hz which is approximately the second natural frequency. Note that it is entirely possible for the engine to excite multiple modes, but it is reasonable to guess that it is most likely to excite the second mode here.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Double check that you're converting your units of rotational speed to Hz correctly."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Try a different excitation method when estimating natural frequency."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 2,
+                    "name": "Experimental setup",
+                    "inputType": "none",
+                    "unit": "",
+                    "tooltipId": 7,
+                    "answer": {
+                        "accelerometers": {
+                            "A0": true,
+                            "A1": false,
+                            "A2": true,    
+                            "A3": false,
+                            "A4": true
+                        },
+                        "shakerPosition": 1,
+                        "excitationType": "Sine sweep"
+                    },
+                    "praise": "Correct! You have setup the test correctly to measure accelerations in the second mode of vibration. It is possible to use other excitation methods, but sine sweep is suitable here as it is fast and can be set to include the expected operational frequencies.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Make sure you have pick an excitation method which can be used to smoothly excite frequencies surrounding the second natural frequency."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Double check the placement of your accelerometers and shaker. Mode shape is best estimated using accelerometers placed at equal distance from one another."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 3,
+                    "name": "Second mode shape",
+                    "inputType": "select",
+                    "options": ["[0.6,-1,0.6]", "[-1,0.6,1]", "[0,1,0]", "[1,0,1]"],
+                    "unit": "",
+                    "tooltipId": 11,
+                    "answer": "[0,1,0]",
+                    "praise": "Perfect! There are many methods to estimate mode shapes, but the ratio of peaks in the FRF is a good starting point. This tells us about both the magnitude and phase of the response relative to the applied forcing. If you look up the analytical solution for a free-free beam you will see that the second mode shape is nearer to [1,0,-1]. This could imply that our accelerometers are dominated by different modes at different frequencies which is unusual.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Try bounding your frequency between 250 and 450 Hz."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "Ensure you are exciting the wing at l/4."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 4,
+                    "name": "Second modal damping ratio",
+                    "inputType": "number",
+                    "unit": "%",
+                    "tooltipId": 9,
+                    "answer": 0.61,
+                    "praise": "Perfect! Our finite element models agree with this observation. Remember there are two different methods to obtain modal damping ratios: half-power method on Bode plot and circle-fitting method on mobility Nyquist plot. Circle-fitting method is used more widely as effects of noises are compensated through fitting a circle through data points.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Damping ratio for forced vibration can be measured using half-power method on Bode plot."
+                        },
+                        {
+                            "stage": 2,
+                            "message": "The Bode plot might be easier to read when only using a single accelerometer."
+                        }
+                    ]
+                },
+                {
+                    "subtaskId": 5,
+                    "name": "You may have noticed signifcant noise in the DFT. What might be causing this problem?",
+                    "inputType": "select",
+                    "options": ["The recorded time-domain signals are not periodic over the DFT window.", "The damping model is incorrect.", "The application of a digital filter has removed useful frequency components as well as noise."],
+                    "unit": "",
+                    "tooltipId": 7,
+                    "answer": "The recorded time-domain signals are not periodic over the DFT window.",
+                    "praise": "Correct! Leakage occurs when the time-domain signal is not periodic over the DFT window. This can result in the appearance of frequency peaks which, in reality, are not present in the measured time-domain signal.",
+                    "feedback": [
+                        {
+                            "stage": 1,
+                            "message": "Run a few hammer tests to try and observe a noisy DFT."
+                        }
+                    ]
+                }
+            ],
+            "unlocks": []
         }
     ]
 }

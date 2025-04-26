@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import logo from '$lib/images/svelte-logo.svg';
-	import github from '$lib/images/github.svg';
+	import { goto } from '$app/navigation';
 </script>
 
 <header>
 	<div class="corner">
 		<!-- Content in the section displays in the upper left corner. -->
+		<a href="/privacy">Privacy policy</a>
 	</div>
 
 	<nav>
@@ -41,7 +41,7 @@
 	}
 
 	.corner {
-		width: 3em;
+		width: 10em;
 		height: 3em;
 	}
 
@@ -53,11 +53,11 @@
 		height: 100%;
 	}
 
-	.corner img {
+	/* .corner img {
 		width: 2em;
 		height: 2em;
 		object-fit: contain;
-	}
+	} */
 
 	nav {
 		display: flex;
