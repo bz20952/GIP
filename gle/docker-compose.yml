@@ -2,7 +2,7 @@ services:
   
   app:
     container_name: app
-    image: ghcr.io/cheshirecat51/gle-app:latest
+    image: ghcr.io/bz20952/gle-app:latest
     pull_policy: always
     restart: always
     ports:
@@ -12,14 +12,14 @@ services:
       - BACKEND_PORT=$BACKEND_PORT
       - FRONTEND_URL=$FRONTEND_URL
       - ENV=docker
-    volumes:
-      - ./tracking:/app/tracking
+    # volumes:
+    #   - ./tracking:/app/tracking
     networks:
       - customnet
 
   web:
     container_name: web
-    image: ghcr.io/cheshirecat51/gle-web:latest
+    image: ghcr.io/bz20952/gle-web:latest
     pull_policy: always
     restart: always
     ports:

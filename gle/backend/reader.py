@@ -4,7 +4,7 @@ import utils as u
 import math
 
 
-def read_csv(options: dict):
+def read_csv(options: dict, is_sim: bool = False):
 
     """Reads csv file and returns a pandas dataframe."""
 
@@ -22,12 +22,15 @@ def read_csv(options: dict):
         columns = ['t', 'F4', 'A4', 'F3', 'A3', 'F2', 'A2', 'F1', 'A1', 'F0', 'A0']
 
     filename = u.format_filename(options, mirror_shaker_position)
-    # df = pd.read_csv(f'../../fe/sim_data/{filename}.csv', header=0, names=columns)  # Read from simulation data
-    df = pd.read_csv(f'./data/{filename}.csv', header=0, names=columns)  # Read from experimental data
+    if is_sim:
+        df = pd.read_csv(f'../../fe/sim_data/{filename}.csv', header=0, names=columns)  # Read from simulation data
+    else:
+        df = pd.read_csv(f'./data/{filename}.csv', header=0, names=columns)  # Read from experimental data
 
     # Adjust the sampling frequency if necessary
     if options['samplingFreq'] < 2048:
         sample_interval = math.floor(2048/options['samplingFreq'])
+        print(sample_interval)
         df = df.iloc[::sample_interval,:]
 
     # # Normalise the data to have zero mean
