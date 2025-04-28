@@ -23,11 +23,11 @@ def plot_bode(frequencies, frfs, excitation_location):
     # max_gain = linear_to_db(0)
 
     for i in range(0, 5*2, 2):
-        gains = [linear_to_db(np.abs(frf))[excitation_location*2,i] for k, frf in enumerate(frfs)]
+        gains = [linear_to_db(np.abs(frf))[i,excitation_location*2] for k, frf in enumerate(frfs)]
         # if max(gains) > max_gain:
         #     max_gain = max(gains)
         axes[0].plot(frequencies / (2*np.pi), gains, label=f'A{(i/2):.0f}')
-        axes[1].plot(frequencies / (2*np.pi), [np.angle(frf)[excitation_location*2,i] for frf in frfs], label=f'A{(i/2):.0f}')
+        axes[1].plot(frequencies / (2*np.pi), [np.angle(frf)[i,excitation_location*2] for frf in frfs], label=f'A{(i/2):.0f}')
 
     # print(max_gain)
 
@@ -70,16 +70,15 @@ def plot_mode_shapes(mode_shapes, n_free_dofs):
     plt.show()
 
 
-def plot_nyquist(frequencies, frfs, excitation_location):
+def plot_nyquist(frequencies, frfs, excitation_location, accelerometer_location: int = 0):
 
     """Plot Receptance Nyquist plot."""
 
-    for i in range(0, 5*2, 2):
-        node_frfs = np.array([frf[excitation_location*2,i] for frf in frfs])
-        plt.plot(node_frfs.real, node_frfs.imag, label=f'A{(i/2):.0f}', c='k')
-        theta_n_index = np.argmax([np.abs((frf[excitation_location*2,i]).imag) for frf in frfs])
-        txt = plt.text((node_frfs.real)[theta_n_index], (node_frfs.imag)[theta_n_index]*0.65, f"{frequencies[theta_n_index]/(2*np.pi):.2f} Hz", color='k', size=30) # text for coordinates and frequency of data point
-        break
+    i = accelerometer_location*2  # Accelerometer location in frf array
+    node_frfs = np.array([frf[excitation_location*2,i] for frf in frfs])
+    plt.plot(node_frfs.real, node_frfs.imag, label=f'A{(i/2):.0f}', c='k')
+    theta_n_index = np.argmax([np.abs((frf[excitation_location*2,i]).imag) for frf in frfs])
+    txt = plt.text((node_frfs.real)[theta_n_index], (node_frfs.imag)[theta_n_index]*0.65, f"{frequencies[theta_n_index]/(2*np.pi):.2f} Hz", color='k', size=30) # text for coordinates and frequency of data point
 
     from adjustText import adjust_text
     adjust_text([txt], target_x=(node_frfs.real)[[theta_n_index]], target_y=(node_frfs.imag)[[theta_n_index]], arrowprops=dict(arrowstyle="->", color='black', lw=3))
@@ -88,12 +87,15 @@ def plot_nyquist(frequencies, frfs, excitation_location):
     plt.gca().set_aspect('equal', adjustable='box')
     # plt.xlabel('Re')
     # plt.ylabel('Im')
-    plt.gca().set_xticklabels([])
-    plt.gca().set_yticklabels([])
+    # plt.gca().set_xticklabels([])
+    # plt.gca().set_yticklabels([])
+    plt.xticks(fontsize=30)
+    plt.yticks(fontsize=30)
+    plt.ticklabel_format(style='sci', axis='both', scilimits=(0,2))
     plt.grid(True)
     # plt.legend()
     plt.savefig('nyquist.png', bbox_inches='tight')
-    plt.show()
+    # plt.show()
 
 
 def plot_im(frequencies, frfs, excitation_location):

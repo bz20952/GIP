@@ -4,7 +4,6 @@ import pandas as pd
 import utils as u
 from mpl_toolkits.mplot3d import Axes3D  # Import 3D plotting module
 from scipy.signal import find_peaks
-from scipy.fft import rfft,rfftfreq
 from adjustText import adjust_text
 from scipy.signal import find_peaks
  
@@ -131,7 +130,6 @@ async def plot_dft(data: pd.DataFrame, options: dict):
     plt.legend()
     plt.grid(True)
     plt.xlim(0, 1000)  # Set limits for the x-axis (frequency)
-    # plt.ylim(0, 1.1)  # Set limits for the y-axis (frequency)
     plt.savefig(plot_path, bbox_inches='tight')
     plt.close()          
 
@@ -191,15 +189,18 @@ async def plot_nyquist(data: pd.DataFrame, options: dict, plot_type: str = 'Mobi
             break  # Only plot for first accelerometer
 
     # Labels & Title
-    # plt.xlabel('Real')
-    # plt.ylabel('Imaginary')
-    # plt.title(f'Mobility Nyquist plot ({acc})')
-    # plt.legend(loc='center left', bbox_to_anchor=(1.05, 0.5))
+    plt.xlabel('Re', fontsize=18)
+    plt.ylabel('Im', fontsize=18)
+    plt.title(f'Mobility Nyquist plot ({acc})')
+    plt.legend(loc='center left', bbox_to_anchor=(1.05, 0.5))
     plt.grid(True)
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=18)
+    plt.ticklabel_format(style='sci', axis='both', scilimits=(0,2))
     plt.gca().set_xticklabels([])
     plt.gca().set_yticklabels([])
-    plt.xlim((xc - r)*1.1, (xc + r)*1.1)
-    plt.ylim((yc - r)*1.1, (yc + r)*1.1)
+    plt.xlim((xc - r*1.1), (xc + r*1.1))
+    plt.ylim((yc - r*1.1), (yc + r*1.1))
     plt.gca().set_aspect('equal', adjustable='box')
 
     plot_path = f'./images/{u.format_accel_plot_name(options, "nyquist")}'
@@ -254,8 +255,7 @@ def plotcircfit(x, y, z, plot_type):
 
     # Annotate labels
     txts = []
-    # label_indices = np.array([theta_n_index, theta_l_index, theta_h_index])
-    label_indices = np.array([theta_n_index])
+    label_indices = np.array([theta_n_index, theta_l_index, theta_h_index])
     for i in label_indices:
         if i == theta_n_index:
             txt = plt.text(x[i], y[i]*0.65, f"{z[i]:.2f} Hz", color='k', size=30) # text for coordinates and frequency of data point
@@ -268,7 +268,7 @@ def plotcircfit(x, y, z, plot_type):
     # # Labels & Title
     # plt.xlabel('Real')
     # plt.ylabel('Imaginary')
-    # plt.title(f'Mobility Nyquist plot')
+    # plt.title(f'{plot_type} Nyquist plot')
     # plt.legend(loc='center left')
     # plt.grid(True)
 
@@ -339,6 +339,7 @@ async def plot_bode(data: pd.DataFrame, options: dict, plot_type: str = 'Mobilit
     str
         The file path where the plot image is saved.
     """
+
     accelerometers = options['accelerometers']
     sample_rate = options['samplingFreq']
 
@@ -353,6 +354,7 @@ async def plot_bode(data: pd.DataFrame, options: dict, plot_type: str = 'Mobilit
             # Compute FFT and Frequency Response Function
             n = len(data[acc])
             f = np.fft.fftfreq(n, 1/sample_rate)[:n//2]  # Positive frequencies
+            # print((max(f)-min(f))/len(f))
             fftacc = np.fft.fft(data[acc])[:n//2]
             fftforce = np.fft.fft(data['F' + acc[1]])[:n//2]
 
@@ -368,10 +370,6 @@ async def plot_bode(data: pd.DataFrame, options: dict, plot_type: str = 'Mobilit
                 frf_receptance = frf/-((f*2*np.pi)**2)  # Convert inertance to receptance
                 frf = frf_receptance
 
-            # plt.scatter(f, np.abs(fftforce))
-            # plt.show()
-            # plt.close()
-
             # Compute magnitude and phase
             magnitude = 20 * np.log10(np.abs(frf))  # Convert to dB
             phase = np.angle(frf)
@@ -383,6 +381,7 @@ async def plot_bode(data: pd.DataFrame, options: dict, plot_type: str = 'Mobilit
 
             # Find peak magnitude and corresponding frequency
             peak_mag = np.max(magnitude_filtered)
+            # print(peak_mag)
             idx_peak = np.argmax(magnitude_filtered)
             f_n = f_filtered[idx_peak]
             f_ns.append(f_n)
@@ -399,51 +398,51 @@ async def plot_bode(data: pd.DataFrame, options: dict, plot_type: str = 'Mobilit
 
             text_objects = []
             
-            # # Find first index to the left of peak where magnitude drops to or below -3 dB
-            # # Search backwards from the peak index
-            # try:
-            #     idx_f1 = np.where(magnitude_filtered[:idx_peak] <= half_power_mag)[0][-1]  # First index to the left
-            # except IndexError:
-            #     pass
-            # else:
-            #     f1 = f_filtered[idx_f1]
-            #     text_objects.append(plt.text(f1, magnitude_filtered[idx_f1]+2, f'f1: {f1:.2f} Hz', color='black', verticalalignment='bottom', horizontalalignment='center'))
-            #     plt.axvline(f1, color='black', linestyle='--')  # Vertical line at f1
+            # Find first index to the left of peak where magnitude drops to or below -3 dB
+            # Search backwards from the peak index
+            try:
+                idx_f1 = np.where(magnitude_filtered[:idx_peak] <= half_power_mag)[0][-1]  # First index to the left
+            except IndexError:
+                pass
+            else:
+                f1 = f_filtered[idx_f1]
+                text_objects.append(plt.text(f1, magnitude_filtered[idx_f1]+2, f'f1: {f1:.2f} Hz', color='black', verticalalignment='bottom', horizontalalignment='center'))
+                plt.axvline(f1, color='black', linestyle='--')  # Vertical line at f1
 
-            # # Find first index to the right of peak where magnitude drops to or below -3 dB
-            # # Search forwards from the peak index
-            # try:
-            #     idx_f2 = np.where(magnitude_filtered[idx_peak:] <= half_power_mag)[0][0] + idx_peak  # First index to the right
-            # except IndexError:
-            #     pass
-            # else:
-            #     f2 = f_filtered[idx_f2]
-            #     text_objects.append(plt.text(f2, magnitude_filtered[idx_f2]-5, f'f2: {f2:.2f} Hz', color='black', verticalalignment='bottom', horizontalalignment='center'))
-            #     plt.axvline(f2, color='black', linestyle='--')  # Vertical line at f2
+            # Find first index to the right of peak where magnitude drops to or below -3 dB
+            # Search forwards from the peak index
+            try:
+                idx_f2 = np.where(magnitude_filtered[idx_peak:] <= half_power_mag)[0][0] + idx_peak  # First index to the right
+            except IndexError:
+                pass
+            else:
+                f2 = f_filtered[idx_f2]
+                text_objects.append(plt.text(f2, magnitude_filtered[idx_f2]-5, f'f2: {f2:.2f} Hz', color='black', verticalalignment='bottom', horizontalalignment='center'))
+                plt.axvline(f2, color='black', linestyle='--')  # Vertical line at f2
 
             # Annotate Bode Plot with vertical lines 
-            # plt.axvline(f_n, color='red', linestyle='--')  # Vertical line at peak frequency
+            plt.axvline(f_n, color='red', linestyle='--')  # Vertical line at peak frequency
             # plt.text(f_n, peak_mag+2, f'Peak: {f_n:.2f} Hz', color='red', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='red', boxstyle='round4', pad=0.5))
             # plt.text(f1, magnitude_filtered[idx_f1]+2, f'f1: {f1:.2f} Hz', color='blue', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='blue', boxstyle='round4', pad=0.5))
             # plt.text(f2, magnitude_filtered[idx_f2]+2, f'f2: {f2:.2f} Hz', color='blue', fontsize=8, verticalalignment='bottom', horizontalalignment='center', bbox=dict(facecolor='white', edgecolor='blue', boxstyle='round4', pad=0.5))
              
-            # # Text labels
-            # text_objects.append(plt.text(f_n, peak_mag+2, f'Peak: {f_n:.2f} Hz', color='red', verticalalignment='bottom', horizontalalignment='center'))
+            # Text labels
+            text_objects.append(plt.text(f_n, peak_mag+2, f'Peak: {f_n:.2f} Hz', color='red', verticalalignment='bottom', horizontalalignment='center'))
 
             # Use adjustText to automatically adjust text positions to avoid overlap
-            # adjust_text(text_objects) #arrowprops=dict(arrowstyle="->", color='grey', lw=1))
+            adjust_text(text_objects) #arrowprops=dict(arrowstyle="->", color='grey', lw=1))
             # only_move={'points', 'text'}, arrowprops=dict(arrowstyle="->", color='gray', lw=0.5))
 
-            # # Phase Plot
-            # plt.subplot(2, 1, 2)
-            # plt.plot(f_filtered, phase_filtered, label=acc)
+            # Phase Plot
+            plt.subplot(2, 1, 2)
+            plt.plot(f_filtered, phase_filtered, label=acc)
             plt.xlabel('Frequency [Hz]')
-            # plt.ylabel('Phase [rad]')
-            # plt.grid(True, which="both")
+            plt.ylabel('Phase [rad]')
+            plt.grid(True, which="both")
 
     # plt.legend()
     plot_path = f'./images/{u.format_accel_plot_name(options, "bode")}'
-    # plt.legend(loc='center left', bbox_to_anchor=(1.05, 0.5))
+    plt.legend()
     plt.savefig(plot_path, bbox_inches='tight')
     # plt.show()
     plt.close()
@@ -835,38 +834,13 @@ if __name__ == '__main__':
     with open('./templates/requestFormat.json') as f:
         options = json.load(f)
     data = r.read_csv(options)
-    # options['samplingFreq'] = int(1/(data['t'].max()/len(data)))
+    duration = data['t'].max() - data['t'].min()
+    options['samplingFreq'] = int(1/(duration/len(data)))
     asyncio.run(plot_dft(data, options))
-    # asyncio.run(plot_nyquist(data, options, 'Receptance'))
-    # asyncio.run(plot_bode(data, options, 'Receptance'))
+    asyncio.run(plot_nyquist(data, options, 'Receptance'))
+    asyncio.run(plot_bode(data, options, 'Receptance'))
     # frf_matrix(data, options)
-    # asyncio.run(plot_imaginary_r(data, options))
+    asyncio.run(plot_imaginary_r(data, options))
     # asyncio.run(plot_argand_r(data, options))
-    # asyncio.run(plot_acceleration(data, options))
-    # asyncio.run(plot_forcing(data, options))
-
-    # for excitation in [('Hammer testing', 'Soft'), ('Hammer testing', 'Hard'), ('Sine sweep', 'Soft'), ('Stepped sweep', 'Hard'), ('Random excitation', 'Hard')]:
-    #     options['excitationType'] = excitation[0]
-    #     options['tipHardness'] = excitation[1]
-
-    #     error_data = []
-    #     for shaker_pos in range(5):
-    #         options['shakerPosition'] = shaker_pos
-
-    #         for mode, lower_freq, upper_freq in [(1, 100, 160), (2, 350, 420), (3, 750, 850)]:
-    #             row = {
-    #                 'F': shaker_pos,
-    #                 'mode': mode
-    #             }
-    #             options['lowerCutoff'] = lower_freq
-    #             options['upperCutoff'] = upper_freq
-    #             data = r.read_csv(options)
-    #             options['samplingFreq'] = int(1/(data['t'].max()/len(data)))
-    #             _, f_ns = asyncio.run(plot_bode(data, options, 'Receptance'))
-    #             for i, f_n in enumerate(f_ns):
-    #                 row[f'A{i}'] = f_n
-    #             error_data.append(row)
-        
-    #     df = pd.DataFrame(error_data)
-    #     print(df)
-    #     df.to_csv(f'../../figures/w_n_{excitation[0]}.csv', index=False)
+    asyncio.run(plot_acceleration(data, options))
+    asyncio.run(plot_forcing(data, options))

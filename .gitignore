@@ -187,3 +187,5 @@ push.ps1
 test.py
 
 figures/
+
+SINE_0*.csv

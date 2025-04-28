@@ -13,12 +13,5 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Set environment variables
-ARG PUBLIC_BACKEND_URL
-ENV PUBLIC_BACKEND_URL=$PUBLIC_BACKEND_URL
-
-# Build the Svelte application
-RUN npm run build
-
-# Start Node server
-CMD [ "node", "build" ]
+# Build the Svelte application and start node server
+CMD ["sh", "-c", "npm run build && node build"]
